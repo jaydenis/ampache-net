@@ -62,9 +62,9 @@ namespace JohnMoore.AmpacheNet
 
 		void Handle_connectionOnConnected (object sender, EventArgs e)
 		{
-			FindViewById<EditText>(Resource.Id.txtConfigUrl).Text = _service.Configuration.ServerUrl;
-			FindViewById<EditText>(Resource.Id.txtConfigUser).Text = _service.Configuration.User;
-			FindViewById<EditText>(Resource.Id.txtPasswordConfig).Text = _service.Configuration.Password;
+			FindViewById<EditText>(Resource.Id.txtConfigUrl).Text = _connection.Model.Configuration.ServerUrl;
+			FindViewById<EditText>(Resource.Id.txtConfigUser).Text = _connection.Model.Configuration.User;
+			FindViewById<EditText>(Resource.Id.txtPasswordConfig).Text = _connection.Model.Configuration.Password;
 		}
 
 		void HandleOkClick (object sender, EventArgs e)
