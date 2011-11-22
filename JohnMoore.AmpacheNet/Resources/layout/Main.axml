@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"  
+    android:layout_width="fill_parent"  
+    android:layout_height="fill_parent"  
+    android:padding="5dp"
+	android:id="@+id/mainLayout">  
+	<LinearLayout android:layout_weight=".50" android:layout_height="fill_parent" android:layout_width="fill_parent" android:orientation="vertical">
+	<RelativeLayout
+android:id="@+id/layoutPlaying"
+android:layout_width="fill_parent"
+android:layout_height="fill_parent"
+xmlns:android="http://schemas.android.com/apk/res/android"
+>
+<ImageButton
+android:id="@+id/imgPlayingShuffle"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:layout_alignParentTop="true"
+android:layout_alignParentLeft="true"
+android:src="@drawable/ic_menu_shuffle"
+android:background="@null"
+>
+</ImageButton>
+<ImageButton
+android:id="@+id/imgPlayingPrev"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:layout_alignParentBottom="true"
+android:layout_alignParentLeft="true"
+android:src="@drawable/ic_media_previous"
+android:background="@null"					
+>
+</ImageButton>
+<ImageButton
+android:id="@+id/imgPlayingNext"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:layout_alignParentBottom="true"
+android:layout_alignParentRight="true"
+android:src="@drawable/ic_media_next"
+android:background="@null"
+>
+</ImageButton>
+<ImageButton
+android:id="@+id/imgPlayingPlayPause"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:layout_alignParentBottom="true"
+android:layout_centerHorizontal="true"
+android:src="@drawable/ic_media_play"
+android:background="@null"
+>
+</ImageButton>
+<ImageView
+android:id="@+id/imgPlayingAlbumArt"
+android:layout_above="@+id/imgPlayingPlayPause"
+android:layout_below="@+id/imgPlayingShuffle"
+android:layout_width="fill_parent"
+android:layout_height="fill_parent"
+android:layout_alignParentLeft="true"
+>
+</ImageView>
+</RelativeLayout>
+	</LinearLayout>
+	<LinearLayout android:layout_weight=".50" android:layout_height="fill_parent" android:layout_width="fill_parent" android:orientation="vertical">
+		<ListView android:id="@+id/lstPlaylist" android:layout_height="fill_parent" android:layout_width="fill_parent"></ListView>
+	</LinearLayout>
+	
+</LinearLayout>  

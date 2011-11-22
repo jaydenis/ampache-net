@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source", "Source", "{819FB85C-5445-423F-984C-181C56E68D84}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Android", "Android", "{F9604664-3EE6-4E9F-9083-B8BB3817A13D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JohnMoore.AmpacheNet", "JohnMoore.AmpacheNet\JohnMoore.AmpacheNet.csproj", "{188467FE-ACB3-4794-ACA7-F4D78E87BAA4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Logic", "Logic", "{94FB10B0-FB99-42E0-AB92-3B087EB02E21}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JohnMoore.AmpacheNet.Entities", "JohnMoore.AmpacheNet.Entities\JohnMoore.AmpacheNet.Entities.csproj", "{4DA084D8-A794-4415-B287-9BAE1D5C1F3E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JohnMoore.AmpacheNet.Logic", "JohnMoore.AmpacheNet.Logic\JohnMoore.AmpacheNet.Logic.csproj", "{A3D99719-6C82-41D7-BD50-5CF1A21894C1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data Access", "Data Access", "{C2B4AE6E-FB82-40D8-BCA4-4E640C97749A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JohnMoore.AmpacheNet.DataAccess", "JohnMoore.AmpacheNet.DataAccess\JohnMoore.AmpacheNet.DataAccess.csproj", "{8FE8BBDF-7E4D-4A04-87B1-9D173D5B8167}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{188467FE-ACB3-4794-ACA7-F4D78E87BAA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{188467FE-ACB3-4794-ACA7-F4D78E87BAA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{188467FE-ACB3-4794-ACA7-F4D78E87BAA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{188467FE-ACB3-4794-ACA7-F4D78E87BAA4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DA084D8-A794-4415-B287-9BAE1D5C1F3E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DA084D8-A794-4415-B287-9BAE1D5C1F3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DA084D8-A794-4415-B287-9BAE1D5C1F3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DA084D8-A794-4415-B287-9BAE1D5C1F3E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8FE8BBDF-7E4D-4A04-87B1-9D173D5B8167}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8FE8BBDF-7E4D-4A04-87B1-9D173D5B8167}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8FE8BBDF-7E4D-4A04-87B1-9D173D5B8167}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8FE8BBDF-7E4D-4A04-87B1-9D173D5B8167}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3D99719-6C82-41D7-BD50-5CF1A21894C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3D99719-6C82-41D7-BD50-5CF1A21894C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3D99719-6C82-41D7-BD50-5CF1A21894C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3D99719-6C82-41D7-BD50-5CF1A21894C1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F9604664-3EE6-4E9F-9083-B8BB3817A13D} = {819FB85C-5445-423F-984C-181C56E68D84}
+		{94FB10B0-FB99-42E0-AB92-3B087EB02E21} = {819FB85C-5445-423F-984C-181C56E68D84}
+		{C2B4AE6E-FB82-40D8-BCA4-4E640C97749A} = {819FB85C-5445-423F-984C-181C56E68D84}
+		{188467FE-ACB3-4794-ACA7-F4D78E87BAA4} = {F9604664-3EE6-4E9F-9083-B8BB3817A13D}
+		{4DA084D8-A794-4415-B287-9BAE1D5C1F3E} = {94FB10B0-FB99-42E0-AB92-3B087EB02E21}
+		{A3D99719-6C82-41D7-BD50-5CF1A21894C1} = {94FB10B0-FB99-42E0-AB92-3B087EB02E21}
+		{8FE8BBDF-7E4D-4A04-87B1-9D173D5B8167} = {C2B4AE6E-FB82-40D8-BCA4-4E640C97749A}
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = JohnMoore.AmpacheNet\JohnMoore.AmpacheNet.csproj
+	EndGlobalSection
+EndGlobal
