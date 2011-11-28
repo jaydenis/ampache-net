@@ -139,6 +139,7 @@
       <Link>Logic\AlbumArtLoader.cs</Link>
     </Compile>
     <Compile Include="AndroidLogTextWriter.cs" />
+    <Compile Include="AmpachePhoneStateListener.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

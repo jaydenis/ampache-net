@@ -88,6 +88,11 @@ namespace JohnMoore.AmpacheNet
 					_model.Factory = new AmpacheSelectionFactory(_handshake);
 					Toast.MakeText(this.ApplicationContext, "Connected to Ampache", ToastLength.Long).Show();
 				}
+				var telSvc = this.ApplicationContext.GetSystemService(Context.TelephonyService) as Android.Telephony.TelephonyManager;
+				if(telSvc != null)
+				{
+					telSvc.Listen(new AmpachePhoneStateListener(_model), Android.Telephony.PhoneStateListenerFlags.CallState);
+				}
 			}
 			catch (Exception ex) 
 			{

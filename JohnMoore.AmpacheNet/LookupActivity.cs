@@ -59,6 +59,7 @@ namespace JohnMoore.AmpacheNet
 			_connection.OnConnected += Handle_connectionOnConnected;
 			BindService(new Intent(this.ApplicationContext, typeof(AmpacheService)), _connection, Bind.AutoCreate);		
 			this.ListView.ItemLongClick += HandleListViewhandleItemLongClick;
+			this.ListView.FastScrollEnabled = true;
 		}
 
 		void HandleListViewhandleItemLongClick (object sender, ItemEventArgs e)
@@ -116,15 +117,24 @@ namespace JohnMoore.AmpacheNet
 		
 		private void LoadAll<TEntity>() where TEntity : IEntity
 		{
-			var selecter = _model.Factory.GetInstanceSelectorFor<TEntity>();
-			_loadedEntities = selecter.SelectAll().Cast<IEntity>().OrderBy(e => e.Name).ToList();
-			RunOnUiThread(() => UpdateUi());
+			try
+			{
+				var selecter = _model.Factory.GetInstanceSelectorFor<TEntity>();
+				_loadedEntities = selecter.SelectAll().Cast<IEntity>().OrderBy(e => e.Name).ToList();
+			}
+			catch(Exception ex)
+			{
+				Toast.MakeText(this.ApplicationContext, ex.Message, ToastLength.Short).Show();
+			}
+			finally
+			{
+				RunOnUiThread(() => UpdateUi());
+			}
 		}
 				
 		private View HydrateEntity(IEntity ent, View v)
 		{
 			v.FindViewById<TextView>(Android.Resource.Id.Text1).Text = ent.Name;
-			//_entityMap.Add(v, ent);
 			return v;
 		}
 

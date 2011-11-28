@@ -57,7 +57,6 @@ namespace JohnMoore.AmpacheNet
 			_connection = new AmpacheService.Connection();
 			_connection.OnConnected += Handle_connectionOnConnected;
 			BindService(new Intent(this.ApplicationContext, typeof(AmpacheService)), _connection, Bind.AutoCreate);
-			
 		}
 
 		void Handle_connectionOnConnected (object sender, EventArgs e)
