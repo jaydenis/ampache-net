@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string name="hello">Hello World, Click Me!</string>
 	<string name="app_name">JohnMoore.AmpacheNet</string>
+	<string name="connecting">Connecting</string>
+	<string name="connectingToAmpache">Connecting to Ampache</string>
+	<string name="connectedToAmpache">Connected to Ampache</string>
+	<string name="nowPlayingFormat">Now Playing {0} by {1}</string>
+	<string name="loading">Loading</string>
+	<string name="addToPlaylist">Adding to Playlist</string>
 </resources>

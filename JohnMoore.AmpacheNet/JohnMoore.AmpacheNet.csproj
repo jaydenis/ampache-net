@@ -140,6 +140,7 @@
     </Compile>
     <Compile Include="AndroidLogTextWriter.cs" />
     <Compile Include="AmpachePhoneStateListener.cs" />
+    <Compile Include="AmpacheNotifications.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -159,6 +160,7 @@
     <AndroidResource Include="Resources\layout\NowPlaying.axml" />
     <AndroidResource Include="Resources\layout\Main.axml" />
     <AndroidResource Include="Resources\drawable\icon_thumbnail.png" />
+    <AndroidResource Include="Resources\drawable\stat_notify_musicplayer.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
   <ItemGroup>

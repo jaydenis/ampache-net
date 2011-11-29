@@ -57,6 +57,7 @@ namespace JohnMoore.AmpacheNet
 		private Authenticate _handshake;
 		private AmpachePlayer _player;
 		private Timer _ping;
+		private AmpacheNotifications _notifications;
 				
 		#region implemented abstract members of Android.App.Service
 		public override IBinder OnBind (Intent intent)
@@ -101,7 +102,9 @@ namespace JohnMoore.AmpacheNet
 			_ping = new Timer((o) => _handshake.Ping(), null, TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(5));
 			_player = new AmpachePlayer(_model, ApplicationContext);
 			_model.Configuration = config;
+			_notifications = new AmpacheNotifications(this.ApplicationContext, _model);
 			_model.PropertyChanged += Handle_modelPropertyChanged;
+			
 		}
 
 		public override void OnDestroy ()
@@ -111,6 +114,7 @@ namespace JohnMoore.AmpacheNet
 			_ping.Dispose();
 			_player.Dispose();
 			_loader.Dispose();
+			_notifications.Dispose();
 		}
 			
 		

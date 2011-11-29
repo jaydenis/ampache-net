@@ -47,6 +47,9 @@ namespace JohnMoore.AmpacheNet
 			// aapt resource value: 0x7f020006
 			public const int icon_thumbnail = 2130837510;
 			
+			// aapt resource value: 0x7f020007
+			public const int stat_notify_musicplayer = 2130837511;
+			
 			private Drawable()
 			{
 			}
@@ -175,11 +178,26 @@ namespace JohnMoore.AmpacheNet
 		public partial class String
 		{
 			
-			// aapt resource value: 0x7f040001
-			public const int app_name = 2130968577;
+			// aapt resource value: 0x7f040006
+			public const int addToPlaylist = 2130968582;
 			
 			// aapt resource value: 0x7f040000
-			public const int hello = 2130968576;
+			public const int app_name = 2130968576;
+			
+			// aapt resource value: 0x7f040003
+			public const int connectedToAmpache = 2130968579;
+			
+			// aapt resource value: 0x7f040001
+			public const int connecting = 2130968577;
+			
+			// aapt resource value: 0x7f040002
+			public const int connectingToAmpache = 2130968578;
+			
+			// aapt resource value: 0x7f040005
+			public const int loading = 2130968581;
+			
+			// aapt resource value: 0x7f040004
+			public const int nowPlayingFormat = 2130968580;
 			
 			private String()
 			{

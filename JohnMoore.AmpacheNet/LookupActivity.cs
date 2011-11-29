@@ -54,7 +54,7 @@ namespace JohnMoore.AmpacheNet
 		protected override void OnCreate (Bundle bundle)
 		{
 			base.OnCreate (bundle);
-			_prgDlg = ProgressDialog.Show(this, "Loading", "Loading");			
+			_prgDlg = ProgressDialog.Show(this, GetString(Resource.String.loading), GetString(Resource.String.loading));
 			_connection = new AmpacheService.Connection();
 			_connection.OnConnected += Handle_connectionOnConnected;
 			BindService(new Intent(this.ApplicationContext, typeof(AmpacheService)), _connection, Bind.AutoCreate);		
@@ -77,7 +77,7 @@ namespace JohnMoore.AmpacheNet
 					System.Threading.ThreadPool.QueueUserWorkItem((o) => AddSongsToPlaylistFor<AmpacheAlbum>((AmpacheAlbum)ent));
 					break;
 			}
-			Toast.MakeText(this.ApplicationContext, "Adding to playlist", ToastLength.Short).Show();
+			Toast.MakeText(this.ApplicationContext, GetString(Resource.String.addToPlaylist), ToastLength.Short).Show();
 		}
 
 

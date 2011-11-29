@@ -113,9 +113,18 @@ namespace JohnMoore.AmpacheNet
 		
 		void UpdateUi()
 		{
-			FindViewById<TextView>(Resource.Id.lblNowPlayingTrack).Text = _model.PlayingSong.Name;
-			FindViewById<TextView>(Resource.Id.lblNowPlayingAlbum).Text = _model.PlayingSong.AlbumName;
-			FindViewById<TextView>(Resource.Id.lblNowPlayingArtist).Text = _model.PlayingSong.ArtistName;
+			if(_model.PlayingSong == null)
+			{
+				FindViewById<TextView>(Resource.Id.lblNowPlayingTrack).Text = string.Empty;
+				FindViewById<TextView>(Resource.Id.lblNowPlayingAlbum).Text = string.Empty;
+				FindViewById<TextView>(Resource.Id.lblNowPlayingArtist).Text = string.Empty;
+			}
+			else
+			{
+				FindViewById<TextView>(Resource.Id.lblNowPlayingTrack).Text = _model.PlayingSong.Name;
+				FindViewById<TextView>(Resource.Id.lblNowPlayingAlbum).Text = _model.PlayingSong.AlbumName;
+				FindViewById<TextView>(Resource.Id.lblNowPlayingArtist).Text = _model.PlayingSong.ArtistName;
+			}
 		}
 		
 		void HandleShuffleClick (object sender, EventArgs e)
