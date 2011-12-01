@@ -108,12 +108,6 @@ namespace JohnMoore.AmpacheNet
 		
 		public void Previous()
 		{
-			_model.PreviousRequested = false;
-			if(_player.CurrentPosition < 2000)
-			{
-				_model.PlayingSong = _model.Playlist[(_model.Playlist.IndexOf(_model.PlayingSong) + _model.Playlist.Count - 1) % _model.Playlist.Count];
-				Console.WriteLine ("Playing Previous Song");
-			}
 			if (_model.Playlist == null || _model.Playlist.Count == 0) 
 			{
 				if (_player.IsPlaying)
@@ -121,7 +115,13 @@ namespace JohnMoore.AmpacheNet
 					_player.Stop();
 					_model.PlayingSong = null;
 				}
+				_model.PreviousRequested = false;
 				return;
+			}
+			if(_player.CurrentPosition < 2000)
+			{
+				_model.PlayingSong = _model.Playlist[(_model.Playlist.IndexOf(_model.PlayingSong) + _model.Playlist.Count - 1) % _model.Playlist.Count];
+				Console.WriteLine ("Playing Previous Song");
 			}
 			_player.Stop();
 			_player.Release();
@@ -131,11 +131,11 @@ namespace JohnMoore.AmpacheNet
 			_player.Completion += Handle_playerCompletion;
 			_player.Start();
 			_isPaused = false;
+			_model.PreviousRequested = false;
 		}
 		
 		public void Next()
 		{
-			_model.NextRequested = false;
 			if (_model.Playlist == null || _model.Playlist.Count == 0) 
 			{
 				if (_player.IsPlaying)
@@ -143,27 +143,27 @@ namespace JohnMoore.AmpacheNet
 					_player.Stop();
 				}
 				_model.PlayingSong = null;
-				return;
 			}
-			var nextIndex = _model.Playlist.IndexOf(_model.PlayingSong) + 1;
-			if(_model.Shuffling)
+			else
 			{
-				nextIndex = new Random().Next(0, _model.Playlist.Count - 1);
+				var nextIndex = (_model.Playlist.IndexOf(_model.PlayingSong) + 1) % _model.Playlist.Count;
+				if(_model.Shuffling)
+				{
+					nextIndex = new Random().Next(0, _model.Playlist.Count - 1);
+				}
+				_model.PlayingSong = _model.Playlist[nextIndex];
+				Console.WriteLine ("Playing next Song: " + _model.PlayingSong.Name);
+				_player.Stop();
+				_player.Release();
+				_player.Completion -= Handle_playerCompletion;
+				_player.Dispose();
+				_player = MediaPlayer.Create(_context, Android.Net.Uri.Parse(_model.PlayingSong.Url));
+				_player.Completion += Handle_playerCompletion;
+				_player.Start();
+				_isPaused = false;
+				GC.Collect(0);
 			}
-			if (nextIndex == _model.Playlist.Count) {
-				return;
-			}
-			_model.PlayingSong = _model.Playlist[nextIndex];
-			Console.WriteLine ("Playing next Song: " + _model.PlayingSong.Name);
-			_player.Stop();
-			_player.Release();
-			_player.Completion -= Handle_playerCompletion;
-			_player.Dispose();
-			_player = MediaPlayer.Create(_context, Android.Net.Uri.Parse(_model.PlayingSong.Url));
-			_player.Completion += Handle_playerCompletion;
-			_player.Start();
-			_isPaused = false;
-			GC.Collect(0);
+			_model.NextRequested = false;
 		}
 		
 		public void Stop()

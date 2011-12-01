@@ -51,6 +51,7 @@ namespace JohnMoore.AmpacheNet
 			_model = model;
 			_context = context;
 			_model.PropertyChanged += Handle_modelPropertyChanged;
+			((NotificationManager)_context.GetSystemService(Context.NotificationService)).CancelAll();
 		}
 
 		void Handle_modelPropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)

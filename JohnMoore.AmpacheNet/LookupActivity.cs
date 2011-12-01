@@ -67,7 +67,7 @@ namespace JohnMoore.AmpacheNet
 			var ent = _adapter.GetItem(e.Position);
 			switch(this.Intent.GetIntExtra(TYPE, int.MinValue))
 			{
-				case Resource.Id.playlists:
+				case Resource.Id.playlists:				
 					System.Threading.ThreadPool.QueueUserWorkItem((o) => AddSongsToPlaylistFor<AmpachePlaylist>((AmpachePlaylist)ent));
 					break;
 				case Resource.Id.artists:

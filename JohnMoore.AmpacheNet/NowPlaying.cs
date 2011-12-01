@@ -98,6 +98,18 @@ namespace JohnMoore.AmpacheNet
 			{
 				RunOnUiThread(() => UpdateArt());
 			}
+			if(e.PropertyName == AmpacheModel.NEXT_REQUESTED)
+			{
+				RunOnUiThread(() => UpdateNextButton());
+			}
+			if(e.PropertyName == AmpacheModel.PREVIOUS_REQUESTED)
+			{
+				RunOnUiThread(() => UpdatePreviousButton());
+			}
+			if(e.PropertyName == AmpacheModel.SHUFFELING)
+			{
+				RunOnUiThread(() => UpdateShuffleButton());
+			}
 		}
 		
 		void UpdateArt()
@@ -109,6 +121,42 @@ namespace JohnMoore.AmpacheNet
 			Console.WriteLine ("Change Art");
 			_currentAlbumArt = Android.Graphics.BitmapFactory.DecodeByteArray(_model.AlbumArtStream.ToArray(), 0, (int)_model.AlbumArtStream.Length);
 			 FindViewById<ImageView>(Resource.Id.imgPlayingAlbumArt).SetImageBitmap(_currentAlbumArt);
+		}
+		
+		void UpdateNextButton()
+		{
+			if(_model.NextRequested)
+			{ 
+				FindViewById<ImageButton>(Resource.Id.imgPlayingNext).SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_media_next_invert));
+			}
+			else
+			{
+				FindViewById<ImageButton>(Resource.Id.imgPlayingNext).SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_media_next));
+			}
+		}
+		
+		void UpdatePreviousButton()
+		{
+			if(_model.PreviousRequested)
+			{
+				FindViewById<ImageButton>(Resource.Id.imgPlayingNext).SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_media_previous_invert));
+			}
+			else
+			{
+				FindViewById<ImageButton>(Resource.Id.imgPlayingNext).SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_media_previous));
+			}
+		}
+		
+		void UpdateShuffleButton()
+		{
+			if(_model.Shuffling)
+			{
+				FindViewById<ImageButton>(Resource.Id.imgPlayingShuffle).SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_menu_shuffle_invert));
+			}
+			else
+			{
+				FindViewById<ImageButton>(Resource.Id.imgPlayingShuffle).SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_menu_shuffle));
+			}
 		}
 		
 		void UpdateUi()
@@ -151,11 +199,13 @@ namespace JohnMoore.AmpacheNet
 
 		void HandlePreviousClick (object sender, EventArgs e)
 		{
+			FindViewById<ImageButton>(Resource.Id.imgPlayingNext).SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_media_previous_invert));
 			System.Threading.ThreadPool.QueueUserWorkItem((o) => _model.PreviousRequested = true);
 		}
 
 		void HandleNextClick (object sender, EventArgs e)
 		{
+			FindViewById<ImageButton>(Resource.Id.imgPlayingNext).SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_media_next_invert));
 			System.Threading.ThreadPool.QueueUserWorkItem((o) => _model.NextRequested = true);
 		}
 	}

@@ -115,11 +115,13 @@ namespace JohnMoore.AmpacheNet
 
 		void HandlePreviousClick (object sender, EventArgs e)
 		{
+			FindViewById<ImageButton>(Resource.Id.imgPlayingNext).SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_media_previous_invert));
 			System.Threading.ThreadPool.QueueUserWorkItem((o) => _model.PreviousRequested = true);
 		}
 
 		void HandleNextClick (object sender, EventArgs e)
 		{
+			FindViewById<ImageButton>(Resource.Id.imgPlayingNext).SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_media_next_invert));
 			System.Threading.ThreadPool.QueueUserWorkItem((o) => _model.NextRequested = true);
 		}
 
@@ -158,6 +160,15 @@ namespace JohnMoore.AmpacheNet
 					break;
 				case AmpacheModel.ALBUM_ART_STREAM:
 					UpdateArt();
+					break;
+				case AmpacheModel.NEXT_REQUESTED:
+					UpdateNextButton();
+					break;
+				case AmpacheModel.PREVIOUS_REQUESTED:
+					UpdatePreviousButton();
+					break;
+				case AmpacheModel.SHUFFELING:
+					UpdateShuffleButton();
 					break;
 			}
 		}
@@ -258,6 +269,42 @@ namespace JohnMoore.AmpacheNet
 					return false;						
 			}
 			return true;
+		}
+		
+		void UpdateNextButton()
+		{
+			if(_model.NextRequested)
+			{ 
+				FindViewById<ImageButton>(Resource.Id.imgPlayingNext).SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_media_next_invert));
+			}
+			else
+			{
+				FindViewById<ImageButton>(Resource.Id.imgPlayingNext).SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_media_next));
+			}
+		}
+		
+		void UpdatePreviousButton()
+		{
+			if(_model.PreviousRequested)
+			{
+				FindViewById<ImageButton>(Resource.Id.imgPlayingNext).SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_media_previous_invert));
+			}
+			else
+			{
+				FindViewById<ImageButton>(Resource.Id.imgPlayingNext).SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_media_previous));
+			}
+		}
+		
+		void UpdateShuffleButton()
+		{
+			if(_model.Shuffling)
+			{
+				FindViewById<ImageButton>(Resource.Id.imgPlayingShuffle).SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_menu_shuffle_invert));
+			}
+			else
+			{
+				FindViewById<ImageButton>(Resource.Id.imgPlayingShuffle).SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_menu_shuffle));
+			}
 		}
 	}
 }
