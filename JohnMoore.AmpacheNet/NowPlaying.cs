@@ -39,7 +39,7 @@ using JohnMoore.AmpacheNet.Logic;
 
 namespace JohnMoore.AmpacheNet
 {
-	[Activity (Label = "Now Playing")]			
+	[Activity (Label = "@string/nowPlayingLabel")]			
 	public class NowPlaying : Activity
 	{
 		private AmpacheModel _model;

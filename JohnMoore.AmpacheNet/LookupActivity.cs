@@ -41,7 +41,7 @@ using JohnMoore.AmpacheNet.Logic;
 
 namespace JohnMoore.AmpacheNet
 {
-	[Activity (Label = "Lookup",Theme="@android:style/Theme.Dialog")]			
+	[Activity (Label = "@string/lookupLabel",Theme="@android:style/Theme.Dialog")]			
 	public class LookupActivity : ListActivity
 	{
 		public const string TYPE = "type";

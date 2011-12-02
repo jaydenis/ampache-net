@@ -211,7 +211,7 @@ namespace JohnMoore.AmpacheNet
 			FindViewById<ImageButton>(Resource.Id.imgPlayingPrev).Click -= HandlePreviousClick;
 			FindViewById<ImageButton>(Resource.Id.imgPlayingPlayPause).Click -= HandlePlayClick;
 			FindViewById<ImageView>(Resource.Id.imgPlayingAlbumArt).Click -= HandleImageClick;
-			if (_model.PlayingSong == null) 
+			if (!_model.IsPlaying) 
 			{ 
 				StopService(new Intent(ApplicationContext, typeof(AmpacheService)));
 			}

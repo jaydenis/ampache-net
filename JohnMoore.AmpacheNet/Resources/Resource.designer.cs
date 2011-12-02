@@ -193,6 +193,9 @@ namespace JohnMoore.AmpacheNet
 			// aapt resource value: 0x7f040000
 			public const int app_name = 2130968576;
 			
+			// aapt resource value: 0x7f04000e
+			public const int cancel = 2130968590;
+			
 			// aapt resource value: 0x7f040003
 			public const int connectedToAmpache = 2130968579;
 			
@@ -205,8 +208,29 @@ namespace JohnMoore.AmpacheNet
 			// aapt resource value: 0x7f040005
 			public const int loading = 2130968581;
 			
+			// aapt resource value: 0x7f040008
+			public const int lookupLabel = 2130968584;
+			
 			// aapt resource value: 0x7f040004
 			public const int nowPlayingFormat = 2130968580;
+			
+			// aapt resource value: 0x7f040007
+			public const int nowPlayingLabel = 2130968583;
+			
+			// aapt resource value: 0x7f04000d
+			public const int ok = 2130968589;
+			
+			// aapt resource value: 0x7f04000b
+			public const int password = 2130968587;
+			
+			// aapt resource value: 0x7f040009
+			public const int serverUrl = 2130968585;
+			
+			// aapt resource value: 0x7f04000c
+			public const int test = 2130968588;
+			
+			// aapt resource value: 0x7f04000a
+			public const int userName = 2130968586;
 			
 			private String()
 			{
