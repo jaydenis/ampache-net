@@ -91,12 +91,7 @@ namespace JohnMoore.AmpacheNet
 			}
 			Console.WriteLine ("Begining Playback");
 			_model.PlayingSong = _model.Playlist.First();
-			_player.Release();
-			_player.Completion -= Handle_playerCompletion;
-			_player.Dispose();
-			_player = MediaPlayer.Create(_context, Android.Net.Uri.Parse(_model.PlayingSong.Url));
-			_player.Completion += Handle_playerCompletion;
-			_player.Start();
+			PrepareMediaPlayerSynchronous(_model.PlayingSong.Url);
 			_isPaused = false;
 			_model.IsPlaying = true;
 		}
@@ -123,13 +118,7 @@ namespace JohnMoore.AmpacheNet
 				_model.PlayingSong = _model.Playlist[(_model.Playlist.IndexOf(_model.PlayingSong) + _model.Playlist.Count - 1) % _model.Playlist.Count];
 				Console.WriteLine ("Playing Previous Song");
 			}
-			_player.Stop();
-			_player.Release();
-			_player.Completion -= Handle_playerCompletion;
-			_player.Dispose();
-			_player = MediaPlayer.Create(_context, Android.Net.Uri.Parse(_model.PlayingSong.Url));
-			_player.Completion += Handle_playerCompletion;
-			_player.Start();
+			PrepareMediaPlayerSynchronous(_model.PlayingSong.Url);
 			_isPaused = false;
 			_model.PreviousRequested = false;
 		}
@@ -153,17 +142,39 @@ namespace JohnMoore.AmpacheNet
 				}
 				_model.PlayingSong = _model.Playlist[nextIndex];
 				Console.WriteLine ("Playing next Song: " + _model.PlayingSong.Name);
-				_player.Stop();
-				_player.Release();
-				_player.Completion -= Handle_playerCompletion;
-				_player.Dispose();
-				_player = MediaPlayer.Create(_context, Android.Net.Uri.Parse(_model.PlayingSong.Url));
-				_player.Completion += Handle_playerCompletion;
-				_player.Start();
+				PrepareMediaPlayerSynchronous(_model.PlayingSong.Url);
 				_isPaused = false;
-				GC.Collect(0);
 			}
 			_model.NextRequested = false;
+		}
+		
+		void PrepareMediaPlayerSynchronous(string songUrl)
+		{
+			if(_player == null)
+			{
+				return;
+			}
+			_player.Stop();
+			_player.Release();
+			_player.Completion -= Handle_playerCompletion;
+			_player.Dispose();
+			_player = new MediaPlayer();
+			_player.SetAudioStreamType(Stream.Music);
+			_player.SetDataSource(_context, Android.Net.Uri.Parse(songUrl));
+			try
+			{
+				_player.Prepare();
+				_player.Start();
+			}
+			catch(Exception e)
+			{
+				_player.Dispose();
+				_player = new MediaPlayer();
+				Console.WriteLine (e.GetType().FullName);
+				Console.WriteLine (e.Message);
+				Android.Widget.Toast.MakeText(_context, string.Format(_context.GetString(Resource.String.playFailureFormat), _model.PlayingSong.Name, _model.PlayingSong.ArtistName),Android.Widget.ToastLength.Long);
+			}
+			_player.Completion += Handle_playerCompletion;
 		}
 		
 		public void Stop()

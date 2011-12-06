@@ -15,4 +15,6 @@
 	<string name="test">Test</string>
 	<string name="ok">OK</string>
 	<string name="cancel">Cancel</string>
+	<string name="configureRequest">Please configure.</string>
+	<string name="playFailureFormat">Unable to play track {0} by {1}</string>
 </resources>

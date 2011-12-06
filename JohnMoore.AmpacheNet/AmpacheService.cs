@@ -139,7 +139,7 @@ namespace JohnMoore.AmpacheNet
 			public Binder ()
 			{}
 			
-			public Binder (IntPtr doNotUse) : base(doNotUse)
+			public Binder (IntPtr doNotUse)
 			{}
 		}
 		
@@ -151,7 +151,7 @@ namespace JohnMoore.AmpacheNet
 			public Connection ()
 			{}
 			
-			public Connection (IntPtr doNotUse) : base (doNotUse)
+			public Connection (IntPtr doNotUse)
 			{}
 
 			#region IServiceConnection implementation

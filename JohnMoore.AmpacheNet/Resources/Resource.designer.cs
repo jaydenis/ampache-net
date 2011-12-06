@@ -196,6 +196,9 @@ namespace JohnMoore.AmpacheNet
 			// aapt resource value: 0x7f04000e
 			public const int cancel = 2130968590;
 			
+			// aapt resource value: 0x7f04000f
+			public const int configureRequest = 2130968591;
+			
 			// aapt resource value: 0x7f040003
 			public const int connectedToAmpache = 2130968579;
 			
@@ -222,6 +225,9 @@ namespace JohnMoore.AmpacheNet
 			
 			// aapt resource value: 0x7f04000b
 			public const int password = 2130968587;
+			
+			// aapt resource value: 0x7f040010
+			public const int playFailureFormat = 2130968592;
 			
 			// aapt resource value: 0x7f040009
 			public const int serverUrl = 2130968585;

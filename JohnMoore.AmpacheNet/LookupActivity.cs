@@ -62,7 +62,7 @@ namespace JohnMoore.AmpacheNet
 			this.ListView.FastScrollEnabled = true;
 		}
 
-		void HandleListViewhandleItemLongClick (object sender, ItemEventArgs e)
+		void HandleListViewhandleItemLongClick (object sender, AdapterView.ItemLongClickEventArgs e)
 		{
 			var ent = _adapter.GetItem(e.Position);
 			switch(this.Intent.GetIntExtra(TYPE, int.MinValue))
@@ -119,16 +119,21 @@ namespace JohnMoore.AmpacheNet
 		{
 			try
 			{
-				var selecter = _model.Factory.GetInstanceSelectorFor<TEntity>();
-				_loadedEntities = selecter.SelectAll().Cast<IEntity>().OrderBy(e => e.Name).ToList();
+				if(_model.Factory != null)
+				{
+					var selecter = _model.Factory.GetInstanceSelectorFor<TEntity>();
+					_loadedEntities = selecter.SelectAll().Cast<IEntity>().OrderBy(e => e.Name).ToList();
+					RunOnUiThread(() => UpdateUi());
+				}
+				else
+				{
+					RunOnUiThread(() => Toast.MakeText(ApplicationContext, GetString(Resource.String.configureRequest), ToastLength.Short).Show());
+					Finish();
+				}
 			}
 			catch(Exception ex)
 			{
-				Toast.MakeText(this.ApplicationContext, ex.Message, ToastLength.Short).Show();
-			}
-			finally
-			{
-				RunOnUiThread(() => UpdateUi());
+				RunOnUiThread(() => Toast.MakeText(this.ApplicationContext, ex.Message, ToastLength.Short).Show());
 			}
 		}
 				
