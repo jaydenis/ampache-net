@@ -48,7 +48,7 @@ namespace JohnMoore.AmpacheNet
 	[Service]
 	public class AmpacheService : Service
 	{
-		private static readonly AmpacheModel _model = AmpacheModel.Instance;
+		private readonly AmpacheModel _model = new AmpacheModel();
 		private static AlbumArtLoader _loader;
 		private const string CONFIGURATION = "configuration";
 		private const string URL_KEY = "url";
@@ -62,13 +62,14 @@ namespace JohnMoore.AmpacheNet
 		#region implemented abstract members of Android.App.Service
 		public override IBinder OnBind (Intent intent)
 		{
-			return new Binder();
+			return new Binder(_model);
 		}
 		#endregion
 		
 		
 		public override void OnCreate ()
 		{
+			Console.WriteLine ("service created");
 			base.OnCreate ();
 			Console.SetOut(new AndroidLogTextWriter());
 			var stm = Resources.OpenRawResource(Resource.Drawable.icon);
@@ -109,6 +110,7 @@ namespace JohnMoore.AmpacheNet
 
 		public override void OnDestroy ()
 		{
+			Console.WriteLine("Service Destroy");
 			base.OnDestroy ();
 			_model.PropertyChanged -= Handle_modelPropertyChanged;
 			_ping.Dispose();
@@ -136,11 +138,12 @@ namespace JohnMoore.AmpacheNet
 		#region Binding Classes
 		public class Binder : Android.OS.Binder
 		{
-			public Binder ()
-			{}
+			public readonly AmpacheModel Model;
 			
-			public Binder (IntPtr doNotUse)
-			{}
+			public Binder (AmpacheModel model)
+			{
+				Model = model;
+			}
 		}
 		
 		public class Connection : Java.Lang.Object, IServiceConnection
@@ -157,10 +160,14 @@ namespace JohnMoore.AmpacheNet
 			#region IServiceConnection implementation
 			public void OnServiceConnected (ComponentName name, IBinder service)
 			{
-				Model = _model;
-				if (OnConnected != null)
+				var bind = service as Binder;
+				if(bind != null)
 				{
-					OnConnected(this, EventArgs.Empty);
+					Model = bind.Model;
+					if (OnConnected != null)
+					{
+						OnConnected(this, EventArgs.Empty);
+					}
 				}
 			}
 

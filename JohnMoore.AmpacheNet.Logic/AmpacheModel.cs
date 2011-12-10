@@ -35,14 +35,7 @@ namespace JohnMoore.AmpacheNet.Logic
 {
 	public class AmpacheModel : INotifyPropertyChanged
 	{
-		private static AmpacheModel _instance;
-
-	  	private AmpacheModel() {}
-	
-	   	public static AmpacheModel Instance
-	   	{
-	     	get { return _instance = (_instance ?? new AmpacheModel()); }
-	   	}
+	  	public AmpacheModel() {}
 		
 		#region Factory
 

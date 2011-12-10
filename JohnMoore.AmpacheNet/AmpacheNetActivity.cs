@@ -204,6 +204,7 @@ namespace JohnMoore.AmpacheNet
 		
 		protected override void OnDestroy ()
 		{
+			Console.WriteLine("Activity Destroy");
 			base.OnDestroy ();
 			_connection.OnConnected -= Handle_connectionOnConnected;
 			FindViewById<ListView>(Resource.Id.lstPlaylist).ItemClick -= HandleItemSelected;

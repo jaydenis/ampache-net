@@ -41,10 +41,7 @@ namespace JohnMoore.AmpacheNet.Logic
 			_defaultStream = defaultStream;
 			_model = model;
 			_model.PropertyChanged += Handle_modelPropertyChanged;
-			if(_model.AlbumArtStream == null)
-			{
-				_model.AlbumArtStream = _defaultStream;
-			}
+			LoadAlbumImage();
 		}
 
 		void Handle_modelPropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
