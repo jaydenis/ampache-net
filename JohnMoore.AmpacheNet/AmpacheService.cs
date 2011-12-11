@@ -66,12 +66,11 @@ namespace JohnMoore.AmpacheNet
 		}
 		#endregion
 		
-		
 		public override void OnCreate ()
 		{
-			Console.WriteLine ("service created");
 			base.OnCreate ();
 			Console.SetOut(new AndroidLogTextWriter());
+			Console.WriteLine ("service created");
 			var stm = Resources.OpenRawResource(Resource.Drawable.icon);
 			var stream = new System.IO.MemoryStream();
 			Android.Graphics.BitmapFactory.DecodeResource(Resources, Resource.Drawable.icon_thumbnail).Compress(Android.Graphics.Bitmap.CompressFormat.Png, 100, stream);
@@ -88,7 +87,7 @@ namespace JohnMoore.AmpacheNet
 				{
 					_handshake = new Authenticate(config.ServerUrl, config.User, config.Password);
 					_model.Factory = new AmpacheSelectionFactory(_handshake);
-					Toast.MakeText(this.ApplicationContext, "Connected to Ampache", ToastLength.Long).Show();
+					Toast.MakeText(this.ApplicationContext, GetString(Resource.String.connectingToAmpache), ToastLength.Long).Show();
 				}
 				var telSvc = this.ApplicationContext.GetSystemService(Context.TelephonyService) as Android.Telephony.TelephonyManager;
 				if(telSvc != null)

@@ -69,7 +69,10 @@ namespace JohnMoore.AmpacheNet
 		protected override void OnStop ()
 		{
 			base.OnStop ();
-			_model.PropertyChanged -= Handle_modelPropertyChanged;
+			if(_model != null)
+			{
+				_model.PropertyChanged -= Handle_modelPropertyChanged;
+			}
 		}
 		
 		protected override void OnStart ()
@@ -288,11 +291,11 @@ namespace JohnMoore.AmpacheNet
 		{
 			if(_model.PreviousRequested)
 			{
-				FindViewById<ImageButton>(Resource.Id.imgPlayingNext).SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_media_previous_invert));
+				FindViewById<ImageButton>(Resource.Id.imgPlayingPrev).SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_media_previous_invert));
 			}
 			else
 			{
-				FindViewById<ImageButton>(Resource.Id.imgPlayingNext).SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_media_previous));
+				FindViewById<ImageButton>(Resource.Id.imgPlayingPrev).SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_media_previous));
 			}
 		}
 		
