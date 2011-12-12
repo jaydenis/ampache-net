@@ -146,6 +146,7 @@ namespace JohnMoore.AmpacheNet
 				_isPaused = false;
 			}
 			_model.NextRequested = false;
+			GC.Collect(0);
 		}
 		
 		void PrepareMediaPlayerSynchronous(string songUrl)

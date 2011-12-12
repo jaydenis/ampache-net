@@ -69,7 +69,7 @@ namespace JohnMoore.AmpacheNet
 			FindViewById<ImageButton>(Resource.Id.imgPlayingPlayPause).Click += HandlePlayClick;
 			FindViewById<ImageButton>(Resource.Id.imgPlayingShuffle).Click += HandleShuffleClick;
 			RunOnUiThread(() => FindViewById<ImageView>(Resource.Id.imgPlayingAlbumArt).SetImageResource(Resource.Drawable.icon_thumbnail));			
-			if(_model.IsPlaying)
+			if(_model.PlayingSong != null)
 			{
 				RunOnUiThread(() => FindViewById<ImageButton>(Resource.Id.imgPlayingPlayPause).SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_media_pause)));
 				RunOnUiThread(() => UpdateUi());
@@ -161,6 +161,7 @@ namespace JohnMoore.AmpacheNet
 		
 		void UpdateUi()
 		{
+			Console.WriteLine ("Change UI");
 			if(_model.PlayingSong == null)
 			{
 				FindViewById<TextView>(Resource.Id.lblNowPlayingTrack).Text = string.Empty;

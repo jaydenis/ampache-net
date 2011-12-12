@@ -113,6 +113,18 @@ namespace JohnMoore.AmpacheNet
 
 		void HandlePlayClick (object sender, EventArgs e)
 		{
+			if(_model.PlayingSong == null)
+			{
+				return;
+			}
+			if(_model.IsPlaying)
+			{
+				FindViewById<ImageButton>(Resource.Id.imgPlayingPlayPause).SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_media_play));
+			}
+			else
+			{
+				FindViewById<ImageButton>(Resource.Id.imgPlayingPlayPause).SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_media_pause));
+			}
 			System.Threading.ThreadPool.QueueUserWorkItem((o) => _model.PlayPauseRequested = true);
 		}
 
