@@ -42,12 +42,29 @@ namespace JohnMoore.AmpacheNet
 		private bool _isPaused = false;
 		private MediaPlayer _player = new MediaPlayer();
 		private readonly Context _context;
+		Android.OS.HandlerThread _playerThread;
+		
+		private class AmpacheNetPlayerThread : Android.OS.HandlerThread
+		{
+			private readonly Action _action;
+			public AmpacheNetPlayerThread (Action action) : base("AmpacheNet")
+			{
+				_action = action;
+			}
+			
+			public override void Run ()
+			{
+				_action();
+			}
+		}
 		
 		public AmpachePlayer (AmpacheModel model, Context context)
 		{
 			_context = context;
 			_model = model;			
 			_model.PropertyChanged += Handle_modelPropertyChanged;
+			_playerThread = new AmpacheNetPlayerThread(PrepareMediaPlayerSynchronous);
+			_playerThread.Start();
 		}
 
 		void Handle_modelPropertyChanged (object sender, PropertyChangedEventArgs e)
@@ -91,14 +108,14 @@ namespace JohnMoore.AmpacheNet
 			}
 			Console.WriteLine ("Begining Playback");
 			_model.PlayingSong = _model.Playlist.First();
-			PrepareMediaPlayerSynchronous(_model.PlayingSong.Url);
+			_playerThread.Run();
 			_isPaused = false;
 			_model.IsPlaying = true;
 		}
 
 		void Handle_playerCompletion (object sender, EventArgs e)
 		{
-			Next();
+			System.Threading.ThreadPool.QueueUserWorkItem((o) => Next());
 		}
 		
 		public void Previous()
@@ -118,7 +135,7 @@ namespace JohnMoore.AmpacheNet
 				_model.PlayingSong = _model.Playlist[(_model.Playlist.IndexOf(_model.PlayingSong) + _model.Playlist.Count - 1) % _model.Playlist.Count];
 				Console.WriteLine ("Playing Previous Song");
 			}
-			PrepareMediaPlayerSynchronous(_model.PlayingSong.Url);
+			_playerThread.Run();
 			_isPaused = false;
 			_model.PreviousRequested = false;
 		}
@@ -142,26 +159,29 @@ namespace JohnMoore.AmpacheNet
 				}
 				_model.PlayingSong = _model.Playlist[nextIndex];
 				Console.WriteLine ("Playing next Song: " + _model.PlayingSong.Name);
-				PrepareMediaPlayerSynchronous(_model.PlayingSong.Url);
+				_playerThread.Run();
 				_isPaused = false;
 			}
 			_model.NextRequested = false;
 			GC.Collect(0);
 		}
 		
-		void PrepareMediaPlayerSynchronous(string songUrl)
+		void PrepareMediaPlayerSynchronous()
 		{
-			if(_player == null)
+			if(_player == null || _model.PlayingSong == null)
 			{
 				return;
 			}
-			_player.Stop();
+			if(_player.IsPlaying) 
+			{
+				_player.Stop();
+			}
 			_player.Release();
 			_player.Completion -= Handle_playerCompletion;
 			_player.Dispose();
 			_player = new MediaPlayer();
 			_player.SetAudioStreamType(Stream.Music);
-			_player.SetDataSource(_context, Android.Net.Uri.Parse(songUrl));
+			_player.SetDataSource(_context, Android.Net.Uri.Parse(_model.PlayingSong.Url));
 			try
 			{
 				_player.Prepare();
@@ -199,6 +219,7 @@ namespace JohnMoore.AmpacheNet
 				_player.Release();
 				_player.Dispose();
 				_model.PlayingSong = null;
+				_playerThread.Dispose();
 			}
 		}
 		#endregion

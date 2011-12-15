@@ -99,7 +99,7 @@ namespace JohnMoore.AmpacheNet
 			{
 				Toast.MakeText(this.ApplicationContext, ex.Message, ToastLength.Long).Show();
 			}
-			_ping = new Timer((o) => _handshake.Ping(), null, TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(5));
+			_ping = new Timer((o) => _handshake.Ping(), new object(), TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(5));
 			_player = new AmpachePlayer(_model, ApplicationContext);
 			_model.Configuration = config;
 			_notifications = new AmpacheNotifications(this.ApplicationContext, _model);
