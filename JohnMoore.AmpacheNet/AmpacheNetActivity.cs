@@ -130,7 +130,7 @@ namespace JohnMoore.AmpacheNet
 
 		void HandlePreviousClick (object sender, EventArgs e)
 		{
-			FindViewById<ImageButton>(Resource.Id.imgPlayingNext).SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_media_previous_invert));
+			FindViewById<ImageButton>(Resource.Id.imgPlayingPrevious).SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_media_previous_invert));
 			System.Threading.ThreadPool.QueueUserWorkItem((o) => _model.PreviousRequested = true);
 		}
 
@@ -149,8 +149,13 @@ namespace JohnMoore.AmpacheNet
 			{
 				var adp = lv.Adapter as AmpacheArrayAdapter<AmpacheSong>;
 				var sng = adp.GetItem(e.Position);
-				_model.Playlist = new List<AmpacheSong>(_model.Playlist.SkipWhile(s=> s != sng).Concat(_model.Playlist.TakeWhile(s => s != sng)));
-				_model.PlayPauseRequested = true;
+				System.Threading.ThreadPool.QueueUserWorkItem((o) => _model.StopRequested = true);
+				while(_model.StopRequested)
+				{
+					System.Threading.Thread.Sleep(0);
+				}
+				_model.PlayingSong = sng;
+				System.Threading.ThreadPool.QueueUserWorkItem((o) => _model.PlayPauseRequested = true);
 				FindViewById<ImageButton>(Resource.Id.imgPlayingPlayPause).SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_media_pause));
 			}
 		}

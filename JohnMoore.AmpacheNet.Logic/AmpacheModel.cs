@@ -247,6 +247,28 @@ namespace JohnMoore.AmpacheNet.Logic
 
 		#endregion
 				
+		#region StopRequested
+
+		public const string STOP_REQUESTED = "StopRequested";
+		private bool _stopRequested = false;
+
+		public bool StopRequested
+		{
+			get { return _stopRequested; }
+			set
+			{
+				if (_stopRequested == value)
+					return;
+
+				_stopRequested = value;
+				if(PropertyChanged != null)
+					PropertyChanged(this, new PropertyChangedEventArgs("StopRequested"));
+			}
+		}
+
+		#endregion
+		
+		
 		#region INotifyPropertyChanged implementation
 		public event PropertyChangedEventHandler PropertyChanged;
 		#endregion

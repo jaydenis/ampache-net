@@ -66,22 +66,33 @@ namespace JohnMoore.AmpacheNet
 			_playerThread = new AmpacheNetPlayerThread(PrepareMediaPlayerSynchronous);
 			_playerThread.Start();
 		}
-
+		
 		void Handle_modelPropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
-			switch (e.PropertyName) 
+			System.Threading.ThreadPool.QueueUserWorkItem((o) => PropertyChanged(e));
+		}
+		
+		void PropertyChanged (PropertyChangedEventArgs e)
+		{
+			lock(this)
 			{
-				case AmpacheModel.PLAY_PAUSE_REQUESTED:
-					if(_model.PlayPauseRequested) PlayPause();
-					break;
-				case AmpacheModel.NEXT_REQUESTED:
-					if(_model.NextRequested) Next();
-					break;
-				case AmpacheModel.PREVIOUS_REQUESTED:
-					if(_model.PreviousRequested) Previous();
-					break;
-				default:
-					break;
+				switch (e.PropertyName) 
+				{
+					case AmpacheModel.PLAY_PAUSE_REQUESTED:
+						if(_model.PlayPauseRequested) PlayPause();
+						break;
+					case AmpacheModel.NEXT_REQUESTED:
+						if(_model.NextRequested) Next();
+						break;
+					case AmpacheModel.PREVIOUS_REQUESTED:
+						if(_model.PreviousRequested) Previous();
+						break;
+					case AmpacheModel.STOP_REQUESTED:
+						if(_model.StopRequested) Stop();
+						break;
+					default:
+						break;
+				}
 			}
 		}
 		
@@ -107,7 +118,11 @@ namespace JohnMoore.AmpacheNet
 				return;
 			}
 			Console.WriteLine ("Begining Playback");
-			_model.PlayingSong = _model.Playlist.First();
+			if(_model.PlayingSong == null)
+			{
+				Console.WriteLine ("Playback First Song");
+				_model.PlayingSong = _model.Playlist.First();
+			}
 			_playerThread.Run();
 			_isPaused = false;
 			_model.IsPlaying = true;
@@ -189,22 +204,26 @@ namespace JohnMoore.AmpacheNet
 			}
 			catch(Exception e)
 			{
+				_player.Release();
 				_player.Dispose();
 				_player = new MediaPlayer();
 				Console.WriteLine (e.GetType().FullName);
 				Console.WriteLine (e.Message);
-				Android.Widget.Toast.MakeText(_context, string.Format(_context.GetString(Resource.String.playFailureFormat), _model.PlayingSong.Name, _model.PlayingSong.ArtistName),Android.Widget.ToastLength.Long);
+				//Android.Widget.Toast.MakeText(_context, string.Format(_context.GetString(Resource.String.playFailureFormat), _model.PlayingSong.Name, _model.PlayingSong.ArtistName),Android.Widget.ToastLength.Long);
 			}
 			_player.Completion += Handle_playerCompletion;
 		}
 		
 		public void Stop()
 		{
-			if (_player.IsPlaying)
+			if (_player.IsPlaying || _isPaused)
 			{
 				_player.Stop();
+				_isPaused = false;
+				_model.IsPlaying = false;
 			}
 			_model.PlayingSong = null;
+			_model.StopRequested = false;
 		}
 
 		#region IDisposable implementation
