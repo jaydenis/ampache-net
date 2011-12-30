@@ -42,29 +42,12 @@ namespace JohnMoore.AmpacheNet
 		private bool _isPaused = false;
 		private MediaPlayer _player = new MediaPlayer();
 		private readonly Context _context;
-		Android.OS.HandlerThread _playerThread;
-		
-		private class AmpacheNetPlayerThread : Android.OS.HandlerThread
-		{
-			private readonly Action _action;
-			public AmpacheNetPlayerThread (Action action) : base("AmpacheNet")
-			{
-				_action = action;
-			}
-			
-			public override void Run ()
-			{
-				_action();
-			}
-		}
 		
 		public AmpachePlayer (AmpacheModel model, Context context)
 		{
 			_context = context;
 			_model = model;			
 			_model.PropertyChanged += Handle_modelPropertyChanged;
-			_playerThread = new AmpacheNetPlayerThread(PrepareMediaPlayerSynchronous);
-			_playerThread.Start();
 		}
 		
 		void Handle_modelPropertyChanged (object sender, PropertyChangedEventArgs e)
@@ -98,34 +81,31 @@ namespace JohnMoore.AmpacheNet
 		
 		public void PlayPause()
 		{
-			_model.PlayPauseRequested = false;
 			if(_isPaused)
 			{
 				_player.Start();
 				_isPaused = false;
 				_model.IsPlaying = true;
-				return;
 			}
-			if(_player.IsPlaying)
+			else if(_player.IsPlaying)
 			{
 				_player.Pause();
 				_isPaused = true;
 				_model.IsPlaying = false;
-				return;
 			}
-			if (_model.Playlist == null || _model.Playlist.Count == 0) 
+			else if (_model.Playlist != null || _model.Playlist.Count != 0) 
 			{
-				return;
+				Console.WriteLine ("Begining Playback");
+				if(_model.PlayingSong == null)
+				{
+					Console.WriteLine ("Playback First Song");
+					_model.PlayingSong = _model.Playlist.First();
+				}
+				PrepareMediaPlayerSynchronous();
+				_isPaused = false;
+				_model.IsPlaying = true;
 			}
-			Console.WriteLine ("Begining Playback");
-			if(_model.PlayingSong == null)
-			{
-				Console.WriteLine ("Playback First Song");
-				_model.PlayingSong = _model.Playlist.First();
-			}
-			_playerThread.Run();
-			_isPaused = false;
-			_model.IsPlaying = true;
+			_model.PlayPauseRequested = false;
 		}
 
 		void Handle_playerCompletion (object sender, EventArgs e)
@@ -150,7 +130,7 @@ namespace JohnMoore.AmpacheNet
 				_model.PlayingSong = _model.Playlist[(_model.Playlist.IndexOf(_model.PlayingSong) + _model.Playlist.Count - 1) % _model.Playlist.Count];
 				Console.WriteLine ("Playing Previous Song");
 			}
-			_playerThread.Run();
+			PrepareMediaPlayerSynchronous();
 			_isPaused = false;
 			_model.PreviousRequested = false;
 		}
@@ -174,7 +154,7 @@ namespace JohnMoore.AmpacheNet
 				}
 				_model.PlayingSong = _model.Playlist[nextIndex];
 				Console.WriteLine ("Playing next Song: " + _model.PlayingSong.Name);
-				_playerThread.Run();
+				PrepareMediaPlayerSynchronous();
 				_isPaused = false;
 			}
 			_model.NextRequested = false;
@@ -216,13 +196,13 @@ namespace JohnMoore.AmpacheNet
 		
 		public void Stop()
 		{
+			_model.PlayingSong = null;
 			if (_player.IsPlaying || _isPaused)
 			{
 				_player.Stop();
 				_isPaused = false;
 				_model.IsPlaying = false;
 			}
-			_model.PlayingSong = null;
 			_model.StopRequested = false;
 		}
 
@@ -238,7 +218,6 @@ namespace JohnMoore.AmpacheNet
 				_player.Release();
 				_player.Dispose();
 				_model.PlayingSong = null;
-				_playerThread.Dispose();
 			}
 		}
 		#endregion

@@ -44,7 +44,11 @@ namespace JohnMoore.AmpacheNet.DataAccess
         private AmpachePlaylist Construct(XElement raw)
         {
             var result = BuildBase(raw);
+            result.Id = int.Parse(raw.Attribute("id").Value);
             result.Name = raw.Descendants("name").First().Value;
+			int tmp = 0;
+			int.TryParse(raw.Descendants("items").First().Value, out tmp);
+            result.SongCount =  tmp;
             return result;
         }
     }

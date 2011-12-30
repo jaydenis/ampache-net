@@ -40,12 +40,8 @@ using JohnMoore.AmpacheNet.Logic;
 namespace JohnMoore.AmpacheNet
 {
 	[Activity (Label = "@string/nowPlayingLabel")]			
-	public class NowPlaying : Activity
+	public class NowPlaying : PlayingActivity
 	{
-		private AmpacheModel _model;
-		private AmpacheService.Connection _connection;
-		private Android.Graphics.Bitmap _currentAlbumArt;
-		
 		protected override void OnCreate (Bundle bundle)
 		{
 			base.OnCreate (bundle);
@@ -55,110 +51,15 @@ namespace JohnMoore.AmpacheNet
 			{
 				FindViewById<LinearLayout>(Resource.Id.mainLayout).Orientation = Orientation.Vertical;
 			}
-			_connection = new AmpacheService.Connection();
-			_connection.OnConnected += Handle_connectionOnConnected;
-			BindService(new Intent(this, typeof(AmpacheService)), _connection, Bind.AutoCreate);
+			_uiActions.Add(AmpacheModel.PLAYING_SONG, UpdateUi);
+		}
+		
+		protected override void OnModelLoaded ()
+		{
+			base.OnModelLoaded ();
+			UpdateUi();
 		}
 
-		void Handle_connectionOnConnected (object sender, EventArgs e)
-		{
-			_model = _connection.Model;
-			_model.PropertyChanged += Handle_connectionServicePropertyChanged;
-			FindViewById<ImageButton>(Resource.Id.imgPlayingNext).Click += HandleNextClick;
-			FindViewById<ImageButton>(Resource.Id.imgPlayingPrev).Click += HandlePreviousClick;
-			FindViewById<ImageButton>(Resource.Id.imgPlayingPlayPause).Click += HandlePlayClick;
-			FindViewById<ImageButton>(Resource.Id.imgPlayingShuffle).Click += HandleShuffleClick;
-			RunOnUiThread(() => FindViewById<ImageView>(Resource.Id.imgPlayingAlbumArt).SetImageResource(Resource.Drawable.icon_thumbnail));			
-			if(_model.PlayingSong != null)
-			{
-				RunOnUiThread(() => FindViewById<ImageButton>(Resource.Id.imgPlayingPlayPause).SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_media_pause)));
-				RunOnUiThread(() => UpdateUi());
-				RunOnUiThread(() => UpdateArt());
-			}
-		}
-		
-		protected override void OnDestroy ()
-		{
-			base.OnDestroy ();
-			FindViewById<ImageButton>(Resource.Id.imgPlayingNext).Click -= HandleNextClick;
-			FindViewById<ImageButton>(Resource.Id.imgPlayingPrev).Click -= HandlePreviousClick;
-			FindViewById<ImageButton>(Resource.Id.imgPlayingPlayPause).Click -= HandlePlayClick;
-			FindViewById<ImageButton>(Resource.Id.imgPlayingShuffle).Click -= HandleShuffleClick;
-			UnbindService(_connection);
-			_connection.Dispose();
-		}
-		
-		void Handle_connectionServicePropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
-		{
-			if(e.PropertyName == AmpacheModel.PLAYING_SONG)
-			{
-				RunOnUiThread(() => UpdateUi());
-			}
-			if(e.PropertyName == AmpacheModel.ALBUM_ART_STREAM)
-			{
-				RunOnUiThread(() => UpdateArt());
-			}
-			if(e.PropertyName == AmpacheModel.NEXT_REQUESTED)
-			{
-				RunOnUiThread(() => UpdateNextButton());
-			}
-			if(e.PropertyName == AmpacheModel.PREVIOUS_REQUESTED)
-			{
-				RunOnUiThread(() => UpdatePreviousButton());
-			}
-			if(e.PropertyName == AmpacheModel.SHUFFELING)
-			{
-				RunOnUiThread(() => UpdateShuffleButton());
-			}
-		}
-		
-		void UpdateArt()
-		{
-			if(_currentAlbumArt != null)
-			{
-				_currentAlbumArt.Dispose();
-			}
-			Console.WriteLine ("Change Art");
-			_currentAlbumArt = Android.Graphics.BitmapFactory.DecodeByteArray(_model.AlbumArtStream.ToArray(), 0, (int)_model.AlbumArtStream.Length);
-			 FindViewById<ImageView>(Resource.Id.imgPlayingAlbumArt).SetImageBitmap(_currentAlbumArt);
-		}
-		
-		void UpdateNextButton()
-		{
-			if(_model.NextRequested)
-			{ 
-				FindViewById<ImageButton>(Resource.Id.imgPlayingNext).SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_media_next_invert));
-			}
-			else
-			{
-				FindViewById<ImageButton>(Resource.Id.imgPlayingNext).SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_media_next));
-			}
-		}
-		
-		void UpdatePreviousButton()
-		{
-			if(_model.PreviousRequested)
-			{
-				FindViewById<ImageButton>(Resource.Id.imgPlayingNext).SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_media_previous_invert));
-			}
-			else
-			{
-				FindViewById<ImageButton>(Resource.Id.imgPlayingNext).SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_media_previous));
-			}
-		}
-		
-		void UpdateShuffleButton()
-		{
-			if(_model.Shuffling)
-			{
-				FindViewById<ImageButton>(Resource.Id.imgPlayingShuffle).SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_menu_shuffle_invert));
-			}
-			else
-			{
-				FindViewById<ImageButton>(Resource.Id.imgPlayingShuffle).SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_menu_shuffle));
-			}
-		}
-		
 		void UpdateUi()
 		{
 			Console.WriteLine ("Change UI");
@@ -175,40 +76,5 @@ namespace JohnMoore.AmpacheNet
 				FindViewById<TextView>(Resource.Id.lblNowPlayingArtist).Text = _model.PlayingSong.ArtistName;
 			}
 		}
-		
-		void HandleShuffleClick (object sender, EventArgs e)
-		{
-			System.Threading.ThreadPool.QueueUserWorkItem((o) => _model.Shuffling = !_model.Shuffling);
-		}
-
-		void HandlePlayClick (object sender, EventArgs e)
-		{
-			if(_model.PlayingSong == null)
-			{
-				return;
-			}
-			if(_model.IsPlaying)
-			{
-				FindViewById<ImageButton>(Resource.Id.imgPlayingPlayPause).SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_media_play));
-			}
-			else
-			{
-				FindViewById<ImageButton>(Resource.Id.imgPlayingPlayPause).SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_media_pause));
-			}
-			System.Threading.ThreadPool.QueueUserWorkItem((o) => _model.PlayPauseRequested = true);
-		}
-
-		void HandlePreviousClick (object sender, EventArgs e)
-		{
-			FindViewById<ImageButton>(Resource.Id.imgPlayingNext).SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_media_previous_invert));
-			System.Threading.ThreadPool.QueueUserWorkItem((o) => _model.PreviousRequested = true);
-		}
-
-		void HandleNextClick (object sender, EventArgs e)
-		{
-			FindViewById<ImageButton>(Resource.Id.imgPlayingNext).SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_media_next_invert));
-			System.Threading.ThreadPool.QueueUserWorkItem((o) => _model.NextRequested = true);
-		}
 	}
 }
-

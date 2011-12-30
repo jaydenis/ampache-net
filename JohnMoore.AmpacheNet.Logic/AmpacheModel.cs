@@ -228,7 +228,7 @@ namespace JohnMoore.AmpacheNet.Logic
 		
 		#region IsPlaying
 
-		public const string IS_PLIAYING = "IsPlaying";
+		public const string IS_PLAYING = "IsPlaying";
 		private bool _isPlaying = false;
 
 		public bool IsPlaying

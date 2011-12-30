@@ -67,11 +67,11 @@ namespace JohnMoore.AmpacheNet
 		public partial class Id
 		{
 			
-			// aapt resource value: 0x7f060019
-			public const int albums = 2131099673;
-			
 			// aapt resource value: 0x7f060018
-			public const int artists = 2131099672;
+			public const int albums = 2131099672;
+			
+			// aapt resource value: 0x7f060017
+			public const int artists = 2131099671;
 			
 			// aapt resource value: 0x7f060008
 			public const int btnConfigCancel = 2131099656;
@@ -82,14 +82,14 @@ namespace JohnMoore.AmpacheNet
 			// aapt resource value: 0x7f060007
 			public const int btnConfigTest = 2131099655;
 			
+			// aapt resource value: 0x7f060019
+			public const int clearPlaylist = 2131099673;
+			
+			// aapt resource value: 0x7f060015
+			public const int configure = 2131099669;
+			
 			// aapt resource value: 0x7f06001a
-			public const int clearPlaylist = 2131099674;
-			
-			// aapt resource value: 0x7f060016
-			public const int configure = 2131099670;
-			
-			// aapt resource value: 0x7f06001b
-			public const int exit = 2131099675;
+			public const int exit = 2131099674;
 			
 			// aapt resource value: 0x7f060010
 			public const int imgPlayingAlbumArt = 2131099664;
@@ -101,10 +101,7 @@ namespace JohnMoore.AmpacheNet
 			public const int imgPlayingPlayPause = 2131099663;
 			
 			// aapt resource value: 0x7f06000d
-			public const int imgPlayingPrev = 2131099661;
-			
-			// aapt resource value: 0x7f060013
-			public const int imgPlayingPrevious = 2131099667;
+			public const int imgPlayingPrevious = 2131099661;
 			
 			// aapt resource value: 0x7f06000c
 			public const int imgPlayingShuffle = 2131099660;
@@ -124,11 +121,11 @@ namespace JohnMoore.AmpacheNet
 			// aapt resource value: 0x7f060012
 			public const int lblNowPlayingAlbum = 2131099666;
 			
-			// aapt resource value: 0x7f060014
-			public const int lblNowPlayingArtist = 2131099668;
+			// aapt resource value: 0x7f060013
+			public const int lblNowPlayingArtist = 2131099667;
 			
-			// aapt resource value: 0x7f060015
-			public const int lblNowPlayingTrack = 2131099669;
+			// aapt resource value: 0x7f060014
+			public const int lblNowPlayingTrack = 2131099668;
 			
 			// aapt resource value: 0x7f060011
 			public const int lstPlaylist = 2131099665;
@@ -136,8 +133,8 @@ namespace JohnMoore.AmpacheNet
 			// aapt resource value: 0x7f06000a
 			public const int mainLayout = 2131099658;
 			
-			// aapt resource value: 0x7f060017
-			public const int playlists = 2131099671;
+			// aapt resource value: 0x7f060016
+			public const int playlists = 2131099670;
 			
 			// aapt resource value: 0x7f060002
 			public const int txtConfigUrl = 2131099650;

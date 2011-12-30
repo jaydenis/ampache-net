@@ -57,22 +57,5 @@ namespace JohnMoore.AmpacheNet.DataAccess
         protected override Dictionary<Type, string> SelectMethodMap { get { return MAP; } }
 
         #endregion
-
-        public override IEnumerable<AmpachePlaylist> SelectAll ()
-        {
-            var results = base.SelectAll().ToList();
-            foreach (var playlist in results)
-            {
-                StringBuilder builder = new StringBuilder();
-                builder.AppendFormat(BASE_URL, _handshake.Server, SONG_ACTION, _handshake.Passphrase);
-                builder.AppendFormat(FILTER_PARAMETER, playlist.Id);
-                var request = (HttpWebRequest)WebRequest.Create (builder.ToString());
-                var response = request.GetResponse();
-                var raw = XElement.Load(new StreamReader(response.GetResponseStream()));
-                playlist.Songs = _songFactory.Construct(raw.Descendants("song").ToList()).ToList();
-                Console.WriteLine (playlist.Songs.Count);
-            }
-			return results;
-        }
     }
 }

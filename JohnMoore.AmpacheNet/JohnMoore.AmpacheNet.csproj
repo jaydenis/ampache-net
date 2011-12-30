@@ -143,6 +143,7 @@
     <Compile Include="AndroidLogTextWriter.cs" />
     <Compile Include="AmpachePhoneStateListener.cs" />
     <Compile Include="AmpacheNotifications.cs" />
+    <Compile Include="PlayingActivity.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\AboutAssets.txt" />

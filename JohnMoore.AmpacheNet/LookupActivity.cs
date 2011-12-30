@@ -41,15 +41,13 @@ using JohnMoore.AmpacheNet.Logic;
 
 namespace JohnMoore.AmpacheNet
 {
-	[Activity (Label = "@string/lookupLabel",Theme="@android:style/Theme.Dialog")]			
-	public class LookupActivity : ListActivity
+	public abstract class LookupActivity<TEntity> : ListActivity where TEntity : IEntity
 	{
-		public const string TYPE = "type";
 		private AmpacheModel _model;
 		private ProgressDialog _prgDlg;
-		private List<IEntity> _loadedEntities;
+		private List<TEntity> _loadedEntities;
 		private AmpacheService.Connection _connection;
-		private AmpacheArrayAdapter<IEntity> _adapter;
+		private AmpacheArrayAdapter<TEntity> _adapter;
 		
 		protected override void OnCreate (Bundle bundle)
 		{
@@ -65,18 +63,7 @@ namespace JohnMoore.AmpacheNet
 		void HandleListViewhandleItemLongClick (object sender, AdapterView.ItemLongClickEventArgs e)
 		{
 			var ent = _adapter.GetItem(e.Position);
-			switch(this.Intent.GetIntExtra(TYPE, int.MinValue))
-			{
-				case Resource.Id.playlists:				
-					System.Threading.ThreadPool.QueueUserWorkItem((o) => AddSongsToPlaylistFor<AmpachePlaylist>((AmpachePlaylist)ent));
-					break;
-				case Resource.Id.artists:
-					System.Threading.ThreadPool.QueueUserWorkItem((o) => AddSongsToPlaylistFor<AmpacheArtist>((AmpacheArtist)ent));
-					break;
-				case Resource.Id.albums:
-					System.Threading.ThreadPool.QueueUserWorkItem((o) => AddSongsToPlaylistFor<AmpacheAlbum>((AmpacheAlbum)ent));
-					break;
-			}
+			System.Threading.ThreadPool.QueueUserWorkItem((o) => AddSongsToPlaylistFor(ent));
 			Toast.MakeText(this.ApplicationContext, GetString(Resource.String.addToPlaylist), ToastLength.Short).Show();
 		}
 
@@ -84,23 +71,7 @@ namespace JohnMoore.AmpacheNet
 		void Handle_connectionOnConnected (object sender, EventArgs e)
 		{
 			_model = _connection.Model;
-			int typ = Intent.GetIntExtra(TYPE, int.MinValue);
-			switch(typ)
-			{
-				case Resource.Id.playlists:
-					System.Threading.ThreadPool.QueueUserWorkItem((o) => LoadAll<AmpachePlaylist>());
-					break;
-				case Resource.Id.artists:
-					System.Threading.ThreadPool.QueueUserWorkItem((o) => LoadAll<AmpacheArtist>());
-					break;
-				case Resource.Id.albums:
-					System.Threading.ThreadPool.QueueUserWorkItem((o) => LoadAll<AmpacheAlbum>());
-					break;
-				default:
-					System.Threading.ThreadPool.QueueUserWorkItem((o) => LoadAll<AmpachePlaylist>());
-					break;
-			}
-			
+			System.Threading.ThreadPool.QueueUserWorkItem((o) => LoadAll());
 		}
 		
 		private void UpdateUi()
@@ -110,19 +81,19 @@ namespace JohnMoore.AmpacheNet
 			{
 				return;
 			}
-			_adapter = new AmpacheArrayAdapter<IEntity>(HydrateEntity, this.LayoutInflater, this.ApplicationContext, Android.Resource.Layout.SimpleListItem1, _loadedEntities);
+			_adapter = new AmpacheArrayAdapter<TEntity>(HydrateEntity, this.LayoutInflater, this.ApplicationContext, Android.Resource.Layout.SimpleListItem1, _loadedEntities);
 			this.ListAdapter = _adapter;
 		}
 		
 		
-		private void LoadAll<TEntity>() where TEntity : IEntity
+		private void LoadAll()
 		{
 			try
 			{
 				if(_model.Factory != null)
 				{
 					var selecter = _model.Factory.GetInstanceSelectorFor<TEntity>();
-					_loadedEntities = selecter.SelectAll().Cast<IEntity>().OrderBy(e => e.Name).ToList();
+					_loadedEntities = selecter.SelectAll().OrderBy(e => e.Name).ToList();
 					RunOnUiThread(() => UpdateUi());
 				}
 				else
@@ -137,13 +108,13 @@ namespace JohnMoore.AmpacheNet
 			}
 		}
 				
-		private View HydrateEntity(IEntity ent, View v)
+		private View HydrateEntity(TEntity ent, View v)
 		{
 			v.FindViewById<TextView>(Android.Resource.Id.Text1).Text = ent.Name;
 			return v;
 		}
 
-		void AddSongsToPlaylistFor<TEntity>(TEntity ent) where TEntity : IEntity
+		void AddSongsToPlaylistFor(TEntity ent)
 		{
 			var sel = _model.Factory.GetInstanceSelectorFor<AmpacheSong>();
 			var res = sel.SelectBy(ent);
@@ -157,5 +128,17 @@ namespace JohnMoore.AmpacheNet
 			UnbindService(_connection);
 		}
 	}
+	#region Activity Classes
+	
+	[Activity (Label = "@string/lookupLabel",Theme="@android:style/Theme.Dialog")]		
+	public class PlaylistLookupActivity : LookupActivity<AmpachePlaylist> {}
+	
+	[Activity (Label = "@string/lookupLabel",Theme="@android:style/Theme.Dialog")]		
+	public class AlbumLookupActivity : LookupActivity<AmpacheAlbum> {}
+	
+	[Activity (Label = "@string/lookupLabel",Theme="@android:style/Theme.Dialog")]		
+	public class ArtistLookupActivity : LookupActivity<AmpacheArtist> {}
+	
+	#endregion
 }
 

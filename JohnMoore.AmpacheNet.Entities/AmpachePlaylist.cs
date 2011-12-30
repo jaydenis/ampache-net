@@ -33,8 +33,8 @@ namespace JohnMoore.AmpacheNet.Entities
         public string Name { get; set; }
 
         public string DisplayName { get { return Name; } }
-
-        public IList<AmpacheSong> Songs { get; set; }
+		
+		public int SongCount { get; set; }
 
         #region IEntity implementation
 

@@ -44,13 +44,15 @@ namespace JohnMoore.AmpacheNet
 	{
 		private readonly AmpacheModel _model;
 		private readonly Context _context;
-		private Notification _note = new Notification(Resource.Drawable.stat_notify_musicplayer, "Ampache.NET");
+		public Notification AmpacheNotification { get; private set; }
+		public const int NOTIFICATION_ID = 0;
 		
 		public AmpacheNotifications (Context context, AmpacheModel model)
 		{
 			_model = model;
 			_context = context;
 			_model.PropertyChanged += Handle_modelPropertyChanged;
+			AmpacheNotification = new Notification(Resource.Drawable.stat_notify_musicplayer, "Ampache.NET");
 			((NotificationManager)_context.GetSystemService(Context.NotificationService)).CancelAll();
 		}
 
@@ -60,14 +62,28 @@ namespace JohnMoore.AmpacheNet
 			{
 				if(_model.PlayingSong == null)
 				{
-					((NotificationManager)_context.GetSystemService(Context.NotificationService)).Cancel(0);	
+					((NotificationManager)_context.GetSystemService(Context.NotificationService)).Cancel(NOTIFICATION_ID);	
 				}
 				else
 				{
-					_note.TickerText = new Java.Lang.String(string.Format(_context.GetString(Resource.String.nowPlayingFormat), _model.PlayingSong.Name, _model.PlayingSong.ArtistName));
-					_note.When = Java.Lang.JavaSystem.CurrentTimeMillis();
-					_note.SetLatestEventInfo(_context, "Ampache.NET", new string(_note.TickerText.ToArray()), PendingIntent.GetActivity(_context, 0, new Intent(_context, typeof(AmpacheNetActivity)), 0));
-					((NotificationManager)_context.GetSystemService(Context.NotificationService)).Notify(0, _note);
+					AmpacheNotification.TickerText = new Java.Lang.String(string.Format(_context.GetString(Resource.String.nowPlayingFormat), _model.PlayingSong.Name, _model.PlayingSong.ArtistName));
+					AmpacheNotification.When = Java.Lang.JavaSystem.CurrentTimeMillis();
+					AmpacheNotification.SetLatestEventInfo(_context, "Ampache.NET", new string(AmpacheNotification.TickerText.ToArray()), PendingIntent.GetActivity(_context, 0, new Intent(_context, typeof(AmpacheNetActivity)), 0));
+					((NotificationManager)_context.GetSystemService(Context.NotificationService)).Notify(NOTIFICATION_ID, AmpacheNotification);
+				}
+			}
+			if(e.PropertyName == AmpacheModel.IS_PLAYING)
+			{
+				if(_model.IsPlaying)
+				{
+					AmpacheNotification.TickerText = new Java.Lang.String(string.Format(_context.GetString(Resource.String.nowPlayingFormat), _model.PlayingSong.Name, _model.PlayingSong.ArtistName));
+					AmpacheNotification.When = Java.Lang.JavaSystem.CurrentTimeMillis();
+					AmpacheNotification.SetLatestEventInfo(_context, "Ampache.NET", new string(AmpacheNotification.TickerText.ToArray()), PendingIntent.GetActivity(_context, 0, new Intent(_context, typeof(AmpacheNetActivity)), 0));
+					((NotificationManager)_context.GetSystemService(Context.NotificationService)).Notify(NOTIFICATION_ID, AmpacheNotification);
+				}
+				else
+				{
+					((NotificationManager)_context.GetSystemService(Context.NotificationService)).Cancel(NOTIFICATION_ID);	
 				}
 			}
 		}
@@ -77,9 +93,8 @@ namespace JohnMoore.AmpacheNet
 		{
 			_model.PropertyChanged -= Handle_modelPropertyChanged;
 			((NotificationManager)_context.GetSystemService(Context.NotificationService)).Cancel(0);
-			_note.Dispose();
+			AmpacheNotification.Dispose();
 		}
 		#endregion
 	}
 }
-

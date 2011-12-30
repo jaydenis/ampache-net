@@ -68,7 +68,7 @@ namespace JohnMoore.AmpacheNet
 		
 		public override void OnCreate ()
 		{
-			base.OnCreate ();
+			base.OnCreate ();			
 			Console.SetOut(new AndroidLogTextWriter());
 			Console.WriteLine ("service created");
 			var stm = Resources.OpenRawResource(Resource.Drawable.icon);
@@ -104,7 +104,7 @@ namespace JohnMoore.AmpacheNet
 			_model.Configuration = config;
 			_notifications = new AmpacheNotifications(this.ApplicationContext, _model);
 			_model.PropertyChanged += Handle_modelPropertyChanged;
-			
+			StartForeground(AmpacheNotifications.NOTIFICATION_ID, _notifications.AmpacheNotification);
 		}
 
 		public override void OnDestroy ()
@@ -151,9 +151,6 @@ namespace JohnMoore.AmpacheNet
 			public AmpacheModel Model { get; private set; }
 			
 			public Connection ()
-			{}
-			
-			public Connection (IntPtr doNotUse)
 			{}
 
 			#region IServiceConnection implementation
