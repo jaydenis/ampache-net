@@ -33,6 +33,9 @@ namespace JohnMoore.AmpacheNet.Entities
 		public string ServerUrl { get; set; }
 		public string User { get; set; }
 		public string Password { get; set; }
+		public bool AllowSeeking { get; set; }
+		public bool CacheArt { get; set; }
+		public bool CacheSongs { get; set; }
 	}
 }
 

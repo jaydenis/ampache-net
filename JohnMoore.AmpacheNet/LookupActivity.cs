@@ -32,9 +32,9 @@ using System.Text;
 using Android.App;
 using Android.Content;
 using Android.OS;
-using Android.Runtime;
 using Android.Views;
 using Android.Widget;
+
 using JohnMoore.AmpacheNet.Entities;
 using JohnMoore.AmpacheNet.DataAccess;
 using JohnMoore.AmpacheNet.Logic;

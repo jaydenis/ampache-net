@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.ComponentModel;
+using System.Threading;
 
 using Android.Media;
 using Android.Content;
@@ -42,11 +43,14 @@ namespace JohnMoore.AmpacheNet
 		private bool _isPaused = false;
 		private MediaPlayer _player = new MediaPlayer();
 		private readonly Context _context;
+		private readonly Timer _timer;
 		
 		public AmpachePlayer (AmpacheModel model, Context context)
 		{
 			_context = context;
-			_model = model;			
+			_model = model;
+			_timer = new Timer((o) => UpdatePlayProgress(), new object(), TimeSpan.FromMilliseconds(500), TimeSpan.FromMilliseconds(500));
+			//_timer = new Timer((o) => test (), new object(), TimeSpan.FromMilliseconds(500), TimeSpan.FromMilliseconds(500));
 			_model.PropertyChanged += Handle_modelPropertyChanged;
 		}
 		
@@ -72,6 +76,9 @@ namespace JohnMoore.AmpacheNet
 						break;
 					case AmpacheModel.STOP_REQUESTED:
 						if(_model.StopRequested) Stop();
+						break;
+					case AmpacheModel.REQUESTED_SEEK_TO_PERCENTAGE:
+						Seek();
 						break;
 					default:
 						break;
@@ -171,8 +178,12 @@ namespace JohnMoore.AmpacheNet
 			{
 				_player.Stop();
 			}
+			_isPaused = true;
+			_model.PercentPlayed = 0;
+			_model.PercentDownloaded = 0;
 			_player.Release();
 			_player.Completion -= Handle_playerCompletion;
+			_player.BufferingUpdate -= Handle_playerBufferingUpdate;
 			_player.Dispose();
 			_player = new MediaPlayer();
 			_player.SetAudioStreamType(Stream.Music);
@@ -189,9 +200,23 @@ namespace JohnMoore.AmpacheNet
 				_player = new MediaPlayer();
 				Console.WriteLine (e.GetType().FullName);
 				Console.WriteLine (e.Message);
-				//Android.Widget.Toast.MakeText(_context, string.Format(_context.GetString(Resource.String.playFailureFormat), _model.PlayingSong.Name, _model.PlayingSong.ArtistName),Android.Widget.ToastLength.Long);
 			}
+			_isPaused = false;
 			_player.Completion += Handle_playerCompletion;
+			_player.BufferingUpdate += Handle_playerBufferingUpdate;
+		}
+
+		void Handle_playerBufferingUpdate (object sender, MediaPlayer.BufferingUpdateEventArgs e)
+		{
+			_model.PercentDownloaded = e.Percent;
+		}
+		
+		void UpdatePlayProgress()
+		{
+			if(_player.IsPlaying)
+			{
+				_model.PercentPlayed = (_player.CurrentPosition / _model.PlayingSong.TrackLength.TotalMilliseconds) * 100;
+			}
 		}
 		
 		public void Stop()
@@ -205,6 +230,17 @@ namespace JohnMoore.AmpacheNet
 			}
 			_model.StopRequested = false;
 		}
+		
+		void Seek()
+		{
+			if(_model.Configuration.AllowSeeking && _model.RequestedSeekToPercentage != null && !_isPaused && _player.IsPlaying)
+			{
+				var seekPositionMilli = (int)(_model.RequestedSeekToPercentage * _model.PlayingSong.TrackLength.TotalMilliseconds);
+				Console.WriteLine (seekPositionMilli);
+				_player.SeekTo(seekPositionMilli);
+				_model.RequestedSeekToPercentage = null;
+			}
+		}
 
 		#region IDisposable implementation
 		public void Dispose ()
@@ -217,6 +253,7 @@ namespace JohnMoore.AmpacheNet
 				}
 				_player.Release();
 				_player.Dispose();
+				_timer.Dispose();
 				_model.PlayingSong = null;
 			}
 		}

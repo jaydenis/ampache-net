@@ -61,6 +61,11 @@ android:layout_below="@+id/lblConfigPassword"
 android:layout_alignParentLeft="true"
 >
 </EditText>
+<CheckBox android:id="@+id/chkSeeking"
+          android:text="@string/allowSeeking"
+		  android:layout_below="@+id/txtPasswordConfig"
+		  android:layout_width="fill_parent"
+          android:layout_height="wrap_content"></CheckBox>
 <Button
 android:id="@+id/btnConfigTest"
 android:layout_width="wrap_content"
@@ -68,7 +73,7 @@ android:layout_height="wrap_content"
 android:text="@string/test"
 android:minWidth="9mm"
 android:minHeight="9mm"
-android:layout_below="@+id/txtPasswordConfig"
+android:layout_below="@+id/chkSeeking"
 android:layout_centerHorizontal="true"
 >
 </Button>

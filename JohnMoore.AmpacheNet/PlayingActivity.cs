@@ -1,12 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 using Android.App;
 using Android.Content;
 using Android.OS;
-using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 
@@ -30,9 +27,9 @@ namespace JohnMoore.AmpacheNet
 			StartService(new Intent(this.ApplicationContext, typeof(AmpacheService)));
 		}
 		
-		protected override void OnStart ()
+		protected override void OnResume()
 		{
-			base.OnStart ();
+			base.OnResume();
 			if(_model == null)
 			{
 				BindService(new Intent(this.ApplicationContext, typeof(AmpacheService)), _connection, Bind.AutoCreate);
@@ -217,10 +214,7 @@ namespace JohnMoore.AmpacheNet
 					StartActivity(typeof(PlaylistLookupActivity));
 					break;
 				case Resource.Id.exit:
-					if(_model.PlayingSong == null)
-					{
-						StopService(new Intent(this.ApplicationContext, typeof(AmpacheService)));
-					}
+					StopService(new Intent(this.ApplicationContext, typeof(AmpacheService)));
 					Finish();
 					break;
 				case Resource.Id.clearPlaylist:

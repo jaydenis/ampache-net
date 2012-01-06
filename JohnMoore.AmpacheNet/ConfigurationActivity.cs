@@ -64,6 +64,7 @@ namespace JohnMoore.AmpacheNet
 			FindViewById<EditText>(Resource.Id.txtConfigUrl).Text = _connection.Model.Configuration.ServerUrl;
 			FindViewById<EditText>(Resource.Id.txtConfigUser).Text = _connection.Model.Configuration.User;
 			FindViewById<EditText>(Resource.Id.txtPasswordConfig).Text = _connection.Model.Configuration.Password;
+			FindViewById<CheckBox>(Resource.Id.chkSeeking).Checked = _connection.Model.Configuration.AllowSeeking;
 		}
 
 		void HandleOkClick (object sender, EventArgs e)
@@ -71,7 +72,7 @@ namespace JohnMoore.AmpacheNet
 			var dlg = ProgressDialog.Show(this, GetString(Resource.String.connecting), GetString(Resource.String.connectingToAmpache));
 			System.Threading.ThreadPool.QueueUserWorkItem( (o) => {
 				try{
-					_connection.Model.Configuration = new UserConfiguration{ ServerUrl = FindViewById<EditText>(Resource.Id.txtConfigUrl).Text, User = FindViewById<EditText>(Resource.Id.txtConfigUser).Text, Password = FindViewById<EditText>(Resource.Id.txtPasswordConfig).Text};
+					_connection.Model.Configuration = new UserConfiguration{ ServerUrl = FindViewById<EditText>(Resource.Id.txtConfigUrl).Text, User = FindViewById<EditText>(Resource.Id.txtConfigUser).Text, Password = FindViewById<EditText>(Resource.Id.txtPasswordConfig).Text, AllowSeeking = FindViewById<CheckBox>(Resource.Id.chkSeeking).Checked};
 					Finish();
 				}
 				catch(Exception ex)
@@ -88,17 +89,19 @@ namespace JohnMoore.AmpacheNet
 
 		void HandleTestClick (object sender, EventArgs e)
 		{
-			try
-			{
-				Handshake tmp = new Authenticate(FindViewById<EditText>(Resource.Id.txtConfigUrl).Text,
+			var dlg = ProgressDialog.Show(this, GetString(Resource.String.connecting), GetString(Resource.String.connectingToAmpache));
+			System.Threading.ThreadPool.QueueUserWorkItem( (o) => {
+				try{
+					Handshake tmp = new Authenticate(FindViewById<EditText>(Resource.Id.txtConfigUrl).Text,
 												 FindViewById<EditText>(Resource.Id.txtConfigUser).Text,
 												 FindViewById<EditText>(Resource.Id.txtPasswordConfig).Text);
-				Toast.MakeText(this.ApplicationContext, GetString(Resource.String.connectedToAmpache), ToastLength.Long).Show();
-			}
-			catch (Exception ex)
-			{
-				Toast.MakeText(this.ApplicationContext, ex.Message, ToastLength.Long).Show();
-			}
+					RunOnUiThread(() => Toast.MakeText(this.ApplicationContext, GetString(Resource.String.connectedToAmpache), ToastLength.Long).Show());
+				}
+				catch(Exception ex)
+				{
+					RunOnUiThread(() => Toast.MakeText(this.ApplicationContext, ex.Message, ToastLength.Short).Show());
+				} 
+			RunOnUiThread(()=>dlg.Dismiss());});
 		}
 		
 		protected override void OnDestroy ()

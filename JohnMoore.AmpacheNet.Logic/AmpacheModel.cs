@@ -268,6 +268,69 @@ namespace JohnMoore.AmpacheNet.Logic
 
 		#endregion
 		
+		#region PercentDownloaded
+
+		public const string PERCENT_DOWNLOADED = "PercentDownloaded";
+		private double _percentDownloaded = 0.0;
+
+		public double PercentDownloaded
+		{
+			get { return _percentDownloaded; }
+			set
+			{
+				if (_percentDownloaded == value)
+					return;
+
+				_percentDownloaded = value;
+				if(PropertyChanged != null)
+					PropertyChanged(this, new PropertyChangedEventArgs("PercentDownloaded"));
+			}
+		}
+
+		#endregion
+		
+		#region PercentPlayed
+
+		public const string PERCENT_PLAYED = "PercentPlayed";
+		private double _percentPlayed = 0.0;
+
+		public double PercentPlayed
+		{
+			get { return _percentPlayed; }
+			set
+			{
+				if (_percentPlayed == value)
+					return;
+
+				_percentPlayed = value;
+				if(PropertyChanged != null)
+					PropertyChanged(this, new PropertyChangedEventArgs("PercentPlayed"));
+			}
+		}
+
+		#endregion
+		
+		#region RequestedSeekToPercentage
+
+		public const string REQUESTED_SEEK_TO_PERCENTAGE = "RequestedSeekToPercentage";
+		private double? _requestedSeekToPercentage = null;
+
+		public double? RequestedSeekToPercentage
+		{
+			get { return _requestedSeekToPercentage; }
+			set
+			{
+				if (_requestedSeekToPercentage == value)
+					return;
+
+				_requestedSeekToPercentage = value;
+				if(PropertyChanged != null)
+					PropertyChanged(this, new PropertyChangedEventArgs("RequestedSeekToPercentage"));
+			}
+		}
+
+		#endregion
+		
 		
 		#region INotifyPropertyChanged implementation
 		public event PropertyChangedEventHandler PropertyChanged;

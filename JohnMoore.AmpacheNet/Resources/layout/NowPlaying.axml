@@ -92,7 +92,15 @@ android:text="Track"
 android:textSize="30sp"
 android:layout_above="@+id/lblNowPlayingAlbum"
 android:layout_alignLeft="@+id/imgPlayingPrevious"
->
+>				
 </TextView>
+<SeekBar android:id="@+id/prgSeeking"
+         style="@android:style/Widget.ProgressBar.Horizontal"
+         android:layout_above="@+id/imgPlayingPlayPause"
+         android:layout_centerHorizontal="true"
+         android:layout_width="fill_parent"
+         android:layout_height="4mm"
+         android:clickable="true">
+</SeekBar>			
 </RelativeLayout></LinearLayout>
 </LinearLayout>  

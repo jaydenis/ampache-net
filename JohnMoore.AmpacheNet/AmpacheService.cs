@@ -54,6 +54,7 @@ namespace JohnMoore.AmpacheNet
 		private const string URL_KEY = "url";
 		private const string USER_NAME_KEY = "user";
 		private const string PASSWORD_KEY = "password";
+		private const string ALLOW_SEEKING_KEY = "allowSeeking";
 		private Authenticate _handshake;
 		private AmpachePlayer _player;
 		private Timer _ping;
@@ -80,7 +81,8 @@ namespace JohnMoore.AmpacheNet
 			var config = new UserConfiguration();
 			config.ServerUrl = settings.GetString(AmpacheService.URL_KEY, string.Empty);
 			config.User = settings.GetString(AmpacheService.USER_NAME_KEY, string.Empty);
-			config.Password = settings.GetString(AmpacheService.PASSWORD_KEY, string.Empty);			
+			config.Password = settings.GetString(AmpacheService.PASSWORD_KEY, string.Empty);
+			config.AllowSeeking = settings.GetBoolean(AmpacheService.ALLOW_SEEKING_KEY, true);
 			try 
 			{
 				if (config.ServerUrl != string.Empty) 
@@ -130,6 +132,7 @@ namespace JohnMoore.AmpacheNet
 				editor.PutString(URL_KEY, _model.Configuration.ServerUrl);
 				editor.PutString(USER_NAME_KEY, _model.Configuration.User);
 				editor.PutString(PASSWORD_KEY, _model.Configuration.Password);
+				editor.PutBoolean(ALLOW_SEEKING_KEY, _model.Configuration.AllowSeeking);
 				editor.Commit();
 			}
 		}

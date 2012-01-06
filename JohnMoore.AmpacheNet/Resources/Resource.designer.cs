@@ -67,47 +67,50 @@ namespace JohnMoore.AmpacheNet
 		public partial class Id
 		{
 			
-			// aapt resource value: 0x7f060018
-			public const int albums = 2131099672;
-			
-			// aapt resource value: 0x7f060017
-			public const int artists = 2131099671;
-			
-			// aapt resource value: 0x7f060008
-			public const int btnConfigCancel = 2131099656;
-			
-			// aapt resource value: 0x7f060009
-			public const int btnConfigOk = 2131099657;
-			
-			// aapt resource value: 0x7f060007
-			public const int btnConfigTest = 2131099655;
+			// aapt resource value: 0x7f06001a
+			public const int albums = 2131099674;
 			
 			// aapt resource value: 0x7f060019
-			public const int clearPlaylist = 2131099673;
+			public const int artists = 2131099673;
 			
-			// aapt resource value: 0x7f060015
-			public const int configure = 2131099669;
+			// aapt resource value: 0x7f060009
+			public const int btnConfigCancel = 2131099657;
 			
-			// aapt resource value: 0x7f06001a
-			public const int exit = 2131099674;
+			// aapt resource value: 0x7f06000a
+			public const int btnConfigOk = 2131099658;
 			
-			// aapt resource value: 0x7f060010
-			public const int imgPlayingAlbumArt = 2131099664;
+			// aapt resource value: 0x7f060008
+			public const int btnConfigTest = 2131099656;
 			
-			// aapt resource value: 0x7f06000e
-			public const int imgPlayingNext = 2131099662;
+			// aapt resource value: 0x7f060007
+			public const int chkSeeking = 2131099655;
+			
+			// aapt resource value: 0x7f06001b
+			public const int clearPlaylist = 2131099675;
+			
+			// aapt resource value: 0x7f060017
+			public const int configure = 2131099671;
+			
+			// aapt resource value: 0x7f06001c
+			public const int exit = 2131099676;
+			
+			// aapt resource value: 0x7f060011
+			public const int imgPlayingAlbumArt = 2131099665;
 			
 			// aapt resource value: 0x7f06000f
-			public const int imgPlayingPlayPause = 2131099663;
+			public const int imgPlayingNext = 2131099663;
+			
+			// aapt resource value: 0x7f060010
+			public const int imgPlayingPlayPause = 2131099664;
+			
+			// aapt resource value: 0x7f06000e
+			public const int imgPlayingPrevious = 2131099662;
 			
 			// aapt resource value: 0x7f06000d
-			public const int imgPlayingPrevious = 2131099661;
+			public const int imgPlayingShuffle = 2131099661;
 			
 			// aapt resource value: 0x7f06000c
-			public const int imgPlayingShuffle = 2131099660;
-			
-			// aapt resource value: 0x7f06000b
-			public const int layoutPlaying = 2131099659;
+			public const int layoutPlaying = 2131099660;
 			
 			// aapt resource value: 0x7f060005
 			public const int lblConfigPassword = 2131099653;
@@ -118,23 +121,26 @@ namespace JohnMoore.AmpacheNet
 			// aapt resource value: 0x7f060003
 			public const int lblConfigUser = 2131099651;
 			
-			// aapt resource value: 0x7f060012
-			public const int lblNowPlayingAlbum = 2131099666;
-			
 			// aapt resource value: 0x7f060013
-			public const int lblNowPlayingArtist = 2131099667;
+			public const int lblNowPlayingAlbum = 2131099667;
 			
 			// aapt resource value: 0x7f060014
-			public const int lblNowPlayingTrack = 2131099668;
+			public const int lblNowPlayingArtist = 2131099668;
 			
-			// aapt resource value: 0x7f060011
-			public const int lstPlaylist = 2131099665;
+			// aapt resource value: 0x7f060015
+			public const int lblNowPlayingTrack = 2131099669;
 			
-			// aapt resource value: 0x7f06000a
-			public const int mainLayout = 2131099658;
+			// aapt resource value: 0x7f060012
+			public const int lstPlaylist = 2131099666;
+			
+			// aapt resource value: 0x7f06000b
+			public const int mainLayout = 2131099659;
+			
+			// aapt resource value: 0x7f060018
+			public const int playlists = 2131099672;
 			
 			// aapt resource value: 0x7f060016
-			public const int playlists = 2131099670;
+			public const int prgSeeking = 2131099670;
 			
 			// aapt resource value: 0x7f060002
 			public const int txtConfigUrl = 2131099650;
@@ -186,6 +192,9 @@ namespace JohnMoore.AmpacheNet
 			
 			// aapt resource value: 0x7f040006
 			public const int addToPlaylist = 2130968582;
+			
+			// aapt resource value: 0x7f040011
+			public const int allowSeeking = 2130968593;
 			
 			// aapt resource value: 0x7f040000
 			public const int app_name = 2130968576;

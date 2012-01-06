@@ -74,6 +74,7 @@ namespace JohnMoore.AmpacheNet.DataAccess
 
             hashword = HexString(tmpBytes);
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(string.Format(REQUEST, Server, hashword, now, User));
+			request.Timeout = (int)TimeSpan.FromSeconds(30).TotalMilliseconds;
             var response = request.GetResponse();
             var result = XElement.Load(new StreamReader(response.GetResponseStream()));
             if(result.Descendants("error").Count() == 0 && result.Descendants("auth").FirstOrDefault() != null) {

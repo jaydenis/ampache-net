@@ -40,8 +40,11 @@ using JohnMoore.AmpacheNet.Logic;
 namespace JohnMoore.AmpacheNet
 {
 	[Activity (Label = "@string/nowPlayingLabel")]			
-	public class NowPlaying : PlayingActivity
+	public class NowPlaying : PlayingActivity, Android.Widget.SeekBar.IOnSeekBarChangeListener
 	{
+		private bool _listenForPlayingPositionUpdates = true;
+		private double _requestedSeek;
+		
 		protected override void OnCreate (Bundle bundle)
 		{
 			base.OnCreate (bundle);
@@ -52,6 +55,14 @@ namespace JohnMoore.AmpacheNet
 				FindViewById<LinearLayout>(Resource.Id.mainLayout).Orientation = Orientation.Vertical;
 			}
 			_uiActions.Add(AmpacheModel.PLAYING_SONG, UpdateUi);
+			_uiActions.Add(AmpacheModel.PERCENT_DOWNLOADED, UpdateDownloadProgress);
+			_uiActions.Add(AmpacheModel.PERCENT_PLAYED, UpdatePlayerPosition);
+			FindViewById<SeekBar>(Resource.Id.prgSeeking).SetOnSeekBarChangeListener(this);
+		}
+
+		void HandleSeekingTouch (object sender, View.TouchEventArgs e)
+		{
+			
 		}
 		
 		protected override void OnModelLoaded ()
@@ -76,5 +87,42 @@ namespace JohnMoore.AmpacheNet
 				FindViewById<TextView>(Resource.Id.lblNowPlayingArtist).Text = _model.PlayingSong.ArtistName;
 			}
 		}
+		
+		void UpdateDownloadProgress()
+		{
+			FindViewById<ProgressBar>(Resource.Id.prgSeeking).SecondaryProgress = (int)_model.PercentDownloaded;
+		}
+		
+		void UpdatePlayerPosition()
+		{
+			if(_listenForPlayingPositionUpdates)
+			{
+				FindViewById<ProgressBar>(Resource.Id.prgSeeking).Progress = (int)_model.PercentPlayed;
+			}
+		}
+
+		#region IOnSeekBarChangeListener implementation
+		public void OnProgressChanged (SeekBar seekBar, int progress, bool fromUser)
+		{
+			if(fromUser)
+			{
+				_requestedSeek = (double)progress / seekBar.Max;
+			}
+		}
+
+		public void OnStartTrackingTouch (SeekBar seekBar)
+		{
+			_listenForPlayingPositionUpdates = false;
+		}
+
+		public void OnStopTrackingTouch (SeekBar seekBar)
+		{
+			_listenForPlayingPositionUpdates = true;
+			Console.WriteLine (_requestedSeek.ToString());
+			_model.RequestedSeekToPercentage = _requestedSeek;
+		}
+		#endregion
+
+
 	}
 }
