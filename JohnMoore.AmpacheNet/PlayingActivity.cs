@@ -222,7 +222,7 @@ namespace JohnMoore.AmpacheNet
 					break;
 				default:
 					// unknown
-					return false;						
+					return false;	
 			}
 			return true;
 		}

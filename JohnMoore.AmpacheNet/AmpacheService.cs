@@ -106,7 +106,6 @@ namespace JohnMoore.AmpacheNet
 			_model.Configuration = config;
 			_notifications = new AmpacheNotifications(this.ApplicationContext, _model);
 			_model.PropertyChanged += Handle_modelPropertyChanged;
-			StartForeground(AmpacheNotifications.NOTIFICATION_ID, _notifications.AmpacheNotification);
 		}
 
 		public override void OnDestroy ()
@@ -134,6 +133,17 @@ namespace JohnMoore.AmpacheNet
 				editor.PutString(PASSWORD_KEY, _model.Configuration.Password);
 				editor.PutBoolean(ALLOW_SEEKING_KEY, _model.Configuration.AllowSeeking);
 				editor.Commit();
+			}
+			if(e.PropertyName == AmpacheModel.IS_PLAYING)
+			{
+				if(_model.IsPlaying)
+				{
+					StartForeground(AmpacheNotifications.NOTIFICATION_ID, _notifications.AmpacheNotification);
+				}
+				else
+				{
+					StopForeground(false);
+				}
 			}
 		}
 		

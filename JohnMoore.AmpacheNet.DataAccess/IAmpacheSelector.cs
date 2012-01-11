@@ -52,6 +52,14 @@ namespace JohnMoore.AmpacheNet.DataAccess
         /// if Ampache cannot be queried with the provided parameter then <see cref="SelectAll"/> will be used.
         /// </returns>
         IEnumerable<TEntity> SelectBy<TParameter>(TParameter parameter) where TParameter : IEntity;
+		
+		/// <summary>
+		/// Search for all <see cref="TEntity"/> that match the match searchText.
+		/// </summary>
+		/// <param name='searchText'>
+		/// Search text.
+		/// </param>
+		IEnumerable<TEntity> SelectBy(string searchText);
     }
 
 

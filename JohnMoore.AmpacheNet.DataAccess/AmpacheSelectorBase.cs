@@ -91,8 +91,26 @@ namespace JohnMoore.AmpacheNet.DataAccess
             return Query(builder.ToString());
         }
 
-        #endregion
+		public IEnumerable<TEntity> SelectBy(string searchText)
+		{
+            StringBuilder builder = new StringBuilder();
+            builder.AppendFormat(BASE_URL, _handshake.Server, SelectAllMethod, _handshake.Passphrase);
+            builder.AppendFormat(FILTER_PARAMETER, searchText);
+			builder.AppendFormat(LIMIT_AMOUNT, 500);
+            return Query(builder.ToString());
+		}
 
+		public IEnumerable<TEntity> SelectBy(int ampacheId)
+		{
+			throw new NotImplementedException();
+//            StringBuilder builder = new StringBuilder();
+//            builder.AppendFormat(BASE_URL, _handshake.Server, SelectAllMethod, _handshake.Passphrase);
+//            builder.AppendFormat(FILTER_PARAMETER, ampacheId);
+//            return Query(builder.ToString());
+		}
+		
+        #endregion
+		
         private ICollection<TEntity> Query(string url)
         {
             var request = (HttpWebRequest)WebRequest.Create (url);
