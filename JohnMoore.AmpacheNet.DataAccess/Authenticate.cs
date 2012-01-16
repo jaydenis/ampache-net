@@ -73,7 +73,8 @@ namespace JohnMoore.AmpacheNet.DataAccess
             tmpBytes = hasher.ComputeHash(tmpBytes);
 
             hashword = HexString(tmpBytes);
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(string.Format(REQUEST, Server, hashword, now, User));
+			HttpWebRequest request = (HttpWebRequest)WebRequest.Create(string.Format(REQUEST, Server, hashword, now, User));
+			ServicePointManager.ServerCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true;
 			request.Timeout = (int)TimeSpan.FromSeconds(30).TotalMilliseconds;
             var response = request.GetResponse();
             var result = XElement.Load(new StreamReader(response.GetResponseStream()));

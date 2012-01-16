@@ -94,7 +94,6 @@ namespace JohnMoore.AmpacheNet
 				{
 					var selecter = _model.Factory.GetInstanceSelectorFor<TEntity>();
 					_loadedEntities = selecter.SelectAll().OrderBy(e => e.Name).ToList();
-					RunOnUiThread(() => UpdateUi());
 				}
 				else
 				{
@@ -105,7 +104,9 @@ namespace JohnMoore.AmpacheNet
 			catch(Exception ex)
 			{
 				RunOnUiThread(() => Toast.MakeText(this.ApplicationContext, ex.Message, ToastLength.Short).Show());
+				_loadedEntities = new List<TEntity>();
 			}
+			RunOnUiThread(() => UpdateUi());
 		}
 				
 		private View HydrateEntity(TEntity ent, View v)

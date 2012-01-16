@@ -96,7 +96,7 @@ namespace JohnMoore.AmpacheNet.DataAccess
             StringBuilder builder = new StringBuilder();
             builder.AppendFormat(BASE_URL, _handshake.Server, SelectAllMethod, _handshake.Passphrase);
             builder.AppendFormat(FILTER_PARAMETER, searchText);
-			builder.AppendFormat(LIMIT_AMOUNT, 500);
+			builder.AppendFormat(LIMIT_PARAMETER, 500);
             return Query(builder.ToString());
 		}
 
@@ -115,8 +115,17 @@ namespace JohnMoore.AmpacheNet.DataAccess
         {
             var request = (HttpWebRequest)WebRequest.Create (url);
             var response = request.GetResponse();
-            var result = XElement.Load(new StreamReader(response.GetResponseStream()));
-            return _factory.Construct(result.Descendants(XmlNodeName).ToList());
+			try
+			{
+            	var result = XElement.Load(new StreamReader(response.GetResponseStream()));
+            	return _factory.Construct(result.Descendants(XmlNodeName).ToList());
+			}
+			catch(Exception e)
+			{
+				Console.WriteLine ("Error in Response or no results");
+				Console.WriteLine (e.Message);
+				return new List<TEntity>();
+			}
         }
     }
 }

@@ -45,6 +45,7 @@ namespace JohnMoore.AmpacheNet
 	public class ConfigurationActivity : Activity
 	{		
 		private AmpacheService.Connection _connection;
+		private static UserConfiguration _config = null;
 		
 		protected override void OnCreate (Bundle bundle)
 		{
@@ -53,18 +54,33 @@ namespace JohnMoore.AmpacheNet
 			FindViewById<Button>(Resource.Id.btnConfigTest).Click += HandleTestClick;
 			FindViewById<Button>(Resource.Id.btnConfigCancel).Click += HandleCancelClick;
 			FindViewById<Button>(Resource.Id.btnConfigOk).Click += HandleOkClick;
+			FindViewById<TextView>(Resource.Id.txtConfigUrl).TextChanged += HandleTextChanged;
+			FindViewById<TextView>(Resource.Id.txtConfigUser).TextChanged += HandleTextChanged;
+			FindViewById<TextView>(Resource.Id.txtPasswordConfig).TextChanged += HandleTextChanged;
 			
 			_connection = new AmpacheService.Connection();
 			_connection.OnConnected += Handle_connectionOnConnected;
 			BindService(new Intent(this.ApplicationContext, typeof(AmpacheService)), _connection, Bind.AutoCreate);
 		}
 
+		void HandleTextChanged (object sender, Android.Text.TextChangedEventArgs e)
+		{
+			if(_config == null)
+			{
+				_config = new UserConfiguration();
+			}
+			_config.Password = FindViewById<EditText>(Resource.Id.txtPasswordConfig).Text;
+			_config.ServerUrl = FindViewById<EditText>(Resource.Id.txtConfigUrl).Text;
+			_config.User = FindViewById<EditText>(Resource.Id.txtConfigUser).Text;
+		}
+
 		void Handle_connectionOnConnected (object sender, EventArgs e)
 		{
-			FindViewById<EditText>(Resource.Id.txtConfigUrl).Text = _connection.Model.Configuration.ServerUrl;
-			FindViewById<EditText>(Resource.Id.txtConfigUser).Text = _connection.Model.Configuration.User;
-			FindViewById<EditText>(Resource.Id.txtPasswordConfig).Text = _connection.Model.Configuration.Password;
-			FindViewById<CheckBox>(Resource.Id.chkSeeking).Checked = _connection.Model.Configuration.AllowSeeking;
+			var tmp = _config ?? _connection.Model.Configuration;
+			FindViewById<EditText>(Resource.Id.txtConfigUrl).Text = tmp.ServerUrl;
+			FindViewById<EditText>(Resource.Id.txtConfigUser).Text = tmp.User;
+			FindViewById<EditText>(Resource.Id.txtPasswordConfig).Text = tmp.Password;
+			FindViewById<CheckBox>(Resource.Id.chkSeeking).Checked = tmp.AllowSeeking;
 		}
 
 		void HandleOkClick (object sender, EventArgs e)
@@ -73,6 +89,7 @@ namespace JohnMoore.AmpacheNet
 			System.Threading.ThreadPool.QueueUserWorkItem( (o) => {
 				try{
 					_connection.Model.Configuration = new UserConfiguration{ ServerUrl = FindViewById<EditText>(Resource.Id.txtConfigUrl).Text, User = FindViewById<EditText>(Resource.Id.txtConfigUser).Text, Password = FindViewById<EditText>(Resource.Id.txtPasswordConfig).Text, AllowSeeking = FindViewById<CheckBox>(Resource.Id.chkSeeking).Checked};
+					_config = null;
 					Finish();
 				}
 				catch(Exception ex)
@@ -84,6 +101,7 @@ namespace JohnMoore.AmpacheNet
 
 		void HandleCancelClick (object sender, EventArgs e)
 		{
+			_config = null;
 			Finish();
 		}
 
@@ -110,6 +128,9 @@ namespace JohnMoore.AmpacheNet
 			FindViewById<Button>(Resource.Id.btnConfigTest).Click -= HandleTestClick;
 			FindViewById<Button>(Resource.Id.btnConfigCancel).Click -= HandleCancelClick;
 			FindViewById<Button>(Resource.Id.btnConfigOk).Click -= HandleOkClick;
+			FindViewById<TextView>(Resource.Id.txtConfigUrl).TextChanged -= HandleTextChanged;
+			FindViewById<TextView>(Resource.Id.txtConfigUser).TextChanged -= HandleTextChanged;
+			FindViewById<TextView>(Resource.Id.txtPasswordConfig).TextChanged -= HandleTextChanged;
 			UnbindService(_connection);
 			_connection.Dispose();
 			_connection = null;

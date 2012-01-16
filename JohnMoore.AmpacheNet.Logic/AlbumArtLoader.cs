@@ -55,7 +55,7 @@ namespace JohnMoore.AmpacheNet.Logic
 		
 		void LoadAlbumImage()
 		{
-			if(_model.PlayingSong == null)
+			if(_model.PlayingSong == null || string.IsNullOrEmpty(_model.PlayingSong.ArtUrl))
 			{
 				_model.AlbumArtStream = _defaultStream;
 				return;

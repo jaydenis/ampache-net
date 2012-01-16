@@ -46,9 +46,15 @@ namespace JohnMoore.AmpacheNet.DataAccess
             result.ArtistId = int.Parse(raw.Descendants("artist").First().Attribute("id").Value);
             result.Name = raw.Descendants("name").First().Value;
             int yr = 1900;
-            int.TryParse(raw.Descendants("year").First().Value, out yr);
+			if(raw.Descendants("year").Any())
+			{
+            	int.TryParse(raw.Descendants("year").First().Value, out yr);
+			}
             result.Year = yr;
-            result.ArtUrl = raw.Descendants("art").First().Value;
+			if(raw.Descendants("art").Any())
+			{
+            	result.ArtUrl = raw.Descendants("art").First().Value;
+			}
             return result;
         }
     }
