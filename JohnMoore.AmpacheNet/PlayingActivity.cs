@@ -69,6 +69,10 @@ namespace JohnMoore.AmpacheNet
 				_uiActions.Add(AmpacheModel.PLAY_PAUSE_REQUESTED, UpdatePlayPauseButton);
 				RunOnUiThread(() => UpdatePlayPauseButton());
 			}
+			if(!_uiActions.ContainsKey(AmpacheModel.USER_MESSAGE))
+			{
+				_uiActions.Add(AmpacheModel.USER_MESSAGE, DisplayMessage);
+			}
 			_model.PropertyChanged += Handle_modelPropertyChanged;
 			ImageButton btn = FindViewById<ImageButton>(Resource.Id.imgPlayingNext);
 			if(btn != null)
@@ -105,15 +109,27 @@ namespace JohnMoore.AmpacheNet
 		{			
 		}
 		
+		void DisplayMessage()
+		{
+			if(!string.IsNullOrEmpty(_model.UserMessage))
+			{
+				Toast.MakeText(this, _model.UserMessage, ToastLength.Long).Show();
+				_model.UserMessage = null;
+			}
+		}
+		
 		void UpdateArt()
 		{
 			if(_currentAlbumArt != null)
 			{
 				_currentAlbumArt.Dispose();
 			}
-			Console.WriteLine ("Change Art");
-			_currentAlbumArt = Android.Graphics.BitmapFactory.DecodeByteArray(_model.AlbumArtStream.ToArray(), 0, (int)_model.AlbumArtStream.Length);
-			 FindViewById<ImageView>(Resource.Id.imgPlayingAlbumArt).SetImageBitmap(_currentAlbumArt);
+			if(_model.AlbumArtStream != null)
+			{
+				Console.WriteLine ("Change Art");
+				_currentAlbumArt = Android.Graphics.BitmapFactory.DecodeByteArray(_model.AlbumArtStream.ToArray(), 0, (int)_model.AlbumArtStream.Length);
+				FindViewById<ImageView>(Resource.Id.imgPlayingAlbumArt).SetImageBitmap(_currentAlbumArt);
+			}
 		}
 		
 		void UpdateNextButton()

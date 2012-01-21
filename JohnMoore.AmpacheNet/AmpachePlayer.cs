@@ -50,7 +50,6 @@ namespace JohnMoore.AmpacheNet
 			_context = context;
 			_model = model;
 			_timer = new Timer((o) => UpdatePlayProgress(), new object(), TimeSpan.FromMilliseconds(500), TimeSpan.FromMilliseconds(500));
-			//_timer = new Timer((o) => test (), new object(), TimeSpan.FromMilliseconds(500), TimeSpan.FromMilliseconds(500));
 			_model.PropertyChanged += Handle_modelPropertyChanged;
 		}
 		

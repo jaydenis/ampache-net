@@ -59,6 +59,7 @@ namespace JohnMoore.AmpacheNet.DataAccess
 
         protected override Dictionary<Type, string> SelectMethodMap { get { return MAP; } }
 
+		protected override string SelectSingleMethod { get { return NODE_NAME; } }
         #endregion
 
     }

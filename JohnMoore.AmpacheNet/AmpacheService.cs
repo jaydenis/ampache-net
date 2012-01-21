@@ -55,6 +55,7 @@ namespace JohnMoore.AmpacheNet
 		private const string USER_NAME_KEY = "user";
 		private const string PASSWORD_KEY = "password";
 		private const string ALLOW_SEEKING_KEY = "allowSeeking";
+		private const string PLAYLIST_CSV_KEY = "playlist";
 		private Authenticate _handshake;
 		private AmpachePlayer _player;
 		private Timer _ping;
@@ -65,11 +66,26 @@ namespace JohnMoore.AmpacheNet
 		{
 			return new Binder(_model);
 		}
+		
+		public override void OnLowMemory ()
+		{
+			GC.Collect();
+		}
 		#endregion
 		
 		public override void OnCreate ()
 		{
 			base.OnCreate ();			
+			System.Threading.ThreadPool.QueueUserWorkItem((o) => ServiceStartup());
+			var telSvc = this.ApplicationContext.GetSystemService(Context.TelephonyService) as Android.Telephony.TelephonyManager;
+			if(telSvc != null)
+			{
+				telSvc.Listen(new AmpachePhoneStateListener(_model), Android.Telephony.PhoneStateListenerFlags.CallState);
+			}
+		}
+		
+		private void ServiceStartup()
+		{
 			Console.SetOut(new AndroidLogTextWriter());
 			Console.WriteLine ("service created");
 			var stm = Resources.OpenRawResource(Resource.Drawable.icon);
@@ -83,31 +99,30 @@ namespace JohnMoore.AmpacheNet
 			config.User = settings.GetString(AmpacheService.USER_NAME_KEY, string.Empty);
 			config.Password = settings.GetString(AmpacheService.PASSWORD_KEY, string.Empty);
 			config.AllowSeeking = settings.GetBoolean(AmpacheService.ALLOW_SEEKING_KEY, true);
+			_model.Configuration = config;
 			try 
 			{
 				if (config.ServerUrl != string.Empty) 
 				{
 					_handshake = new Authenticate(config.ServerUrl, config.User, config.Password);
 					_model.Factory = new AmpacheSelectionFactory(_handshake);
-					Toast.MakeText(this.ApplicationContext, GetString(Resource.String.connectingToAmpache), ToastLength.Long).Show();
+					_model.UserMessage = GetString(Resource.String.connectedToAmpache);
 				}
-				var telSvc = this.ApplicationContext.GetSystemService(Context.TelephonyService) as Android.Telephony.TelephonyManager;
-				if(telSvc != null)
-				{
-					telSvc.Listen(new AmpachePhoneStateListener(_model), Android.Telephony.PhoneStateListenerFlags.CallState);
-				}
+				var sngLookup = _model.Factory.GetInstanceSelectorFor<AmpacheSong>();
+				_model.Playlist = settings.GetString(PLAYLIST_CSV_KEY, string.Empty).Split(new [] {','}, StringSplitOptions.RemoveEmptyEntries).Select(s=> sngLookup.SelectBy(int.Parse(s))).ToList();
 			}
 			catch (Exception ex) 
 			{
-				Toast.MakeText(this.ApplicationContext, ex.Message, ToastLength.Long).Show();
+				_model.UserMessage = ex.Message;
+				Console.WriteLine (ex.GetType().Name);
+				Console.WriteLine (ex.Message);
 			}
 			_ping = new Timer((o) => _handshake.Ping(), new object(), TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(5));
 			_player = new AmpachePlayer(_model, ApplicationContext);
-			_model.Configuration = config;
 			_notifications = new AmpacheNotifications(this.ApplicationContext, _model);
 			_model.PropertyChanged += Handle_modelPropertyChanged;
 		}
-
+		
 		public override void OnDestroy ()
 		{
 			Console.WriteLine("Service Destroy");
@@ -125,7 +140,10 @@ namespace JohnMoore.AmpacheNet
 			if(e.PropertyName == AmpacheModel.CONFIGURATION)
 			{
 				_handshake = new Authenticate(_model.Configuration.ServerUrl, _model.Configuration.User, _model.Configuration.Password);
+				_model.UserMessage = GetString(Resource.String.connectedToAmpache);
 				_model.Factory = new AmpacheSelectionFactory(_handshake);
+				_ping.Dispose();
+				_ping = new Timer((o) => _handshake.Ping(), new object(), TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(5));
 				var settings = GetSharedPreferences(CONFIGURATION, FileCreationMode.Private);
 				var editor = settings.Edit();
 				editor.PutString(URL_KEY, _model.Configuration.ServerUrl);
@@ -144,6 +162,13 @@ namespace JohnMoore.AmpacheNet
 				{
 					StopForeground(false);
 				}
+			}
+			if(e.PropertyName == AmpacheModel.PLAYLIST)
+			{
+				var settings = GetSharedPreferences(CONFIGURATION, FileCreationMode.Private);
+				var editor = settings.Edit();
+				editor.PutString(PLAYLIST_CSV_KEY, string.Join(",", _model.Playlist.Select(s=>s.Id.ToString()).ToArray()));
+				editor.Commit();
 			}
 		}
 		

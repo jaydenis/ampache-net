@@ -126,6 +126,12 @@ namespace JohnMoore.AmpacheNet.Logic
 		public const string CONFIGURATION = "Configuration";
 		private UserConfiguration _config = null;
 
+		/// <summary>
+		/// Gets or sets the configuration.  Changing the value of this member should be synchronous
+		/// </summary>
+		/// <value>
+		/// The configuration.
+		/// </value>
 		public UserConfiguration Configuration
 		{
 			get { return _config; }
@@ -331,6 +337,26 @@ namespace JohnMoore.AmpacheNet.Logic
 
 		#endregion
 		
+		#region UserMessage
+
+		public const string USER_MESSAGE = "UserMessage";
+		private string _userMessage = null;
+
+		public string UserMessage
+		{
+			get { return _userMessage; }
+			set
+			{
+				if (_userMessage == value)
+					return;
+
+				_userMessage = value;
+				if(PropertyChanged != null)
+					PropertyChanged(this, new PropertyChangedEventArgs("UserMessage"));
+			}
+		}
+
+		#endregion		
 		
 		#region INotifyPropertyChanged implementation
 		public event PropertyChangedEventHandler PropertyChanged;

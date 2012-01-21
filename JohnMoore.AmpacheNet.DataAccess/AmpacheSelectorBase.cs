@@ -46,6 +46,7 @@ namespace JohnMoore.AmpacheNet.DataAccess
         private readonly IEntityFactory<TEntity> _factory;
         protected abstract string SelectAllMethod { get; }
         protected abstract string XmlNodeName { get; }
+		protected abstract string SelectSingleMethod { get; }
         protected abstract Dictionary<Type, string> SelectMethodMap { get; }
 
         public AmpacheSelectorBase (Handshake handshake, IEntityFactory<TEntity> factory)
@@ -100,13 +101,12 @@ namespace JohnMoore.AmpacheNet.DataAccess
             return Query(builder.ToString());
 		}
 
-		public IEnumerable<TEntity> SelectBy(int ampacheId)
+		public TEntity SelectBy(int ampacheId)
 		{
-			throw new NotImplementedException();
-//            StringBuilder builder = new StringBuilder();
-//            builder.AppendFormat(BASE_URL, _handshake.Server, SelectAllMethod, _handshake.Passphrase);
-//            builder.AppendFormat(FILTER_PARAMETER, ampacheId);
-//            return Query(builder.ToString());
+            StringBuilder builder = new StringBuilder();
+            builder.AppendFormat(BASE_URL, _handshake.Server, SelectSingleMethod, _handshake.Passphrase);
+            builder.AppendFormat(FILTER_PARAMETER, ampacheId);
+            return Query(builder.ToString()).FirstOrDefault();
 		}
 		
         #endregion

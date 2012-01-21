@@ -60,6 +60,17 @@ namespace JohnMoore.AmpacheNet.DataAccess
 		/// Search text.
 		/// </param>
 		IEnumerable<TEntity> SelectBy(string searchText);
+		
+		/// <summary>
+		/// Selects the single <see cref="TEntity"/> with the provided <paramref name="ampacheId"/>
+		/// </summary>
+		/// <returns>
+		/// <see cref="TEntity"/>
+		/// </returns>
+		/// <param name='ampacheId'>
+		/// Ampache identifier.
+		/// </param>
+		TEntity SelectBy(int ampacheId);
     }
 
 
