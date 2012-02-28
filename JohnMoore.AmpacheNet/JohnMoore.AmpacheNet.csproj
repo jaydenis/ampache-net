@@ -166,6 +166,7 @@
     <AndroidResource Include="Resources\drawable\ic_media_next_invert.png" />
     <AndroidResource Include="Resources\drawable\ic_media_previous_invert.png" />
     <AndroidResource Include="Resources\drawable\ic_menu_shuffle_invert.png" />
+    <AndroidResource Include="Resources\layout\Filter.axml" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
   <ItemGroup>

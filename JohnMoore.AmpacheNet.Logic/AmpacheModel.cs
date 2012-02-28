@@ -356,7 +356,7 @@ namespace JohnMoore.AmpacheNet.Logic
 			}
 		}
 
-		#endregion		
+		#endregion
 		
 		#region INotifyPropertyChanged implementation
 		public event PropertyChangedEventHandler PropertyChanged;

@@ -18,4 +18,5 @@
 	<string name="configureRequest">Please configure.</string>
 	<string name="playFailureFormat">Unable to play track {0} by {1}</string>
 	<string name="allowSeeking">Allow Seeking</string>
+	<string name="filter">Filter</string>
 </resources>
