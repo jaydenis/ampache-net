@@ -43,8 +43,14 @@ namespace JohnMoore.AmpacheNet.DataAccess
         {
             var result = BuildBase(raw);
             result.Id = int.Parse(raw.Attribute("id").Value);
-            result.ArtistId = int.Parse(raw.Descendants("artist").First().Attribute("id").Value);
-            result.Name = raw.Descendants("name").First().Value;
+            if (raw.Descendants("artist").Any()) 
+			{
+				result.ArtistId = int.Parse (raw.Descendants ("artist").First ().Attribute ("id").Value);
+            }
+            if (raw.Descendants("name").Any()) 
+			{
+				result.Name = raw.Descendants ("name").First ().Value;
+            }
             int yr = 1900;
 			if(raw.Descendants("year").Any())
 			{

@@ -77,6 +77,13 @@ namespace JohnMoore.AmpacheNet
 			{
 				telSvc.Listen(new AmpachePhoneStateListener(_model), Android.Telephony.PhoneStateListenerFlags.CallState);
 			}
+			var settings = GetSharedPreferences(CONFIGURATION,FileCreationMode.Private);
+			var config = new UserConfiguration();
+			config.ServerUrl = settings.GetString(AmpacheService.URL_KEY, string.Empty);
+			config.User = settings.GetString(AmpacheService.USER_NAME_KEY, string.Empty);
+			config.Password = settings.GetString(AmpacheService.PASSWORD_KEY, string.Empty);
+			config.AllowSeeking = settings.GetBoolean(AmpacheService.ALLOW_SEEKING_KEY, true);
+			_model.Configuration = config;
 		}
 		
 		private void ServiceStartup()
@@ -86,24 +93,17 @@ namespace JohnMoore.AmpacheNet
 			var stm = Resources.OpenRawResource(Resource.Drawable.icon);
 			var stream = new System.IO.MemoryStream();
 			Android.Graphics.BitmapFactory.DecodeResource(Resources, Resource.Drawable.icon_thumbnail).Compress(Android.Graphics.Bitmap.CompressFormat.Png, 100, stream);
-			
 			_loader = new AlbumArtLoader(_model, stream);
-			var settings = GetSharedPreferences(CONFIGURATION,FileCreationMode.Private);
-			var config = new UserConfiguration();
-			config.ServerUrl = settings.GetString(AmpacheService.URL_KEY, string.Empty);
-			config.User = settings.GetString(AmpacheService.USER_NAME_KEY, string.Empty);
-			config.Password = settings.GetString(AmpacheService.PASSWORD_KEY, string.Empty);
-			config.AllowSeeking = settings.GetBoolean(AmpacheService.ALLOW_SEEKING_KEY, true);
-			_model.Configuration = config;
 			try 
 			{
-				if (config.ServerUrl != string.Empty) 
+				if (_model.Configuration.ServerUrl != string.Empty) 
 				{
-					_handshake = new Authenticate(config.ServerUrl, config.User, config.Password);
+					_handshake = new Authenticate(_model.Configuration.ServerUrl, _model.Configuration.User, _model.Configuration.Password);
 					_model.Factory = new AmpacheSelectionFactory(_handshake);
 					_model.UserMessage = GetString(Resource.String.connectedToAmpache);
 				}
 				var sngLookup = _model.Factory.GetInstanceSelectorFor<AmpacheSong>();
+				var settings = GetSharedPreferences(CONFIGURATION,FileCreationMode.Private);
 				_model.Playlist = settings.GetString(PLAYLIST_CSV_KEY, string.Empty).Split(new [] {','}, StringSplitOptions.RemoveEmptyEntries).Select(s=> sngLookup.SelectBy(int.Parse(s))).ToList();
 			}
 			catch (Exception ex) 

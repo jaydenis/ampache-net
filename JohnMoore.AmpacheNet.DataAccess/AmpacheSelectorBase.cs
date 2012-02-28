@@ -41,7 +41,7 @@ namespace JohnMoore.AmpacheNet.DataAccess
         protected const string FILTER_PARAMETER = @"&filter={0}";
         protected const string OFFSET_PARAMETER = @"&offset={0}";
         protected const string LIMIT_PARAMETER = @"&limit={0}";
-        private const int LIMIT_AMOUNT = 1000;
+        private const int LIMIT_AMOUNT = 500;
         protected readonly Handshake _handshake;
         private readonly IEntityFactory<TEntity> _factory;
         protected abstract string SelectAllMethod { get; }

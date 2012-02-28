@@ -103,6 +103,8 @@ namespace JohnMoore.AmpacheNet
 			}
 			catch(Exception ex)
 			{
+				Console.WriteLine(ex.Message);
+				Console.WriteLine(ex.StackTrace);
 				RunOnUiThread(() => Toast.MakeText(this.ApplicationContext, ex.Message, ToastLength.Short).Show());
 				_loadedEntities = new List<TEntity>();
 			}
