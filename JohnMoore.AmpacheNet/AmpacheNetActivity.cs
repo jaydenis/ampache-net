@@ -27,6 +27,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+
 using Android.App;
 using Android.Content;
 using Android.Runtime;
@@ -78,14 +80,15 @@ namespace JohnMoore.AmpacheNet
 			{
 				var adp = lv.Adapter as AmpacheArrayAdapter<AmpacheSong>;
 				var sng = adp.GetItem(e.Position);
-				System.Threading.ThreadPool.QueueUserWorkItem((o) => _model.StopRequested = true);
-				while(_model.StopRequested)
-				{
-					System.Threading.Thread.Sleep(0);
-				}
-				_model.PlayingSong = sng;
-				System.Threading.ThreadPool.QueueUserWorkItem((o) => _model.PlayPauseRequested = true);
-				FindViewById<ImageButton>(Resource.Id.imgPlayingPlayPause).SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_media_pause));
+				var tsk = new Task(delegate {
+					_model.StopRequested = true;
+				});
+				tsk.ContinueWith( delegate {
+					_model.PlayingSong = sng;
+					System.Threading.ThreadPool.QueueUserWorkItem((o) => _model.PlayPauseRequested = true);
+					RunOnUiThread(() => FindViewById<ImageButton>(Resource.Id.imgPlayingPlayPause).SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_media_pause)));
+				});
+				tsk.Start();
 			}
 		}
 		

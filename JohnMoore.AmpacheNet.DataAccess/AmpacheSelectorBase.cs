@@ -82,6 +82,10 @@ namespace JohnMoore.AmpacheNet.DataAccess
 
         public virtual IEnumerable<TEntity> SelectBy<TParameter> (TParameter parameter) where TParameter : IEntity
         {
+			if(parameter is TEntity)
+			{
+				return new TEntity[] {(TEntity)(IEntity)parameter};
+			}
             if (!SelectMethodMap.ContainsKey(typeof(TParameter)))
             {
                 return SelectAll();
