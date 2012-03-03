@@ -118,7 +118,7 @@ namespace JohnMoore.AmpacheNet
 					RunOnUiThread(() => Toast.MakeText(ApplicationContext, GetString(Resource.String.configureRequest), ToastLength.Short).Show());
 					Finish();
 				}
-				else if(_cachedEntities == null)
+				else if(_cachedEntities == null || !_cachedEntities.Any())
 				{
 					var selecter = _model.Factory.GetInstanceSelectorFor<TEntity>();
 					_cachedEntities = selecter.SelectAll().OrderBy(e => e.Name).ToList();

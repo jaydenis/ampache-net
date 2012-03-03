@@ -54,9 +54,28 @@ namespace JohnMoore.AmpacheNet
 				FindViewById<LinearLayout>(Resource.Id.mainLayout).Orientation = Orientation.Vertical;
 			}
 			FindViewById<ListView>(Resource.Id.lstPlaylist).ItemClick += HandleItemSelected;
+			FindViewById<ListView>(Resource.Id.lstPlaylist).ItemLongClick += HandleItemLongClick;
 			FindViewById<ImageView>(Resource.Id.imgPlayingAlbumArt).Click += HandleImageClick;
 			_uiActions.Add(AmpacheModel.PLAYING_SONG, ChangeSong);
 			_uiActions.Add(AmpacheModel.PLAYLIST, PopulateSongs);
+		}
+
+		void HandleItemLongClick (object sender, AdapterView.ItemLongClickEventArgs e)
+		{
+			var lv = FindViewById<ListView>(Resource.Id.lstPlaylist);
+			lv.SetSelection(e.Position);
+			lv.SmoothScrollToPosition(e.Position);
+			var adp = lv.Adapter as AmpacheArrayAdapter<AmpacheSong>;
+			var sng = adp.GetItem(e.Position);
+			var tsk = new Task(delegate {
+				_model.StopRequested = true;
+				});
+			tsk.ContinueWith( delegate {
+				_model.PlayingSong = sng;
+				System.Threading.ThreadPool.QueueUserWorkItem((o) => _model.PlayPauseRequested = true);
+				RunOnUiThread(() => FindViewById<ImageButton>(Resource.Id.imgPlayingPlayPause).SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_media_pause)));
+			});
+			tsk.Start();
 		}
 		
 		protected override void OnModelLoaded ()

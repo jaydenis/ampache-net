@@ -55,7 +55,8 @@ namespace JohnMoore.AmpacheNet
 		
 		void Handle_modelPropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
-			System.Threading.ThreadPool.QueueUserWorkItem((o) => PropertyChanged(e));
+			//System.Threading.ThreadPool.QueueUserWorkItem((o) => PropertyChanged(e));
+			PropertyChanged(e);
 		}
 		
 		void PropertyChanged (PropertyChangedEventArgs e)

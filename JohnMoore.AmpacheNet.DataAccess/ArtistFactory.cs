@@ -44,8 +44,14 @@ namespace JohnMoore.AmpacheNet.DataAccess
             var result = this.BuildBase(raw);
             result.Id = int.Parse(raw.Attribute("id").Value);
             result.Name = raw.Descendants("name").First().Value;
-            result.AlbumCount = int.Parse(raw.Descendants("albums").First().Value);
-            result.SongCount = int.Parse(raw.Descendants("songs").First().Value);
+			if(raw.Descendants("albums").Any())
+			{
+				result.AlbumCount = int.Parse(raw.Descendants("albums").First().Value);
+			}
+			if(raw.Descendants("songs").Any())
+			{
+				result.SongCount = int.Parse(raw.Descendants("songs").First().Value);
+			}
             return result;
         }
     }
