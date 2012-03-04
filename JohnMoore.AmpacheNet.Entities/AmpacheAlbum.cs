@@ -29,14 +29,12 @@ using System.Collections.Generic;
 
 namespace JohnMoore.AmpacheNet.Entities
 {
-    public class AmpacheAlbum : IRatable
+    public class AmpacheAlbum : IRatable, IArt
     {
         public int ArtistId { get; set; }
-        public int AlbumId { get; set; }
 		public string ArtistName { get; set; }
         public int Year { get; set; }
 		public int TrackCount { get; set; }
-        public string ArtUrl { get; set; }
         public string Name { get; set; }
 
         #region IRatable implementation
@@ -54,5 +52,11 @@ namespace JohnMoore.AmpacheNet.Entities
         public int Id  { get; set; }
 
         #endregion
+
+		#region IArt implementation
+		public string ArtUrl { get; set; }
+	
+		public int ArtId { get { return Id; } }
+		#endregion
 }
 }

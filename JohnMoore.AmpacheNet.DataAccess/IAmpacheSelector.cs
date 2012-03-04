@@ -72,17 +72,4 @@ namespace JohnMoore.AmpacheNet.DataAccess
 		/// </param>
 		TEntity SelectBy(int ampacheId);
     }
-	
-//	public static class Persistor
-//	{
-//		public IPersistable<TEntity> Persist<TEntity>(TEntity entity)
-//		{
-//			return null;
-//		}
-//	}
-//	
-//	public interface IPersistable<TEntity> where TEntity : IEntity
-//	{
-//		
-//	}
 }

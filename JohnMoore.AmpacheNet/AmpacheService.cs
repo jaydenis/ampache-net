@@ -33,6 +33,7 @@ using System.ComponentModel;
 using Android.App;
 using Android.Content;
 using Android.OS;
+using Environment = Android.OS.Environment;
 
 using JohnMoore.AmpacheNet.Entities;
 using JohnMoore.AmpacheNet.DataAccess;
@@ -50,6 +51,7 @@ namespace JohnMoore.AmpacheNet
 		private const string USER_NAME_KEY = "user";
 		private const string PASSWORD_KEY = "password";
 		private const string ALLOW_SEEKING_KEY = "allowSeeking";
+		private const string CACHE_ART_KEY = "cacheArt";
 		private const string PLAYLIST_CSV_KEY = "playlist";
 		private Authenticate _handshake;
 		private AmpachePlayer _player;
@@ -83,7 +85,9 @@ namespace JohnMoore.AmpacheNet
 			config.User = settings.GetString(AmpacheService.USER_NAME_KEY, string.Empty);
 			config.Password = settings.GetString(AmpacheService.PASSWORD_KEY, string.Empty);
 			config.AllowSeeking = settings.GetBoolean(AmpacheService.ALLOW_SEEKING_KEY, true);
-			_model.Configuration = config;
+			config.CacheArt = settings.GetBoolean(AmpacheService.CACHE_ART_KEY, true);
+			_model.Configuration = config;			
+			AmpacheSelectionFactory.ArtLocalDirectory =  CacheDir.AbsolutePath;
 		}
 		
 		private void ServiceStartup()
@@ -144,8 +148,15 @@ namespace JohnMoore.AmpacheNet
 				editor.PutString(URL_KEY, _model.Configuration.ServerUrl);
 				editor.PutString(USER_NAME_KEY, _model.Configuration.User);
 				editor.PutString(PASSWORD_KEY, _model.Configuration.Password);
-				editor.PutBoolean(ALLOW_SEEKING_KEY, _model.Configuration.AllowSeeking);
+				editor.PutBoolean(ALLOW_SEEKING_KEY, _model.Configuration.AllowSeeking);				
 				editor.Commit();
+				if(!_model.Configuration.CacheArt)
+				{
+					foreach(var file in System.IO.Directory.GetFiles(CacheDir.AbsolutePath))
+					{
+						System.IO.File.Delete(file);
+					}
+				}
 			}
 			if(e.PropertyName == AmpacheModel.IS_PLAYING)
 			{

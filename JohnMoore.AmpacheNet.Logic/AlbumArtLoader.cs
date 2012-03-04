@@ -27,6 +27,8 @@
 using System;
 using System.Net;
 using System.IO;
+using System.Linq;
+using JohnMoore.AmpacheNet.Entities;
 
 namespace JohnMoore.AmpacheNet.Logic
 {
@@ -46,9 +48,9 @@ namespace JohnMoore.AmpacheNet.Logic
 
 		void Handle_modelPropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
 		{
-			if (e.PropertyName ==AmpacheModel.PLAYING_SONG)
+			if (e.PropertyName == AmpacheModel.PLAYING_SONG && _model.PlayingSong != null)
 			{
-				_model.AlbumArtStream = _defaultStream;
+				//_model.AlbumArtStream = _defaultStream;
 				System.Threading.ThreadPool.QueueUserWorkItem((o) => LoadAlbumImage());
 			}
 		}
@@ -60,22 +62,30 @@ namespace JohnMoore.AmpacheNet.Logic
 				_model.AlbumArtStream = _defaultStream;
 				return;
 			}
-			try 
+			if(_currentStream != null)
 			{
-				if(_currentStream != null)
-				{
-					_currentStream.Dispose();
-				}
-				var con = System.Net.WebRequest.Create(_model.PlayingSong.ArtUrl);
-				_currentStream = new System.IO.MemoryStream();
-				con.GetResponse().GetResponseStream().CopyTo(_currentStream);
-				_model.AlbumArtStream = _currentStream;
-			} 
-			catch(Exception ex) 
+				_currentStream.Dispose();
+			}
+			var persit = _model.Factory.GetPersistorFor<AlbumArt>();
+			if(!persit.IsPersisted(_model.PlayingSong))
 			{
 				_model.AlbumArtStream = _defaultStream;
-				Console.WriteLine(string.Format("Exception of type {0} was thrown while downloading album art.", ex.GetType().Name));
-				Console.WriteLine(ex.Message);
+			}
+			var sel = _model.Factory.GetInstanceSelectorFor<AlbumArt>();
+			var art = sel.SelectBy(_model.PlayingSong).FirstOrDefault();
+			_currentStream = new System.IO.MemoryStream();
+			if(art != null)
+			{
+				art.ArtStream.CopyTo(_currentStream);
+				_model.AlbumArtStream = _currentStream;
+				if(_model.Configuration.CacheArt && !persit.IsPersisted(art))
+				{
+					persit.Persist(art);
+				}
+			}
+			else
+			{
+				_model.AlbumArtStream = _defaultStream;
 			}
 		}
 		

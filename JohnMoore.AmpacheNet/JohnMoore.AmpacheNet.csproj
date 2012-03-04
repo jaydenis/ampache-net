@@ -144,6 +144,18 @@
     <Compile Include="AmpachePhoneStateListener.cs" />
     <Compile Include="AmpacheNotifications.cs" />
     <Compile Include="PlayingActivity.cs" />
+    <Compile Include="..\JohnMoore.AmpacheNet.Entities\AlbumArt.cs">
+      <Link>Entities\AlbumArt.cs</Link>
+    </Compile>
+    <Compile Include="..\JohnMoore.AmpacheNet.Entities\IArt.cs">
+      <Link>Entities\IArt.cs</Link>
+    </Compile>
+    <Compile Include="..\JohnMoore.AmpacheNet.DataAccess\AlbumArtRepository.cs">
+      <Link>Data Access\AlbumArtRepository.cs</Link>
+    </Compile>
+    <Compile Include="..\JohnMoore.AmpacheNet.DataAccess\IPersistor.cs">
+      <Link>Data Access\IPersistor.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\AboutAssets.txt" />

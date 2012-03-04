@@ -51,6 +51,8 @@
     <Compile Include="SongFactory.cs" />
     <Compile Include="SongSelector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="IPersistor.cs" />
+    <Compile Include="AlbumArtRepository.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

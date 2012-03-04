@@ -27,12 +27,14 @@
 using System;
 using System.Threading;
 using JohnMoore.AmpacheNet.Entities;
+using System.IO;
 
 namespace JohnMoore.AmpacheNet.DataAccess
 {
     public class AmpacheSelectionFactory
     {
         private readonly Handshake handshake;
+		public static string ArtLocalDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), ".AmpacheNet");
 
         public AmpacheSelectionFactory (Handshake hs)
         {
@@ -53,7 +55,20 @@ namespace JohnMoore.AmpacheNet.DataAccess
             if (typeof(TEntity) == typeof(AmpachePlaylist)){
                 return new PlaylistSelector(handshake, new PlaylistFactory(), new SongFactory()) as IAmpacheSelector<TEntity>;
             }
+			if (typeof(TEntity) == typeof(AlbumArt))
+			{
+				return new AlbumArtRepository(ArtLocalDirectory) as IAmpacheSelector<TEntity>;
+			}
             throw new InvalidOperationException(string.Format("{0} is not yet supported for selection from ampache", typeof(TEntity).Name));
         }
+		
+		public IPersistor<TEntity> GetPersistorFor<TEntity>() where TEntity : IEntity
+		{
+			if (typeof(TEntity) == typeof(AlbumArt))
+			{
+				return new AlbumArtRepository(ArtLocalDirectory) as IPersistor<TEntity>;
+			}
+            throw new InvalidOperationException(string.Format("{0} is not yet supported for persisting", typeof(TEntity).Name));
+		}
     }
 }
