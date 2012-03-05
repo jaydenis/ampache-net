@@ -51,7 +51,7 @@ namespace JohnMoore.AmpacheNet.DataAccess
                 throw new ArgumentException("must provide a user name", "user");
             }
             User = user;
-            if(string.IsNullOrEmpty(server))
+            if(string.IsNullOrEmpty(password))
             {
                 throw new ArgumentException("must provide a password", "password");
             }
@@ -73,7 +73,7 @@ namespace JohnMoore.AmpacheNet.DataAccess
             tmpBytes = hasher.ComputeHash(tmpBytes);
 
             hashword = HexString(tmpBytes);
-			HttpWebRequest request = (HttpWebRequest)WebRequest.Create(string.Format(REQUEST, Server, hashword, now, User));
+			var request = WebRequest.Create(string.Format(REQUEST, Server, hashword, now, User));
 			ServicePointManager.ServerCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true;
 			request.Timeout = (int)TimeSpan.FromSeconds(30).TotalMilliseconds;
             var response = request.GetResponse();
@@ -90,7 +90,7 @@ namespace JohnMoore.AmpacheNet.DataAccess
 
         public void Ping()
         {
-            var request = (HttpWebRequest)WebRequest.Create(string.Format(PING, Server, Passphrase));
+            var request = WebRequest.Create(string.Format(PING, Server, Passphrase));
             request.GetResponse();
         }
 

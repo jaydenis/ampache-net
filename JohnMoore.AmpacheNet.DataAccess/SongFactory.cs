@@ -32,7 +32,7 @@ using JohnMoore.AmpacheNet.Entities;
 
 namespace JohnMoore.AmpacheNet.DataAccess
 {
-    internal class SongFactory : FactoryBase<AmpacheSong>, IEntityFactory<AmpacheSong>
+    internal class SongFactory : FactoryBaseRatable<AmpacheSong>, IEntityFactory<AmpacheSong>
     {
         public ICollection<AmpacheSong> Construct(ICollection<XElement> raw)
         {
@@ -41,23 +41,41 @@ namespace JohnMoore.AmpacheNet.DataAccess
 
         public AmpacheSong Construct(XElement raw)
         {
+			if(raw.Name.LocalName.ToLower() != "song")
+			{
+				throw new System.Xml.XmlException(string.Format("{0} can not be processed into an Song", raw.Name.LocalName));
+			}
             var result = BuildBase(raw);
-            int tmp = int.MinValue;
-            result.Id = int.Parse(raw.Attribute("id").Value);
-            result.Name = raw.Descendants("title").First().Value;
+			if(!raw.Descendants("title").Any())
+			{
+				throw new System.Xml.XmlException(string.Format("Song id {0} has no name defined", result.Id)); 
+			}
+			if(!raw.Descendants("url").Any())
+			{
+				throw new System.Xml.XmlException(string.Format("Song id {0} has no url defined", result.Id)); 
+			}
+			result.Name = raw.Descendants("title").First().Value;
             result.Url =  raw.Descendants("url").First().Value;
-            result.ArtUrl = raw.Descendants("art").First().Value;
-			result.AlbumName = raw.Descendants("album").First().Value;
-			result.ArtistName = raw.Descendants("artist").First().Value;
-            int.TryParse(raw.Descendants("track").First().Value, out tmp);
+			if(raw.Descendants("art").Any())
+			{
+				result.ArtUrl = raw.Descendants("art").First().Value;
+			}
+			if(raw.Descendants("album").Any())
+			{
+				result.AlbumName = raw.Descendants("album").First().Value;
+				result.AlbumId = int.Parse(raw.Descendants("album").First().Attribute("id").Value);
+			}
+			if(raw.Descendants("artist").Any())
+			{
+				result.ArtistName = raw.Descendants("artist").First().Value;
+            	result.ArtistId = int.Parse(raw.Descendants("artist").First().Attribute("id").Value);
+			}
+            int tmp = 0;
+            int.TryParse((raw.Descendants("track").FirstOrDefault() ?? new XElement("empty", 0)).Value, out tmp);
             result.TrackNumber = tmp;
             tmp = 0;
-            int.TryParse(raw.Descendants("time").First().Value, out tmp);
+            int.TryParse((raw.Descendants("time").FirstOrDefault() ?? new XElement("empty", 0)).Value, out tmp);
             result.TrackLength = TimeSpan.FromSeconds(tmp);
-            tmp = int.MinValue;
-            int.TryParse(raw.Descendants("size").First().Value, out tmp);
-            result.ArtistId = int.Parse(raw.Descendants("artist").First().Attribute("id").Value);
-            result.AlbumId = int.Parse(raw.Descendants("album").First().Attribute("id").Value);
             return result;
         }
     }

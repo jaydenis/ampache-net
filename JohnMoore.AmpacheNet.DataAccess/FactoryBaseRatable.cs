@@ -34,12 +34,21 @@ namespace JohnMoore.AmpacheNet.DataAccess
 {
     internal class FactoryBaseRatable<TEntity> : FactoryBaseTagable<TEntity> where TEntity : IRatable, new()
     {
-        protected override TEntity BuildBase(XElement element)
+        protected override TEntity BuildBase(XElement raw)
         {
-            TEntity result = base.BuildBase(element);
-            result.PerciseRating = int.Parse(element.Descendants("preciserating").First().Value);
-            result.Rating = int.Parse(element.Descendants("rating").First().Value);
-
+            TEntity result = base.BuildBase(raw);
+			double rating = 0;
+			if(raw.Descendants("rating").Any())
+			{
+            	double.TryParse(raw.Descendants("rating").First().Value, out rating);
+			}
+            result.Rating = (int)Math.Round(rating);
+			rating = 0;
+			if(raw.Descendants("preciserating").Any())
+			{
+            	double.TryParse(raw.Descendants("preciserating").First().Value, out rating);
+			}
+			result.PerciseRating = (int)Math.Round(rating);
             return result;
         }
     }

@@ -28,11 +28,9 @@ using System;
 using System.Collections.Generic;
 namespace JohnMoore.AmpacheNet.Entities
 {
-    public class AmpachePlaylist : IEntity
+    public class AmpachePlaylist : ITagable
     {
         public string Name { get; set; }
-
-        public string DisplayName { get { return Name; } }
 		
 		public int SongCount { get; set; }
 
@@ -41,5 +39,13 @@ namespace JohnMoore.AmpacheNet.Entities
         public int Id { get; set; }
 
         #endregion
+
+		#region ITagable implementation
+		
+		public ICollection<Tag> Tags { get; set; }
+		
+		#endregion
+
+
     }
 }

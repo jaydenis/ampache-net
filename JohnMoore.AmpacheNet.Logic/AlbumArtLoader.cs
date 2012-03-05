@@ -50,7 +50,6 @@ namespace JohnMoore.AmpacheNet.Logic
 		{
 			if (e.PropertyName == AmpacheModel.PLAYING_SONG && _model.PlayingSong != null)
 			{
-				//_model.AlbumArtStream = _defaultStream;
 				System.Threading.ThreadPool.QueueUserWorkItem((o) => LoadAlbumImage());
 			}
 		}

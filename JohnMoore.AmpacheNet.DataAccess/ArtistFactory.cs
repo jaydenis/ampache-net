@@ -32,7 +32,7 @@ using JohnMoore.AmpacheNet.Entities;
 
 namespace JohnMoore.AmpacheNet.DataAccess
 {
-    internal class ArtistFactory : FactoryBase<AmpacheArtist>, IEntityFactory<AmpacheArtist>
+    internal class ArtistFactory : FactoryBaseRatable<AmpacheArtist>, IEntityFactory<AmpacheArtist>
     {
         public ICollection<AmpacheArtist> Construct(ICollection<XElement> raw)
         {
@@ -41,8 +41,15 @@ namespace JohnMoore.AmpacheNet.DataAccess
 
         public AmpacheArtist Construct(XElement raw)
         {
+			if(raw.Name.LocalName.ToLower() != "artist")
+			{
+				throw new System.Xml.XmlException(string.Format("{0} can not be processed into an Artist", raw.Name.LocalName));
+			}
             var result = this.BuildBase(raw);
-            result.Id = int.Parse(raw.Attribute("id").Value);
+			if(!raw.Descendants("name").Any())
+			{
+				throw new System.Xml.XmlException(string.Format("Artist id {0} has no name defined", result.Id));
+			}
             result.Name = raw.Descendants("name").First().Value;
 			if(raw.Descendants("albums").Any())
 			{

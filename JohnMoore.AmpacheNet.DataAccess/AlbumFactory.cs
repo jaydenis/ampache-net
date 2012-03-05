@@ -32,7 +32,7 @@ using JohnMoore.AmpacheNet.Entities;
 
 namespace JohnMoore.AmpacheNet.DataAccess
 {
-    internal class AlbumFactory : FactoryBase<AmpacheAlbum>, IEntityFactory<AmpacheAlbum>
+    internal class AlbumFactory : FactoryBaseRatable<AmpacheAlbum>, IEntityFactory<AmpacheAlbum>
     {
         public ICollection<AmpacheAlbum> Construct(ICollection<XElement> raw)
         {
@@ -41,12 +41,21 @@ namespace JohnMoore.AmpacheNet.DataAccess
 
         public AmpacheAlbum Construct(XElement raw)
         {
+			if(raw.Name.LocalName.ToLower() != "album")
+			{
+				throw new System.Xml.XmlException(string.Format("{0} can not be processed into an Album", raw.Name.LocalName));
+			}
             var result = BuildBase(raw);
-            result.Id = int.Parse(raw.Attribute("id").Value);
             if (raw.Descendants("artist").Any()) 
 			{
 				result.ArtistId = int.Parse (raw.Descendants ("artist").First ().Attribute ("id").Value);
+				result.ArtistName = raw.Descendants ("artist").First ().Value;
             }
+			else
+			{
+				result.ArtistId = 0;
+				result.ArtistName = string.Empty;
+			}
             if (raw.Descendants("name").Any()) 
 			{
 				result.Name = raw.Descendants ("name").First ().Value;
@@ -60,6 +69,10 @@ namespace JohnMoore.AmpacheNet.DataAccess
 			if(raw.Descendants("art").Any())
 			{
             	result.ArtUrl = raw.Descendants("art").First().Value;
+			}
+			if(raw.Descendants("tracks").Any())
+			{
+            	result.TrackCount = int.Parse(raw.Descendants("tracks").First().Value);
 			}
             return result;
         }

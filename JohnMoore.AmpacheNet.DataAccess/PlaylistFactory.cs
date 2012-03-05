@@ -32,7 +32,7 @@ using JohnMoore.AmpacheNet.Entities;
 
 namespace JohnMoore.AmpacheNet.DataAccess
 {
-    internal class PlaylistFactory : FactoryBase<AmpachePlaylist>, IEntityFactory<AmpachePlaylist>
+    internal class PlaylistFactory : FactoryBaseTagable<AmpachePlaylist>, IEntityFactory<AmpachePlaylist>
     {
         #region IEntityFactory[AmpachePlaylist] implementation
         public ICollection<AmpachePlaylist> Construct (ICollection<XElement> raw)
@@ -41,14 +41,22 @@ namespace JohnMoore.AmpacheNet.DataAccess
         }
         #endregion
 
-        private AmpachePlaylist Construct(XElement raw)
+        public AmpachePlaylist Construct(XElement raw)
         {
-            var result = BuildBase(raw);
-            result.Id = int.Parse(raw.Attribute("id").Value);
-            result.Name = raw.Descendants("name").First().Value;
-			int tmp = 0;
-			int.TryParse(raw.Descendants("items").First().Value, out tmp);
-            result.SongCount =  tmp;
+			if(raw.Name.LocalName.ToLower() != "playlist")
+			{
+				throw new System.Xml.XmlException(string.Format("{0} can not be processed into an Album", raw.Name.LocalName));
+			}
+            var result = BuildBase(raw);			
+            if (!raw.Descendants("name").Any()) 
+			{
+				throw new System.Xml.XmlException(string.Format("Playlist id {0} has no name defined", result.Id)); 
+            }
+			result.Name = raw.Descendants ("name").First ().Value;
+			if(raw.Descendants("items").Any())
+			{
+				result.SongCount = int.Parse(raw.Descendants("items").First().Value);
+			}
             return result;
         }
     }

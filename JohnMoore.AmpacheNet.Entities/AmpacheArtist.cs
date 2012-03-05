@@ -31,7 +31,6 @@ namespace JohnMoore.AmpacheNet.Entities
 {
     public class AmpacheArtist : IRatable
     {
-        public int ArtistId { get; set; }
 		public string Name { get; set; }
         public int SongCount { get; set; }
         public int AlbumCount { get; set; }

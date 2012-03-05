@@ -37,11 +37,11 @@ namespace JohnMoore.AmpacheNet.DataAccess
         protected override TEntity BuildBase(XElement element)
         {
             var result = base.BuildBase(element);
-            var tags = element.Descendants("tag")
+            var tags = element.Descendants("tag").Where(e => e.Attribute("id") != null)
                               .Select(n => new Tag
                                                {
                                                    Id = int.Parse(n.Attribute("id").Value),
-                                                   Count = int.Parse(n.Attribute("count").Value),
+                                                   Count = int.Parse((n.Attribute("count") ?? new XAttribute("empty", 1)).Value),
                                                    Name = n.Value
                                                });
             result.Tags = new HashSet<Tag>(tags);

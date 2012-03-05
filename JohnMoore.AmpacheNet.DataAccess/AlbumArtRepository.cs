@@ -36,7 +36,12 @@ namespace JohnMoore.AmpacheNet.DataAccess
 			{
 				if (File.Exists (Path.Combine (_directory, art.ArtId.ToString ())))
 				{
-					res.Add (new AlbumArt { ArtistId = art.ArtId, ArtStream = File.OpenRead (Path.Combine (_directory, art.ArtId.ToString ())) });
+					using (var file = File.OpenRead (Path.Combine (_directory, art.ArtId.ToString ())))
+					{
+						var stream = new MemoryStream();
+						file.CopyTo(stream);
+						res.Add (new AlbumArt { AlbumId = art.ArtId, ArtStream =  stream });
+					}
 				} 
 				else 
 				{
@@ -44,7 +49,7 @@ namespace JohnMoore.AmpacheNet.DataAccess
 					var stream = new MemoryStream();
 					con.GetResponse ().GetResponseStream ().CopyTo(stream);
 					stream.Position = 0;
-					res.Add (new AlbumArt { ArtistId = art.ArtId, ArtStream = stream });
+					res.Add (new AlbumArt { AlbumId = art.ArtId, ArtStream = stream });
 				}
 			}
 			catch (Exception ex)
@@ -69,7 +74,7 @@ namespace JohnMoore.AmpacheNet.DataAccess
 		#region IPersistor[JohnMoore.AmpacheNet.Entities.AlbumArt] implementation
 		public bool IsPersisted (JohnMoore.AmpacheNet.Entities.AlbumArt entity)
 		{
-			return File.Exists(Path.Combine(_directory, entity.ArtistId.ToString()));
+			return File.Exists(Path.Combine(_directory, entity.AlbumId.ToString()));
 		}
 		
 		public bool IsPersisted (JohnMoore.AmpacheNet.Entities.IArt entity)
@@ -83,7 +88,7 @@ namespace JohnMoore.AmpacheNet.DataAccess
 			{
 				Remove(entity);
 			}
-			var stream = File.Create(Path.Combine(_directory, entity.ArtistId.ToString()));
+			var stream = File.Create(Path.Combine(_directory, entity.AlbumId.ToString()));
 			entity.ArtStream.Position = 0;
 			entity.ArtStream.CopyTo(stream);
 			entity.ArtStream.Position = 0;
@@ -92,7 +97,10 @@ namespace JohnMoore.AmpacheNet.DataAccess
 	
 		public void Remove (JohnMoore.AmpacheNet.Entities.AlbumArt entity)
 		{
-			File.Delete(Path.Combine(_directory, entity.ArtistId.ToString()));
+			if(IsPersisted(entity))
+			{
+				File.Delete(Path.Combine(_directory, entity.AlbumId.ToString()));
+			}
 		}
 		#endregion
 	}

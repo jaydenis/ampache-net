@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Xml;
 using System.Xml.Linq;
 using System.Linq;
 using System.Collections.Generic;
@@ -37,6 +38,10 @@ namespace JohnMoore.AmpacheNet.DataAccess
         protected virtual TEntity BuildBase(XElement element)
         {
             TEntity result = new TEntity();
+			if(!element.Attributes("id").Any())
+			{
+				throw new XmlException("Malformed XML, missing ID");
+			}
             result.Id = int.Parse(element.Attribute("id").Value);
             return result;
         }

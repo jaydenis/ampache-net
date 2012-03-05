@@ -7,10 +7,10 @@ namespace JohnMoore.AmpacheNet.Entities
 	{
 		public Stream ArtStream { get; set; }
 		
-		public int ArtistId { get; set; }
+		public int AlbumId { get; set; }
 
 		#region IEntity implementation
-		public int Id { get { return ArtistId; } set {} }
+		public int Id { get { return AlbumId; } set {} }
 	
 		public string Name { get; set; }
 		#endregion

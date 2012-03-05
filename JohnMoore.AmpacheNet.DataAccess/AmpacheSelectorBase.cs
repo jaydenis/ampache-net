@@ -117,7 +117,7 @@ namespace JohnMoore.AmpacheNet.DataAccess
 		
         private ICollection<TEntity> Query(string url)
         {
-            var request = (HttpWebRequest)WebRequest.Create (url);
+            var request = WebRequest.Create (url);
             var response = request.GetResponse();
 			try
 			{
