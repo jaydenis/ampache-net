@@ -56,7 +56,7 @@ namespace JohnMoore.AmpacheNet.Logic
 		
 		void LoadAlbumImage()
 		{
-			if(_model.PlayingSong == null || string.IsNullOrEmpty(_model.PlayingSong.ArtUrl))
+			if(string.IsNullOrEmpty((_model.PlayingSong ?? new AmpacheSong()).ArtUrl))
 			{
 				_model.AlbumArtStream = _defaultStream;
 				return;
@@ -72,10 +72,9 @@ namespace JohnMoore.AmpacheNet.Logic
 			}
 			var sel = _model.Factory.GetInstanceSelectorFor<AlbumArt>();
 			var art = sel.SelectBy(_model.PlayingSong).FirstOrDefault();
-			_currentStream = new System.IO.MemoryStream();
 			if(art != null)
 			{
-				art.ArtStream.CopyTo(_currentStream);
+				_currentStream = art.ArtStream;
 				_model.AlbumArtStream = _currentStream;
 				if(_model.Configuration.CacheArt && !persit.IsPersisted(art))
 				{

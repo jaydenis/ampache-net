@@ -108,7 +108,7 @@ namespace JohnMoore.AmpacheNet
 					Console.WriteLine ("Playback First Song");
 					_model.PlayingSong = _model.Playlist.First();
 				}
-				PrepareMediaPlayerSynchronous();
+				PrepareMediaPlayer();
 				_isPaused = false;
 				_model.IsPlaying = true;
 			}
@@ -137,7 +137,7 @@ namespace JohnMoore.AmpacheNet
 				_model.PlayingSong = _model.Playlist[(_model.Playlist.IndexOf(_model.PlayingSong) + _model.Playlist.Count - 1) % _model.Playlist.Count];
 				Console.WriteLine ("Playing Previous Song");
 			}
-			PrepareMediaPlayerSynchronous();
+			PrepareMediaPlayer();
 			_isPaused = false;
 			_model.PreviousRequested = false;
 		}
@@ -161,14 +161,14 @@ namespace JohnMoore.AmpacheNet
 				}
 				_model.PlayingSong = _model.Playlist[nextIndex];
 				Console.WriteLine ("Playing next Song: " + _model.PlayingSong.Name);
-				PrepareMediaPlayerSynchronous();
+				PrepareMediaPlayer();
 				_isPaused = false;
 			}
 			_model.NextRequested = false;
 			GC.Collect(0);
 		}
 		
-		void PrepareMediaPlayerSynchronous()
+		void PrepareMediaPlayer()
 		{
 			if(_player == null || _model.PlayingSong == null)
 			{

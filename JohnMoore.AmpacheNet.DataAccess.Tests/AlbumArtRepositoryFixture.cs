@@ -94,6 +94,21 @@ namespace JohnMoore.AmpacheNet.DataAccess.Tests
 			Assert.That(actual.ArtStream.Length, Is.EqualTo(2)); // the empty file i just wrote
 		}
 		[Test]
+		public void AlbumArtRepositorySelectByIArtNonExistingErrorOnWebRequestTest()
+		{
+			var art = new Art{ ArtId = 1, ArtUrl = "art://art" };
+			_request = Substitute.For<WebRequest>();
+			var mockRes = Substitute.For<WebResponse>();
+			_request.GetResponse().Returns(mockRes);
+			int timesCalled = 0;
+			mockRes.GetResponseStream().Returns( x => { ++timesCalled; throw new Exception(); });
+			var target = new AlbumArtRepository("art");
+			var actual = target.SelectBy(art);
+			Assert.That(timesCalled, Is.EqualTo(1));
+			Assert.That(actual, Is.Not.Null);
+			Assert.That(actual.Count(), Is.EqualTo(0));
+		}
+		[Test]
 		[ExpectedException(typeof(InvalidOperationException))]
 		public void AlbumArtRepositorySelectByNotIArtTest()
 		{

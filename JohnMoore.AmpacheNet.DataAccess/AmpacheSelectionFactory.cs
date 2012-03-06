@@ -41,7 +41,7 @@ namespace JohnMoore.AmpacheNet.DataAccess
             handshake = hs;
         }
 
-        public IAmpacheSelector<TEntity> GetInstanceSelectorFor<TEntity>() where TEntity : IEntity
+        public virtual IAmpacheSelector<TEntity> GetInstanceSelectorFor<TEntity>() where TEntity : IEntity
         {
             if (typeof(TEntity) == typeof(AmpacheArtist)) {
                 return new ArtistSelector(handshake, new ArtistFactory()) as IAmpacheSelector<TEntity>;
@@ -62,7 +62,7 @@ namespace JohnMoore.AmpacheNet.DataAccess
             throw new InvalidOperationException(string.Format("{0} is not yet supported for selection from ampache", typeof(TEntity).Name));
         }
 		
-		public IPersistor<TEntity> GetPersistorFor<TEntity>() where TEntity : IEntity
+		public virtual IPersistor<TEntity> GetPersistorFor<TEntity>() where TEntity : IEntity
 		{
 			if (typeof(TEntity) == typeof(AlbumArt))
 			{

@@ -5,7 +5,7 @@ namespace JohnMoore.AmpacheNet.Entities
 {
 	public class AlbumArt : IEntity
 	{
-		public Stream ArtStream { get; set; }
+		public MemoryStream ArtStream { get; set; }
 		
 		public int AlbumId { get; set; }
 
