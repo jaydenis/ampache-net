@@ -136,7 +136,6 @@
     <Compile Include="..\JohnMoore.AmpacheNet.Logic\AmpacheModel.cs">
       <Link>Logic\AmpacheModel.cs</Link>
     </Compile>
-    <Compile Include="AmpachePlayer.cs" />
     <Compile Include="..\JohnMoore.AmpacheNet.Logic\AlbumArtLoader.cs">
       <Link>Logic\AlbumArtLoader.cs</Link>
     </Compile>
@@ -155,6 +154,10 @@
     </Compile>
     <Compile Include="..\JohnMoore.AmpacheNet.DataAccess\IPersistor.cs">
       <Link>Data Access\IPersistor.cs</Link>
+    </Compile>
+    <Compile Include="AndroidPlayer.cs" />
+    <Compile Include="..\JohnMoore.AmpacheNet.Logic\AmpachePlayer.cs">
+      <Link>Logic\AmpachePlayer.cs</Link>
     </Compile>
   </ItemGroup>
   <ItemGroup>

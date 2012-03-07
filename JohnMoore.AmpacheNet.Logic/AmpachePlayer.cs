@@ -54,7 +54,7 @@ namespace JohnMoore.AmpacheNet.Logic
 			}
 		}
 
-		void PlayPause ()
+		public void PlayPause ()
 		{
 			if(_isPaused)
 			{
@@ -78,6 +78,8 @@ namespace JohnMoore.AmpacheNet.Logic
 				}
 				try
 				{
+					_model.PercentPlayed = 0;
+					_model.PercentDownloaded = 0;
 					PlaySong (_model.PlayingSong);
 					_isPaused = false;
 					_model.IsPlaying = true;
@@ -98,6 +100,8 @@ namespace JohnMoore.AmpacheNet.Logic
 				if (_model.IsPlaying)
 				{
 					StopPlay();
+					_model.PercentPlayed = 0;
+					_model.PercentDownloaded = 0;
 				}
 				_model.PlayingSong = null;
 			}
@@ -114,6 +118,8 @@ namespace JohnMoore.AmpacheNet.Logic
 				}
 				_model.PlayingSong = _model.Playlist[nextIndex];
 				Console.WriteLine ("Playing next Song: " + _model.PlayingSong.Name);
+				_model.PercentPlayed = 0;
+				_model.PercentDownloaded = 0;
 				PlaySong (_model.PlayingSong);
 				_isPaused = false;
 				_model.IsPlaying = true;
@@ -128,6 +134,8 @@ namespace JohnMoore.AmpacheNet.Logic
 				if (_model.IsPlaying)
 				{
 					StopPlay();
+					_model.PercentPlayed = 0;
+					_model.PercentDownloaded = 0;
 					_model.PlayingSong = null;
 				}
 				_model.PreviousRequested = false;
@@ -138,6 +146,8 @@ namespace JohnMoore.AmpacheNet.Logic
 				_model.PlayingSong = _model.Playlist[(_model.Playlist.IndexOf(_model.PlayingSong) + _model.Playlist.Count - 1) % _model.Playlist.Count];
 				Console.WriteLine ("Playing Previous Song");
 			}
+			_model.PercentPlayed = 0;
+			_model.PercentDownloaded = 0;
 			PlaySong (_model.PlayingSong);
 			_isPaused = false;
 			_model.PreviousRequested = false;
@@ -149,6 +159,8 @@ namespace JohnMoore.AmpacheNet.Logic
 			if (_model.IsPlaying || _isPaused)
 			{
 				StopPlay();
+				_model.PercentPlayed = 0;
+				_model.PercentDownloaded = 0;
 				_isPaused = false;
 				_model.IsPlaying = false;
 			}

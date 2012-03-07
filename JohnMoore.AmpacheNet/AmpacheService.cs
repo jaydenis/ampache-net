@@ -54,7 +54,7 @@ namespace JohnMoore.AmpacheNet
 		private const string CACHE_ART_KEY = "cacheArt";
 		private const string PLAYLIST_CSV_KEY = "playlist";
 		private Authenticate _handshake;
-		private AmpachePlayer _player;
+		private AndroidPlayer _player;
 		private Timer _ping;
 		private AmpacheNotifications _notifications;
 				
@@ -117,7 +117,7 @@ namespace JohnMoore.AmpacheNet
 				Console.WriteLine (ex.Message);
 			}
 			_ping = new Timer((o) => _handshake.Ping(), new object(), TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(5));
-			_player = new AmpachePlayer(_model, ApplicationContext);
+			_player = new AndroidPlayer(_model, ApplicationContext);
 			_notifications = new AmpacheNotifications(this.ApplicationContext, _model);
 			_model.PropertyChanged += Handle_modelPropertyChanged;
 		}

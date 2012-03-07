@@ -42,13 +42,13 @@ using JohnMoore.AmpacheNet.Logic;
 
 namespace JohnMoore.AmpacheNet
 {
-	public abstract class LookupActivity<TEntity> : ListActivity where TEntity : IEntity
+	public class LookupActivity<TEntity> : ListActivity where TEntity : IEntity
 	{
 		private static List<TEntity> _cachedEntities;
 		private static Timer _cacheReset = new Timer((o) => _cachedEntities = null, null, Timeout.Infinite, Timeout.Infinite);
+		private List<TEntity> _filterdEntities;
 		private AmpacheModel _model;
 		private ProgressDialog _prgDlg;
-		private List<TEntity> _filterdEntities;
 		private AmpacheService.Connection _connection;
 		private AmpacheArrayAdapter<TEntity> _adapter;
 		
@@ -111,14 +111,14 @@ namespace JohnMoore.AmpacheNet
 		
 		private void LoadAll()
 		{
+			if(_model.Factory == null)
+			{
+				_model.UserMessage = GetString(Resource.String.configureRequest);
+				Finish();
+			}
 			try
 			{
-				if(_model.Factory == null)
-				{
-					RunOnUiThread(() => Toast.MakeText(ApplicationContext, GetString(Resource.String.configureRequest), ToastLength.Short).Show());
-					Finish();
-				}
-				else if(_cachedEntities == null || !_cachedEntities.Any())
+				if(_cachedEntities == null || !_cachedEntities.Any())
 				{
 					var selecter = _model.Factory.GetInstanceSelectorFor<TEntity>();
 					_cachedEntities = selecter.SelectAll().OrderBy(e => e.Name).ToList();

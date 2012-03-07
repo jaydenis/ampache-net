@@ -38,6 +38,7 @@ namespace JohnMoore.AmpacheNet
 			{
 				_model.PropertyChanged += Handle_modelPropertyChanged;
 				OnModelLoaded();
+				UpdateArt();
 			}
 		}
 		

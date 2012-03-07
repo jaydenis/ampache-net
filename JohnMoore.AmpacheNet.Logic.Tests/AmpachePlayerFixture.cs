@@ -228,8 +228,12 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			model.Playlist = new List<AmpacheSong>{ first, second };
 			model.PlayingSong = second;
 			model.IsPlaying = true;
+			model.PercentPlayed = 90;
+			model.PercentDownloaded = 100;
 			model.NextRequested = true;
 			Assert.That(model.PlayPauseRequested, Is.False);
+			Assert.That(model.PercentPlayed, Is.EqualTo(0));
+			Assert.That(model.PercentDownloaded, Is.EqualTo(0));
 			Assert.That(mock.PauseCalls, Is.EqualTo(0));
 			Assert.That(mock.UnpauseCalls, Is.EqualTo(0));
 			Assert.That(mock.PlaySongCalls, Is.EqualTo(1));
