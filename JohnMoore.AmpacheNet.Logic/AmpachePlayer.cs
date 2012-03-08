@@ -21,7 +21,7 @@ namespace JohnMoore.AmpacheNet.Logic
 			}
 		}
 		
-		public AmpachePlayer (AmpacheModel model)
+		protected AmpachePlayer (AmpacheModel model)
 		{
 			_model = model;
 			_model.PropertyChanged += Handle_modelPropertyChanged;

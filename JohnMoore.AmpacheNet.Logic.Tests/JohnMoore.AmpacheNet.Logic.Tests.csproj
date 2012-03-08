@@ -41,6 +41,7 @@
     <Compile Include="AmpacheModelFixture.cs" />
     <Compile Include="AlbumArtLoaderFixture.cs" />
     <Compile Include="AmpachePlayerFixture.cs" />
+    <Compile Include="LookupFixture.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
