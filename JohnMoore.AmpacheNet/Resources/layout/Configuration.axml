@@ -66,6 +66,11 @@ android:layout_alignParentLeft="true"
 		  android:layout_below="@+id/txtPasswordConfig"
 		  android:layout_width="fill_parent"
           android:layout_height="wrap_content"></CheckBox>
+<CheckBox android:id="@+id/chkArtCache"
+          android:text="@string/cacheArt"
+		  android:layout_below="@+id/chkSeeking"
+		  android:layout_width="fill_parent"
+          android:layout_height="wrap_content"></CheckBox>
 <Button
 android:id="@+id/btnConfigTest"
 android:layout_width="wrap_content"

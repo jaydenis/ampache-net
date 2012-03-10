@@ -159,6 +159,11 @@
     <Compile Include="..\JohnMoore.AmpacheNet.Logic\AmpachePlayer.cs">
       <Link>Logic\AmpachePlayer.cs</Link>
     </Compile>
+    <Compile Include="..\JohnMoore.AmpacheNet.Logic\Lookup.cs">
+      <Link>Logic\Lookup.cs</Link>
+    </Compile>
+    <Compile Include="Lookup.cs" />
+    <Compile Include="SongSearch.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\AboutAssets.txt" />

@@ -62,22 +62,20 @@ namespace JohnMoore.AmpacheNet.DataAccess
             StringBuilder builder = new StringBuilder();
             builder.AppendFormat(BASE_URL, _handshake.Server, SelectAllMethod, _handshake.Passphrase);
             builder.AppendFormat(LIMIT_PARAMETER, LIMIT_AMOUNT);
-            var result = Query(builder.ToString());
+            var tmp = Query(builder.ToString());
             int offset = 0;
-            while (result.Count == LIMIT_AMOUNT) {
-                foreach(var t in result){
-                    yield return t;
-                }
+			var results = new List<TEntity>();
+            while (tmp.Count == LIMIT_AMOUNT) {
+                results.AddRange(tmp);
                 offset += LIMIT_AMOUNT;
                 builder = new StringBuilder();
                 builder.AppendFormat(BASE_URL, _handshake.Server, SelectAllMethod, _handshake.Passphrase);
                 builder.AppendFormat(LIMIT_PARAMETER, LIMIT_AMOUNT);
                 builder.AppendFormat(OFFSET_PARAMETER, offset);
-                result = Query(builder.ToString());
+                tmp = Query(builder.ToString());
             }
-            foreach(var t in result){
-                yield return t;
-            }
+			results.AddRange(tmp);
+            return results;		
         }
 
         public virtual IEnumerable<TEntity> SelectBy<TParameter> (TParameter parameter) where TParameter : IEntity

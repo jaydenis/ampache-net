@@ -230,9 +230,8 @@ namespace JohnMoore.AmpacheNet
 				case Resource.Id.playlists:
 					StartActivity(typeof(PlaylistLookupActivity));
 					break;
-				case Resource.Id.exit:
-					StopService(new Intent(this.ApplicationContext, typeof(AmpacheService)));
-					Finish();
+				case Resource.Id.search:
+					StartActivity(typeof(SongSearch));
 					break;
 				case Resource.Id.clearPlaylist:
 					System.Threading.ThreadPool.QueueUserWorkItem((o) => _model.Playlist = new List<AmpacheSong>());

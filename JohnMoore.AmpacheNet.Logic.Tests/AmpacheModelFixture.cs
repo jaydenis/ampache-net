@@ -23,6 +23,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			target.PropertyChanged += (sender, e) => Assert.That(e.PropertyName, Is.EqualTo(AmpacheModel.FACTORY));
 			target.Factory = new JohnMoore.AmpacheNet.DataAccess.AmpacheSelectionFactory(null);
 			Assert.That(timesNotified, Is.EqualTo(1));
+			Assert.That(target.IsDisposed, Is.False);
 		}
 		[Test()]
 		public void AmapcheModelPlayingSongNotifiesOnChange ()
@@ -33,6 +34,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			target.PropertyChanged += (sender, e) => Assert.That(e.PropertyName, Is.EqualTo(AmpacheModel.PLAYING_SONG));
 			target.PlayingSong = new AmpacheSong();
 			Assert.That(timesNotified, Is.EqualTo(1));
+			Assert.That(target.IsDisposed, Is.False);
 		}
 		[Test()]
 		public void AmapcheModelPlayListNotifiesOnChange ()
@@ -43,6 +45,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			target.PropertyChanged += (sender, e) => Assert.That(e.PropertyName, Is.EqualTo(AmpacheModel.PLAYLIST));
 			target.Playlist = new List<AmpacheSong>();
 			Assert.That(timesNotified, Is.EqualTo(1));
+			Assert.That(target.IsDisposed, Is.False);
 		}
 		[Test()]
 		public void AmapcheModelShufflingNotifiesOnChange ()
@@ -53,6 +56,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			target.PropertyChanged += (sender, e) => Assert.That(e.PropertyName, Is.EqualTo(AmpacheModel.SHUFFELING));
 			target.Shuffling = true;
 			Assert.That(timesNotified, Is.EqualTo(1));
+			Assert.That(target.IsDisposed, Is.False);
 		}
 		[Test()]
 		public void AmapcheModelConfigurationNotifiesOnChange ()
@@ -63,6 +67,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			target.PropertyChanged += (sender, e) => Assert.That(e.PropertyName, Is.EqualTo(AmpacheModel.CONFIGURATION));
 			target.Configuration = new UserConfiguration();
 			Assert.That(timesNotified, Is.EqualTo(1));
+			Assert.That(target.IsDisposed, Is.False);
 		}
 		[Test()]
 		public void AmapcheModelAlbumArtStreamNotifiesOnChange ()
@@ -73,6 +78,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			target.PropertyChanged += (sender, e) => Assert.That(e.PropertyName, Is.EqualTo(AmpacheModel.ALBUM_ART_STREAM));
 			target.AlbumArtStream = new System.IO.MemoryStream();
 			Assert.That(timesNotified, Is.EqualTo(1));
+			Assert.That(target.IsDisposed, Is.False);
 		}
 		[Test()]
 		public void AmapcheModelPlayPauseRequestedNotifiesOnChange ()
@@ -83,6 +89,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			target.PropertyChanged += (sender, e) => Assert.That(e.PropertyName, Is.EqualTo(AmpacheModel.PLAY_PAUSE_REQUESTED));
 			target.PlayPauseRequested = true;
 			Assert.That(timesNotified, Is.EqualTo(1));
+			Assert.That(target.IsDisposed, Is.False);
 		}
 		[Test()]
 		public void AmapcheModelNextRequestedNotifiesOnChange ()
@@ -93,6 +100,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			target.PropertyChanged += (sender, e) => Assert.That(e.PropertyName, Is.EqualTo(AmpacheModel.NEXT_REQUESTED));
 			target.NextRequested = true;
 			Assert.That(timesNotified, Is.EqualTo(1));
+			Assert.That(target.IsDisposed, Is.False);
 		}
 		[Test()]
 		public void AmapcheModelPerviousRequestedNotifiesOnChange ()
@@ -103,6 +111,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			target.PropertyChanged += (sender, e) => Assert.That(e.PropertyName, Is.EqualTo(AmpacheModel.PREVIOUS_REQUESTED));
 			target.PreviousRequested = true;
 			Assert.That(timesNotified, Is.EqualTo(1));
+			Assert.That(target.IsDisposed, Is.False);
 		}
 		[Test()]
 		public void AmapcheModelIsPlayingNotifiesOnChange ()
@@ -113,6 +122,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			target.PropertyChanged += (sender, e) => Assert.That(e.PropertyName, Is.EqualTo(AmpacheModel.IS_PLAYING));
 			target.IsPlaying = true;
 			Assert.That(timesNotified, Is.EqualTo(1));
+			Assert.That(target.IsDisposed, Is.False);
 		}
 		[Test()]
 		public void AmapcheModelStopRequestedNotifiesOnChange ()
@@ -123,6 +133,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			target.PropertyChanged += (sender, e) => Assert.That(e.PropertyName, Is.EqualTo(AmpacheModel.STOP_REQUESTED));
 			target.StopRequested = true;
 			Assert.That(timesNotified, Is.EqualTo(1));
+			Assert.That(target.IsDisposed, Is.False);
 		}
 		[Test()]
 		public void AmapcheModelPercentDownloadNotifiesOnChange ()
@@ -133,6 +144,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			target.PropertyChanged += (sender, e) => Assert.That(e.PropertyName, Is.EqualTo(AmpacheModel.PERCENT_DOWNLOADED));
 			target.PercentDownloaded = 1000;
 			Assert.That(timesNotified, Is.EqualTo(1));
+			Assert.That(target.IsDisposed, Is.False);
 		}
 		[Test()]
 		public void AmapcheModelPercentPlayedNotifiesOnChange ()
@@ -143,6 +155,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			target.PropertyChanged += (sender, e) => Assert.That(e.PropertyName, Is.EqualTo(AmpacheModel.PERCENT_PLAYED));
 			target.PercentPlayed = 1000;
 			Assert.That(timesNotified, Is.EqualTo(1));
+			Assert.That(target.IsDisposed, Is.False);
 		}
 		[Test()]
 		public void AmapcheModelRequestSeekToPercentageNotifiesOnChange ()
@@ -153,6 +166,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			target.PropertyChanged += (sender, e) => Assert.That(e.PropertyName, Is.EqualTo(AmpacheModel.REQUESTED_SEEK_TO_PERCENTAGE));
 			target.RequestedSeekToPercentage = .50;
 			Assert.That(timesNotified, Is.EqualTo(1));
+			Assert.That(target.IsDisposed, Is.False);
 		}
 		[Test()]
 		public void AmapcheModelUserMessageNotifiesOnChange ()
@@ -162,6 +176,42 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			target.PropertyChanged += (sender, e) => ++timesNotified;
 			target.PropertyChanged += (sender, e) => Assert.That(e.PropertyName, Is.EqualTo(AmpacheModel.USER_MESSAGE));
 			target.UserMessage = "message";
+			Assert.That(timesNotified, Is.EqualTo(1));
+			Assert.That(target.IsDisposed, Is.False);
+		}
+		[Test()]
+		public void AmapcheModelIsNotDisposedAtDefaultTest ()
+		{
+			var target = new AmpacheModel();
+			Assert.That(target.IsDisposed, Is.False);
+		}
+		[Test()]
+		public void AmapcheModelIsDisposedAfterDisposalTest ()
+		{
+			var target = new AmpacheModel();
+			Assert.That(target.IsDisposed, Is.False);
+			target.Dispose();
+			Assert.That(target.IsDisposed, Is.True);
+		}
+		[Test()]
+		public void AmapcheModelDisposalDisablesListenersTest ()
+		{
+			int timesNotified = 0;
+			var target = new AmpacheModel();
+			target.PropertyChanged += (sender, e) => ++timesNotified;
+			target.Dispose();
+			timesNotified = 0;
+			target.UserMessage = "message";
+			Assert.That(timesNotified, Is.EqualTo(0));
+		}
+		[Test()]
+		public void AmapcheModelDisposalClearsPlaylistTest ()
+		{
+			int timesNotified = 0;
+			var target = new AmpacheModel();
+			target.PropertyChanged += (sender, e) => ++timesNotified;
+			target.PropertyChanged += (sender, e) => Assert.That(e.PropertyName, Is.EqualTo(AmpacheModel.PLAYLIST));
+			target.Dispose();
 			Assert.That(timesNotified, Is.EqualTo(1));
 		}
 	}

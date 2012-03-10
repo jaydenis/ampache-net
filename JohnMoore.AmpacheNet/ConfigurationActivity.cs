@@ -88,7 +88,7 @@ namespace JohnMoore.AmpacheNet
 			var dlg = ProgressDialog.Show(this, GetString(Resource.String.connecting), GetString(Resource.String.connectingToAmpache));
 			System.Threading.ThreadPool.QueueUserWorkItem( (o) => {
 				try{
-					_connection.Model.Configuration = new UserConfiguration{ ServerUrl = FindViewById<EditText>(Resource.Id.txtConfigUrl).Text, User = FindViewById<EditText>(Resource.Id.txtConfigUser).Text, Password = FindViewById<EditText>(Resource.Id.txtPasswordConfig).Text, AllowSeeking = FindViewById<CheckBox>(Resource.Id.chkSeeking).Checked};
+					_connection.Model.Configuration = new UserConfiguration{ ServerUrl = FindViewById<EditText>(Resource.Id.txtConfigUrl).Text, User = FindViewById<EditText>(Resource.Id.txtConfigUser).Text, Password = FindViewById<EditText>(Resource.Id.txtPasswordConfig).Text, AllowSeeking = FindViewById<CheckBox>(Resource.Id.chkSeeking).Checked, CacheArt = FindViewById<CheckBox>(Resource.Id.chkArtCache).Checked};
 					_config = null;
 					Finish();
 				}

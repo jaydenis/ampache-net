@@ -56,6 +56,7 @@ namespace JohnMoore.AmpacheNet
 		private Authenticate _handshake;
 		private AndroidPlayer _player;
 		private Timer _ping;
+		private Timer _selfStop;
 		private AmpacheNotifications _notifications;
 				
 		#region implemented abstract members of Android.App.Service
@@ -88,6 +89,7 @@ namespace JohnMoore.AmpacheNet
 			config.CacheArt = settings.GetBoolean(AmpacheService.CACHE_ART_KEY, true);
 			_model.Configuration = config;			
 			AmpacheSelectionFactory.ArtLocalDirectory =  CacheDir.AbsolutePath;
+			_selfStop = new Timer((o) => Stop (), null, TimeSpan.FromMinutes(30), TimeSpan.FromMilliseconds(Timeout.Infinite));
 		}
 		
 		private void ServiceStartup()
@@ -163,10 +165,12 @@ namespace JohnMoore.AmpacheNet
 				if(_model.IsPlaying)
 				{
 					StartForeground(AmpacheNotifications.NOTIFICATION_ID, _notifications.AmpacheNotification);
+					_selfStop.Change(Timeout.Infinite, Timeout.Infinite);
 				}
 				else
 				{
 					StopForeground(false);
+					_selfStop.Change(TimeSpan.FromMinutes(30), TimeSpan.FromMilliseconds(Timeout.Infinite));
 				}
 			}
 			if(e.PropertyName == AmpacheModel.PLAYLIST)
@@ -178,6 +182,12 @@ namespace JohnMoore.AmpacheNet
 			}
 		}
 		
+		private void Stop()
+		{
+			_model.PropertyChanged -= Handle_modelPropertyChanged;
+			_model.Dispose();
+			StopSelf();
+		}
 		#region Binding Classes
 		public class Binder : Android.OS.Binder
 		{
@@ -214,7 +224,6 @@ namespace JohnMoore.AmpacheNet
 			public void OnServiceDisconnected (ComponentName name)
 			{}
 			#endregion
-
 
 		}
 		#endregion

@@ -56,16 +56,18 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		{
 			var model = new AmpacheModel();
 			var factory = Substitute.For<AmpacheSelectionFactory>((Handshake)null);
+			model.Factory = factory;
 			var selector = Substitute.For<IAmpacheSelector<MockEntity>>();
 			factory.GetInstanceSelectorFor<MockEntity>().Returns(selector);
 			var ent = new List<MockEntity>();
 			selector.SelectAll().Returns(ent);
 			
-			var target = new LookupHandle(TimeSpan.FromDays(2), model);
+			var target = new LookupHandle(TimeSpan.FromMilliseconds(100), model);
 			var actual = target.LoadAll();
 			var cache = target.CachedEntites;
-			Assert.That(actual, Is.SameAs(ent));
-			Assert.That(cache, Is.SameAs(ent));
+			Assert.That(actual, Is.Not.SameAs(ent));
+			Assert.That(actual, Is.Not.Null);
+			Assert.That(cache, Is.Not.Null);
 		}
 		
 		[Test()]
@@ -84,6 +86,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		{
 			var model = new AmpacheModel();
 			var factory = Substitute.For<AmpacheSelectionFactory>((Handshake)null);
+			model.Factory = factory;
 			var selector = Substitute.For<IAmpacheSelector<MockEntity>>();
 			factory.GetInstanceSelectorFor<MockEntity>().Returns(selector);
 			var ent = new List<MockEntity>();
@@ -93,7 +96,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			var target = new LookupHandle(TimeSpan.FromDays(2), model);
 			var actual = target.Search(text);
 			var cache = target.CachedEntites;
-			Assert.That(actual, Is.SameAs(ent));
+			Assert.That(actual, Is.Not.SameAs(ent));
 			Assert.That(cache, Is.Null);
 		}
 		

@@ -26,6 +26,7 @@
 
 using System;
 using System.IO;
+using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
 using JohnMoore.AmpacheNet.Entities;
@@ -33,9 +34,12 @@ using JohnMoore.AmpacheNet.DataAccess;
 
 namespace JohnMoore.AmpacheNet.Logic
 {
-	public class AmpacheModel : INotifyPropertyChanged
+	public class AmpacheModel : INotifyPropertyChanged, IDisposable
 	{
-	  	public AmpacheModel() {}
+	  	public AmpacheModel() 
+		{
+			IsDisposed = false;
+		}
 		
 		#region Factory
 
@@ -360,6 +364,24 @@ namespace JohnMoore.AmpacheNet.Logic
 		
 		#region INotifyPropertyChanged implementation
 		public event PropertyChangedEventHandler PropertyChanged;
+		#endregion
+		
+		public bool IsDisposed { get; private set; }
+		
+		#region IDisposable implementation
+		public void Dispose ()
+		{
+			IsDisposed = true;
+			Playlist = new List<AmpacheSong>();
+			PlayingSong = null;			
+			if(PropertyChanged != null)
+			{
+				foreach(var del in PropertyChanged.GetInvocationList().OfType<PropertyChangedEventHandler>())
+				{
+					PropertyChanged -= del;
+				}
+			}
+		}
 		#endregion
 	}
 }

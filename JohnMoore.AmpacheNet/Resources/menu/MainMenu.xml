@@ -10,6 +10,6 @@
           android:title="Albums" />
     <item android:id="@+id/clearPlaylist"
           android:title="Clear Playlist" />
-    <item android:id="@+id/exit"
-          android:title="Exit" />
+    <item android:id="@+id/search"
+          android:title="Search" />
 </menu>

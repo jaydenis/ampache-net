@@ -18,7 +18,7 @@ namespace JohnMoore.AmpacheNet.Logic
 		private readonly TimeSpan _cacheTimeToLive;
 		protected DateTime _cacheLoadTime = DateTime.MinValue;
 		protected static ICollection<TEntity> _cachedEntities;
-		private readonly AmpacheModel _model;
+		protected AmpacheModel _model;
 		private readonly Dictionary<TEntity, ICollection<AmpacheSong>> _loadedSongs = new Dictionary<TEntity, ICollection<AmpacheSong>>();
 		
 		public ICollection<TEntity> CachedEntites
@@ -34,6 +34,11 @@ namespace JohnMoore.AmpacheNet.Logic
 				
 		}
 		
+		public Lookup (TimeSpan cacheTimeToLive)
+		{
+			_cacheTimeToLive = cacheTimeToLive;
+		}
+		
 		public Lookup (TimeSpan cacheTimeToLive, AmpacheModel model)
 		{
 			_cacheTimeToLive = cacheTimeToLive;
@@ -45,7 +50,15 @@ namespace JohnMoore.AmpacheNet.Logic
 			if(CachedEntites == null)
 			{
 				var selector = _model.Factory.GetInstanceSelectorFor<TEntity>();
-				_cachedEntities = selector.SelectAll().OrderBy(e => e.Name).ToList();
+				try 
+				{
+					_cachedEntities = selector.SelectAll ().OrderBy (e => e.Name).ToList ();
+					_cacheLoadTime = DateTime.Now;
+				}
+				catch (Exception ex)
+				{
+					Console.WriteLine (ex.Message);
+				}
 			}
 			return _cachedEntities;
 		}

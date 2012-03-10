@@ -19,4 +19,6 @@
 	<string name="playFailureFormat">Unable to play track {0} by {1}</string>
 	<string name="allowSeeking">Allow Seeking</string>
 	<string name="filter">Filter</string>
+	<string name="search">Search</string>
+	<string name="cacheArt">Cache Album Art</string>
 </resources>
