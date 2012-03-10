@@ -78,7 +78,7 @@ android:layout_height="wrap_content"
 android:text="@string/test"
 android:minWidth="9mm"
 android:minHeight="9mm"
-android:layout_below="@+id/chkSeeking"
+android:layout_below="@+id/chkArtCache"
 android:layout_centerHorizontal="true"
 >
 </Button>
