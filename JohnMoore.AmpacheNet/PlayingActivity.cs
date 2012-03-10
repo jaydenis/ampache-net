@@ -75,6 +75,7 @@ namespace JohnMoore.AmpacheNet
 				_uiActions.Add(AmpacheModel.USER_MESSAGE, DisplayMessage);
 			}
 			_model.PropertyChanged += Handle_modelPropertyChanged;
+			_model.PropertyChanged += ModelDisposed;
 			ImageButton btn = FindViewById<ImageButton>(Resource.Id.imgPlayingNext);
 			if(btn != null)
 			{
@@ -206,6 +207,14 @@ namespace JohnMoore.AmpacheNet
 		void HandleNextClick (object sender, EventArgs e)
 		{
 			System.Threading.ThreadPool.QueueUserWorkItem((o) => _model.NextRequested = true);
+		}
+		
+		void ModelDisposed(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+		{
+			if(e.PropertyName == AmpacheModel.IS_DISPOSED && _model.IsDisposed)
+			{
+				Finish();
+			}
 		}
 		
 		public override bool OnCreateOptionsMenu (IMenu menu)

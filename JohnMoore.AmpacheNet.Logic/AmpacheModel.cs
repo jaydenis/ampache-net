@@ -359,14 +359,34 @@ namespace JohnMoore.AmpacheNet.Logic
 					PropertyChanged(this, new PropertyChangedEventArgs("UserMessage"));
 			}
 		}
+		
+		#endregion
+		
+		#region IsDisposed
+
+		public const string IS_DISPOSED = "IsDisposed";
+		private bool _isDisposed = false;
+
+		public bool IsDisposed
+		{
+			get { return _isDisposed; }
+			private set
+			{
+				if (_isDisposed == value)
+					return;
+
+				_isDisposed = value;
+				if(PropertyChanged != null)
+					PropertyChanged(this, new PropertyChangedEventArgs("IsDisposed"));
+			}
+		}
 
 		#endregion
+		
 		
 		#region INotifyPropertyChanged implementation
 		public event PropertyChangedEventHandler PropertyChanged;
 		#endregion
-		
-		public bool IsDisposed { get; private set; }
 		
 		#region IDisposable implementation
 		public void Dispose ()
