@@ -124,6 +124,7 @@ namespace JohnMoore.AmpacheNet
 		{
 			if(_currentAlbumArt != null)
 			{
+				_currentAlbumArt.Recycle();
 				_currentAlbumArt.Dispose();
 			}
 			if(_model.AlbumArtStream != null)
@@ -285,8 +286,12 @@ namespace JohnMoore.AmpacheNet
 			{
 				btn.Click -= HandleShuffleClick;
 			}
+			_currentAlbumArt.Recycle();
+			_currentAlbumArt.Dispose();
+			_currentAlbumArt = null;
 			UnbindService(_connection);
 			_connection.Dispose();
+			_connection = null;
 		}
 	}
 }

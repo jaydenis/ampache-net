@@ -57,9 +57,8 @@ namespace JohnMoore.AmpacheNet
 		protected override void AfterConnection ()
 		{
 			base.AfterConnection ();			
-			var task = new Task(delegate { 
-				_filteredEntities = LoadAll().ToList();
-				RunOnUiThread(() => UpdateUi(_filteredEntities)); });
+			var task = new Task(() => _filteredEntities = LoadAll().ToList());
+			task.ContinueWith((t) => RunOnUiThread(() => UpdateUi(_filteredEntities)));
 			task.Start();
 		}
 		

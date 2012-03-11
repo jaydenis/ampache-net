@@ -162,8 +162,12 @@
     <Compile Include="..\JohnMoore.AmpacheNet.Logic\Lookup.cs">
       <Link>Logic\Lookup.cs</Link>
     </Compile>
-    <Compile Include="Lookup.cs" />
     <Compile Include="SongSearch.cs" />
+    <Compile Include="Logic\Configuration.Android.cs" />
+    <Compile Include="..\JohnMoore.AmpacheNet.Logic\Configuration.cs">
+      <Link>Logic\Configuration.cs</Link>
+    </Compile>
+    <Compile Include="Logic\Lookup.Android.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\AboutAssets.txt" />

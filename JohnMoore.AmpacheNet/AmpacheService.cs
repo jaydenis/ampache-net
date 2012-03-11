@@ -140,11 +140,6 @@ namespace JohnMoore.AmpacheNet
 		{
 			if(e.PropertyName == AmpacheModel.CONFIGURATION)
 			{
-				_handshake = new Authenticate(_model.Configuration.ServerUrl, _model.Configuration.User, _model.Configuration.Password);
-				_model.UserMessage = GetString(Resource.String.connectedToAmpache);
-				_model.Factory = new AmpacheSelectionFactory(_handshake);
-				_ping.Dispose();
-				_ping = new Timer((o) => _handshake.Ping(), new object(), TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(5));
 				var settings = GetSharedPreferences(CONFIGURATION, FileCreationMode.Private);
 				var editor = settings.Edit();
 				editor.PutString(URL_KEY, _model.Configuration.ServerUrl);

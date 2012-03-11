@@ -79,6 +79,7 @@ namespace JohnMoore.AmpacheNet
 			_player.Completion -= Handle_playerCompletion;
 			_player.BufferingUpdate -= Handle_playerBufferingUpdate;
 			_player.Dispose();
+			_player = null;
 			_player = new MediaPlayer();
 			_player.SetAudioStreamType(Stream.Music);
 			_player.SetDataSource(_context, Android.Net.Uri.Parse(song.Url));

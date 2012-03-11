@@ -67,14 +67,9 @@ namespace JohnMoore.AmpacheNet
 			lv.SmoothScrollToPosition(e.Position);
 			var adp = lv.Adapter as AmpacheArrayAdapter<AmpacheSong>;
 			var sng = adp.GetItem(e.Position);
-			var tsk = new Task(delegate {
-				_model.StopRequested = true;
-				});
-			tsk.ContinueWith( delegate {
-				_model.PlayingSong = sng;
-				System.Threading.ThreadPool.QueueUserWorkItem((o) => _model.PlayPauseRequested = true);
-				RunOnUiThread(() => FindViewById<ImageButton>(Resource.Id.imgPlayingPlayPause).SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_media_pause)));
-			});
+			var tsk = new Task(() => _model.StopRequested = true);
+			tsk.ContinueWith((t) => _model.PlayingSong = sng);
+			tsk.ContinueWith((t) =>	_model.PlayPauseRequested = true);
 			tsk.Start();
 		}
 		
@@ -99,21 +94,16 @@ namespace JohnMoore.AmpacheNet
 			{
 				var adp = lv.Adapter as AmpacheArrayAdapter<AmpacheSong>;
 				var sng = adp.GetItem(e.Position);
-				var tsk = new Task(delegate {
-					_model.StopRequested = true;
-				});
-				tsk.ContinueWith( delegate {
-					_model.PlayingSong = sng;
-					System.Threading.ThreadPool.QueueUserWorkItem((o) => _model.PlayPauseRequested = true);
-					RunOnUiThread(() => FindViewById<ImageButton>(Resource.Id.imgPlayingPlayPause).SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_media_pause)));
-				});
+				var tsk = new Task(() => _model.StopRequested = true);
+				tsk.ContinueWith((t) =>	_model.PlayingSong = sng);
+				tsk.ContinueWith((t) =>	_model.PlayPauseRequested = true);
 				tsk.Start();
 			}
 		}
 		
 		void PopulateSongs()
 		{
-			var adp = new AmpacheArrayAdapter<AmpacheSong>(HydrateSong, this.LayoutInflater, this, Android.Resource.Layout.SimpleListItem1, _model.Playlist);
+			var adp = new AmpacheArrayAdapter<AmpacheSong>(HydrateSong, this.LayoutInflater, this.ApplicationContext, Android.Resource.Layout.SimpleListItem1, _model.Playlist);
 			FindViewById<ListView>(Resource.Id.lstPlaylist).Adapter = adp;
 		}
 		
@@ -132,7 +122,9 @@ namespace JohnMoore.AmpacheNet
 		{
 			base.OnDestroy ();
 			FindViewById<ListView>(Resource.Id.lstPlaylist).ItemClick -= HandleItemSelected;
+			FindViewById<ListView>(Resource.Id.lstPlaylist).ItemLongClick -= HandleItemLongClick;
 			FindViewById<ImageView>(Resource.Id.imgPlayingAlbumArt).Click -= HandleImageClick;
+			
 		}
 		
 		private View HydrateSong(AmpacheSong song, View v)

@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 using Android.App;
 using Android.Content;
@@ -38,11 +39,12 @@ using Android.Widget;
 
 using JohnMoore.AmpacheNet.DataAccess;
 using JohnMoore.AmpacheNet.Entities;
+using JohnMoore.AmpacheNet.Logic;
 
 namespace JohnMoore.AmpacheNet
 {
 	[Activity(Theme="@android:style/Theme.Dialog")]			
-	public class ConfigurationActivity : Activity
+	public class ConfigurationActivity : Configuration
 	{		
 		private AmpacheService.Connection _connection;
 		private static UserConfiguration _config = null;
@@ -57,7 +59,7 @@ namespace JohnMoore.AmpacheNet
 			FindViewById<TextView>(Resource.Id.txtConfigUrl).TextChanged += HandleTextChanged;
 			FindViewById<TextView>(Resource.Id.txtConfigUser).TextChanged += HandleTextChanged;
 			FindViewById<TextView>(Resource.Id.txtPasswordConfig).TextChanged += HandleTextChanged;
-			
+			_successMessage = GetString(Resource.String.connectedToAmpache);
 			_connection = new AmpacheService.Connection();
 			_connection.OnConnected += Handle_connectionOnConnected;
 			BindService(new Intent(this.ApplicationContext, typeof(AmpacheService)), _connection, Bind.AutoCreate);
@@ -81,22 +83,24 @@ namespace JohnMoore.AmpacheNet
 			FindViewById<EditText>(Resource.Id.txtConfigUser).Text = tmp.User;
 			FindViewById<EditText>(Resource.Id.txtPasswordConfig).Text = tmp.Password;
 			FindViewById<CheckBox>(Resource.Id.chkSeeking).Checked = tmp.AllowSeeking;
+			FindViewById<CheckBox>(Resource.Id.chkArtCache).Checked = tmp.CacheArt;
+			_model = _connection.Model;
 		}
 
 		void HandleOkClick (object sender, EventArgs e)
 		{
 			var dlg = ProgressDialog.Show(this, GetString(Resource.String.connecting), GetString(Resource.String.connectingToAmpache));
-			System.Threading.ThreadPool.QueueUserWorkItem( (o) => {
-				try{
-					_connection.Model.Configuration = new UserConfiguration{ ServerUrl = FindViewById<EditText>(Resource.Id.txtConfigUrl).Text, User = FindViewById<EditText>(Resource.Id.txtConfigUser).Text, Password = FindViewById<EditText>(Resource.Id.txtPasswordConfig).Text, AllowSeeking = FindViewById<CheckBox>(Resource.Id.chkSeeking).Checked, CacheArt = FindViewById<CheckBox>(Resource.Id.chkArtCache).Checked};
-					_config = null;
-					Finish();
-				}
-				catch(Exception ex)
-				{
-					RunOnUiThread(() => Toast.MakeText(this.ApplicationContext, ex.Message, ToastLength.Short).Show());
-				} 
-			RunOnUiThread(()=>dlg.Dismiss());});
+			bool success = false;
+			var config = new UserConfiguration();
+			config.AllowSeeking = FindViewById<CheckBox>(Resource.Id.chkSeeking).Checked;
+			config.CacheArt = FindViewById<CheckBox>(Resource.Id.chkArtCache).Checked;
+			config.Password =  FindViewById<EditText>(Resource.Id.txtPasswordConfig).Text;
+			config.User =  FindViewById<EditText>(Resource.Id.txtConfigUser).Text;
+			config.ServerUrl =  FindViewById<EditText>(Resource.Id.txtConfigUrl).Text;
+			var task = new Task(() => success = TrySaveConfiguration(config));
+			task.ContinueWith((t) => RunOnUiThread(()=> dlg.Dismiss()));
+			task.ContinueWith(delegate(Task obj) { if(success) { Finish(); _config = null; } });
+			task.Start();
 		}
 
 		void HandleCancelClick (object sender, EventArgs e)
@@ -108,18 +112,11 @@ namespace JohnMoore.AmpacheNet
 		void HandleTestClick (object sender, EventArgs e)
 		{
 			var dlg = ProgressDialog.Show(this, GetString(Resource.String.connecting), GetString(Resource.String.connectingToAmpache));
-			System.Threading.ThreadPool.QueueUserWorkItem( (o) => {
-				try{
-					Handshake tmp = new Authenticate(FindViewById<EditText>(Resource.Id.txtConfigUrl).Text,
+			var task = new Task(() => PerformTest(FindViewById<EditText>(Resource.Id.txtConfigUrl).Text,
 												 FindViewById<EditText>(Resource.Id.txtConfigUser).Text,
-												 FindViewById<EditText>(Resource.Id.txtPasswordConfig).Text);
-					RunOnUiThread(() => Toast.MakeText(this.ApplicationContext, GetString(Resource.String.connectedToAmpache), ToastLength.Long).Show());
-				}
-				catch(Exception ex)
-				{
-					RunOnUiThread(() => Toast.MakeText(this.ApplicationContext, ex.Message, ToastLength.Short).Show());
-				} 
-			RunOnUiThread(()=>dlg.Dismiss());});
+												 FindViewById<EditText>(Resource.Id.txtPasswordConfig).Text));
+			task.ContinueWith((o) => RunOnUiThread(() => dlg.Dismiss()));
+			task.Start();
 		}
 		
 		protected override void OnDestroy ()
