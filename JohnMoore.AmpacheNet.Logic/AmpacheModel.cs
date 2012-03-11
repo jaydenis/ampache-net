@@ -392,8 +392,6 @@ namespace JohnMoore.AmpacheNet.Logic
 		public void Dispose ()
 		{
 			IsDisposed = true;
-			Playlist = new List<AmpacheSong>();
-			PlayingSong = null;			
 			if(PropertyChanged != null)
 			{
 				foreach(var del in PropertyChanged.GetInvocationList().OfType<PropertyChangedEventHandler>())

@@ -33,27 +33,30 @@ namespace JohnMoore.AmpacheNet.DataAccess
 {
     public class AmpacheSelectionFactory
     {
-        private readonly Handshake handshake;
+        private Handshake _handshake;
 		public static string ArtLocalDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), ".AmpacheNet");
-
+		
+		public AmpacheSelectionFactory ()
+		{}
+		
         public AmpacheSelectionFactory (Handshake hs)
         {
-            handshake = hs;
+            _handshake = hs;
         }
 
         public virtual IAmpacheSelector<TEntity> GetInstanceSelectorFor<TEntity>() where TEntity : IEntity
         {
             if (typeof(TEntity) == typeof(AmpacheArtist)) {
-                return new ArtistSelector(handshake, new ArtistFactory()) as IAmpacheSelector<TEntity>;
+                return new ArtistSelector(_handshake, new ArtistFactory()) as IAmpacheSelector<TEntity>;
             }
             if (typeof(TEntity) == typeof(AmpacheAlbum)) {
-                return new AlbumSelector(handshake, new AlbumFactory()) as IAmpacheSelector<TEntity>;
+                return new AlbumSelector(_handshake, new AlbumFactory()) as IAmpacheSelector<TEntity>;
             }
             if (typeof(TEntity) == typeof(AmpacheSong)) {
-                return new SongSelector(handshake, new SongFactory()) as IAmpacheSelector<TEntity>;
+                return new SongSelector(_handshake, new SongFactory()) as IAmpacheSelector<TEntity>;
             }
             if (typeof(TEntity) == typeof(AmpachePlaylist)){
-                return new PlaylistSelector(handshake, new PlaylistFactory(), new SongFactory()) as IAmpacheSelector<TEntity>;
+                return new PlaylistSelector(_handshake, new PlaylistFactory(), new SongFactory()) as IAmpacheSelector<TEntity>;
             }
 			if (typeof(TEntity) == typeof(AlbumArt))
 			{
@@ -69,6 +72,19 @@ namespace JohnMoore.AmpacheNet.DataAccess
 				return new AlbumArtRepository(ArtLocalDirectory) as IPersistor<TEntity>;
 			}
             throw new InvalidOperationException(string.Format("{0} is not yet supported for persisting", typeof(TEntity).Name));
+		}
+		
+		public virtual Authenticate AuthenticateToServer(string server, string user, string password)
+		{
+			var tmp = new Authenticate(server, user, password);
+			_handshake = tmp;
+			return tmp;
+		}
+		
+		public virtual Authenticate AuthenticationTest(string server, string user, string password)
+		{
+			var tmp = new Authenticate(server, user, password);
+			return tmp;
 		}
     }
 }

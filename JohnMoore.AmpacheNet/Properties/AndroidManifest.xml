@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="19" android:versionName="1.4.2.0" package="johnmooreampachenet.johnmooreampachenet">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="20" android:versionName="2.0.0.0" package="johnmooreampachenet.johnmooreampachenet">
 	<application android:label="JohnMoore.AmpacheNet" android:debuggable="false" android:icon="@drawable/icon"></application>
 	<uses-sdk android:minSdkVersion="8" />
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.READ_PHONE_STATE" />
+	<supports-screens android:smallScreens="false" android:normalScreens="true" android:largeScreens="true" android:xlargeScreens="true" android:anyDensity="true" />
 </manifest>

@@ -29,6 +29,11 @@ namespace JohnMoore.AmpacheNet.Logic
 		
 		void Handle_modelPropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
+			System.Threading.ThreadPool.QueueUserWorkItem((o) => PropertyChanged(e));
+		}
+		
+		void PropertyChanged(PropertyChangedEventArgs e)
+		{	
 			lock(this)
 			{
 				switch (e.PropertyName) 
@@ -56,6 +61,7 @@ namespace JohnMoore.AmpacheNet.Logic
 
 		public void PlayPause ()
 		{
+			Console.WriteLine ("Play Pause Requested");
 			if(_isPaused)
 			{
 				Unpause();
@@ -95,6 +101,7 @@ namespace JohnMoore.AmpacheNet.Logic
 
 		void Next ()
 		{
+			Console.WriteLine ("Next Requested");
 			if (_model.Playlist == null || _model.Playlist.Count == 0) 
 			{
 				if (_model.IsPlaying)
@@ -129,6 +136,7 @@ namespace JohnMoore.AmpacheNet.Logic
 
 		void Previous ()
 		{
+			Console.WriteLine ("Previous Requested");
 			if (_model.Playlist == null || _model.Playlist.Count == 0) 
 			{
 				if (_model.IsPlaying)
@@ -155,6 +163,7 @@ namespace JohnMoore.AmpacheNet.Logic
 
 		void Stop ()
 		{
+			Console.WriteLine ("Stop Requested");
 			_model.PlayingSong = null;
 			if (_model.IsPlaying || _isPaused)
 			{

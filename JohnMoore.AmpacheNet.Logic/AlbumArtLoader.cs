@@ -74,9 +74,8 @@ namespace JohnMoore.AmpacheNet.Logic
 			var art = sel.SelectBy(_model.PlayingSong).FirstOrDefault();
 			if(art != null)
 			{
-				_currentStream = new MemoryStream();
-				art.ArtStream.CopyTo(_currentStream);
-				_currentStream.Position = 0;
+				art.ArtStream.Position = 0;
+				_currentStream = art.ArtStream;
 				_model.AlbumArtStream = _currentStream;
 				if (_model.Configuration.CacheArt && !persit.IsPersisted (art)) 
 				{

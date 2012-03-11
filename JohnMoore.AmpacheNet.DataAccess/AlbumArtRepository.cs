@@ -40,6 +40,7 @@ namespace JohnMoore.AmpacheNet.DataAccess
 					{
 						var stream = new MemoryStream();
 						file.CopyTo(stream);
+						stream.Position = 0;
 						res.Add (new AlbumArt { AlbumId = art.ArtId, ArtStream =  stream });
 					}
 				} 

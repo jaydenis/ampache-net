@@ -32,6 +32,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			var mock = new PlayerHandle(model);
 			model.Playlist = null;
 			model.PlayPauseRequested = true;
+			System.Threading.Thread.Sleep(100);
 			Assert.That(model.PlayPauseRequested, Is.False);
 			Assert.That(model.PlayingSong, Is.Null);
 		}
@@ -44,6 +45,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			
 			mock.SetPauseState(true);
 			model.PlayPauseRequested = true;
+			System.Threading.Thread.Sleep(100);
 			Assert.That(model.PlayPauseRequested, Is.False);
 			Assert.That(mock.UnpauseCalls, Is.EqualTo(1));
 			Assert.That(mock.PauseCalls, Is.EqualTo(0));
@@ -62,6 +64,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			mock.SetPauseState(false);
 			model.IsPlaying = true;
 			model.PlayPauseRequested = true;
+			System.Threading.Thread.Sleep(100);
 			Assert.That(model.PlayPauseRequested, Is.False);
 			Assert.That(mock.PauseCalls, Is.EqualTo(1));
 			Assert.That(mock.UnpauseCalls, Is.EqualTo(0));
@@ -83,6 +86,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			var second = new AmpacheSong();
 			model.Playlist = new List<AmpacheSong>{ first, second };
 			model.PlayPauseRequested = true;
+			System.Threading.Thread.Sleep(100);
 			Assert.That(model.PlayPauseRequested, Is.False);
 			Assert.That(mock.PauseCalls, Is.EqualTo(0));
 			Assert.That(mock.UnpauseCalls, Is.EqualTo(0));
@@ -107,6 +111,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			model.Playlist = new List<AmpacheSong>{ first, second };
 			model.PlayingSong = second;
 			model.PlayPauseRequested = true;
+			System.Threading.Thread.Sleep(100);
 			Assert.That(model.PlayPauseRequested, Is.False);
 			Assert.That(mock.PauseCalls, Is.EqualTo(0));
 			Assert.That(mock.UnpauseCalls, Is.EqualTo(0));
@@ -131,6 +136,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			model.Playlist = new List<AmpacheSong>{ first, second };
 			model.PlayingSong = second;
 			model.PlayPauseRequested = true;
+			System.Threading.Thread.Sleep(100);
 			Assert.That(model.PlayPauseRequested, Is.False);
 			Assert.That(mock.PauseCalls, Is.EqualTo(0));
 			Assert.That(mock.UnpauseCalls, Is.EqualTo(0));
@@ -154,6 +160,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			var second = new AmpacheSong();
 			model.Playlist = new List<AmpacheSong>{ first, second };
 			model.PlayPauseRequested = true;
+			System.Threading.Thread.Sleep(100);
 			Assert.That(model.PlayPauseRequested, Is.False);
 			Assert.That(mock.PauseCalls, Is.EqualTo(0));
 			Assert.That(mock.UnpauseCalls, Is.EqualTo(0));
@@ -179,6 +186,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			model.PlayingSong = null;
 			model.IsPlaying = false;
 			model.NextRequested = true;
+			System.Threading.Thread.Sleep(100);
 			Assert.That(model.PlayPauseRequested, Is.False);
 			Assert.That(mock.PauseCalls, Is.EqualTo(0));
 			Assert.That(mock.UnpauseCalls, Is.EqualTo(0));
@@ -204,6 +212,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			model.PlayingSong = first;
 			model.IsPlaying = true;
 			model.NextRequested = true;
+			System.Threading.Thread.Sleep(100);
 			Assert.That(model.PlayPauseRequested, Is.False);
 			Assert.That(mock.PauseCalls, Is.EqualTo(0));
 			Assert.That(mock.UnpauseCalls, Is.EqualTo(0));
@@ -231,6 +240,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			model.PercentPlayed = 90;
 			model.PercentDownloaded = 100;
 			model.NextRequested = true;
+			System.Threading.Thread.Sleep(100);
 			Assert.That(model.PlayPauseRequested, Is.False);
 			Assert.That(model.PercentPlayed, Is.EqualTo(0));
 			Assert.That(model.PercentDownloaded, Is.EqualTo(0));
@@ -258,6 +268,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			model.IsPlaying = true;
 			model.Shuffling = true;
 			model.NextRequested = true;
+			System.Threading.Thread.Sleep(100);
 			Assert.That(model.PlayPauseRequested, Is.False);
 			Assert.That(mock.PauseCalls, Is.EqualTo(0));
 			Assert.That(mock.UnpauseCalls, Is.EqualTo(0));
@@ -282,6 +293,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			mock.SetPlayerPositionMilliSecond(10000);
 			model.IsPlaying = true;
 			model.PreviousRequested = true;
+			System.Threading.Thread.Sleep(100);
 			Assert.That(model.PlayPauseRequested, Is.False);
 			Assert.That(mock.PauseCalls, Is.EqualTo(0));
 			Assert.That(mock.UnpauseCalls, Is.EqualTo(0));
@@ -306,6 +318,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			model.PlayingSong = second;
 			model.IsPlaying = true;
 			model.StopRequested = true;
+			System.Threading.Thread.Sleep(100);
 			Assert.That(model.PlayPauseRequested, Is.False);
 			Assert.That(mock.PauseCalls, Is.EqualTo(0));
 			Assert.That(mock.UnpauseCalls, Is.EqualTo(0));
@@ -329,6 +342,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			model.PlayingSong = second;
 			model.IsPlaying = false;
 			model.StopRequested = true;
+			System.Threading.Thread.Sleep(100);
 			Assert.That(model.PlayPauseRequested, Is.False);
 			Assert.That(mock.PauseCalls, Is.EqualTo(0));
 			Assert.That(mock.UnpauseCalls, Is.EqualTo(0));
@@ -354,6 +368,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			model.Configuration = new UserConfiguration();
 			model.Configuration.AllowSeeking = false;
 			model.RequestedSeekToPercentage = 50;
+			System.Threading.Thread.Sleep(100);
 			Assert.That(model.PlayPauseRequested, Is.False);
 			Assert.That(mock.PauseCalls, Is.EqualTo(0));
 			Assert.That(mock.UnpauseCalls, Is.EqualTo(0));
@@ -380,6 +395,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			model.Configuration = new UserConfiguration();
 			model.Configuration.AllowSeeking = true;
 			model.RequestedSeekToPercentage = 50;
+			System.Threading.Thread.Sleep(100);
 			Assert.That(model.PlayPauseRequested, Is.False);
 			Assert.That(mock.PauseCalls, Is.EqualTo(0));
 			Assert.That(mock.UnpauseCalls, Is.EqualTo(0));
@@ -405,6 +421,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			mock.SetPlayerPositionMilliSecond(100);
 			model.IsPlaying = true;
 			model.PreviousRequested = true;
+			System.Threading.Thread.Sleep(100);
 			Assert.That(model.PlayPauseRequested, Is.False);
 			Assert.That(mock.PauseCalls, Is.EqualTo(0));
 			Assert.That(mock.UnpauseCalls, Is.EqualTo(0));

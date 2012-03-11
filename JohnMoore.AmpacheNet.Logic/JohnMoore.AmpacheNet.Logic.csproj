@@ -38,6 +38,7 @@
     <Compile Include="AlbumArtLoader.cs" />
     <Compile Include="AmpachePlayer.cs" />
     <Compile Include="Lookup.cs" />
+    <Compile Include="Configuration.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -189,9 +189,13 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		public void AmapcheModelIsDisposedAfterDisposalTest ()
 		{
 			var target = new AmpacheModel();
+			int timesNotified = 0;
+			target.PropertyChanged += (sender, e) => ++timesNotified;
+			target.PropertyChanged += (sender, e) => Assert.That(e.PropertyName, Is.EqualTo(AmpacheModel.IS_DISPOSED));
 			Assert.That(target.IsDisposed, Is.False);
 			target.Dispose();
 			Assert.That(target.IsDisposed, Is.True);
+			Assert.That(timesNotified, Is.EqualTo(1));
 		}
 		[Test()]
 		public void AmapcheModelDisposalDisablesListenersTest ()
@@ -203,16 +207,6 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			timesNotified = 0;
 			target.UserMessage = "message";
 			Assert.That(timesNotified, Is.EqualTo(0));
-		}
-		[Test()]
-		public void AmapcheModelDisposalClearsPlaylistTest ()
-		{
-			int timesNotified = 0;
-			var target = new AmpacheModel();
-			target.PropertyChanged += (sender, e) => ++timesNotified;
-			target.PropertyChanged += (sender, e) => Assert.That(e.PropertyName, Is.EqualTo(AmpacheModel.PLAYLIST));
-			target.Dispose();
-			Assert.That(timesNotified, Is.EqualTo(1));
 		}
 	}
 }

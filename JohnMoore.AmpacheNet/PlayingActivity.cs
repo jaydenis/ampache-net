@@ -13,7 +13,7 @@ using JohnMoore.AmpacheNet.Logic;
 namespace JohnMoore.AmpacheNet
 {
 	public abstract class PlayingActivity : Activity
-	{	
+	{
 		protected AmpacheModel _model;
 		protected readonly Dictionary<string, Action> _uiActions = new Dictionary<string, Action>();
 		private AmpacheService.Connection _connection;
