@@ -107,10 +107,11 @@ namespace JohnMoore.AmpacheNet
 					_handshake = new Authenticate(_model.Configuration.ServerUrl, _model.Configuration.User, _model.Configuration.Password);
 					_model.Factory = new AmpacheSelectionFactory(_handshake);
 					_model.UserMessage = GetString(Resource.String.connectedToAmpache);
+					var sngLookup = _model.Factory.GetInstanceSelectorFor<AmpacheSong> ();
+					var settings = GetSharedPreferences (CONFIGURATION, FileCreationMode.Private);
+					_model.Playlist = settings.GetString (PLAYLIST_CSV_KEY, string.Empty).Split (new [] {','}, StringSplitOptions.RemoveEmptyEntries).Select (s => sngLookup.SelectBy (int.Parse (s))).ToList ();
+					_ping = new Timer((o) => _handshake.Ping(), new object(), TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(5));
 				}
-				var sngLookup = _model.Factory.GetInstanceSelectorFor<AmpacheSong>();
-				var settings = GetSharedPreferences(CONFIGURATION,FileCreationMode.Private);
-				_model.Playlist = settings.GetString(PLAYLIST_CSV_KEY, string.Empty).Split(new [] {','}, StringSplitOptions.RemoveEmptyEntries).Select(s=> sngLookup.SelectBy(int.Parse(s))).ToList();
 			}
 			catch (Exception ex) 
 			{
@@ -118,7 +119,6 @@ namespace JohnMoore.AmpacheNet
 				Console.WriteLine (ex.GetType().Name);
 				Console.WriteLine (ex.Message);
 			}
-			_ping = new Timer((o) => _handshake.Ping(), new object(), TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(5));
 			_player = new AndroidPlayer(_model, ApplicationContext);
 			_notifications = new AmpacheNotifications(this.ApplicationContext, _model);
 			_model.PropertyChanged += Handle_modelPropertyChanged;
