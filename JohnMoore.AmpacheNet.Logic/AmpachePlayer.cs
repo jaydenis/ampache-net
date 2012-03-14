@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using JohnMoore.AmpacheNet.Entities;
 
 namespace JohnMoore.AmpacheNet.Logic
@@ -37,6 +38,8 @@ namespace JohnMoore.AmpacheNet.Logic
 		protected readonly AmpacheModel _model;
 		protected bool _isPaused = false;
 		private int _playerPositionMilliSecond;
+		private static object _syncLock = new object();
+		
 		protected int PlayerPositionMilliSecond
 		{
 			get { return _playerPositionMilliSecond; }
@@ -55,29 +58,28 @@ namespace JohnMoore.AmpacheNet.Logic
 		
 		void Handle_modelPropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
-			System.Threading.ThreadPool.QueueUserWorkItem((o) => PropertyChanged(e));
-		}
-		
-		void PropertyChanged(PropertyChangedEventArgs e)
-		{	
-			lock(this)
+			lock(_syncLock)
 			{
 				switch (e.PropertyName) 
 				{
 					case AmpacheModel.PLAY_PAUSE_REQUESTED:
-						if(_model.PlayPauseRequested) PlayPause();
+						if(_model.PlayPauseRequested) Task.Factory.StartNew(() => PlayPause());
 						break;
 					case AmpacheModel.NEXT_REQUESTED:
-						if(_model.NextRequested) Next();
+						if(_model.NextRequested) Task.Factory.StartNew(() => Next());
 						break;
 					case AmpacheModel.PREVIOUS_REQUESTED:
-						if(_model.PreviousRequested) Previous();
+						if(_model.PreviousRequested) Task.Factory.StartNew(() => Previous());
 						break;
 					case AmpacheModel.STOP_REQUESTED:
-						if(_model.StopRequested) Stop();
+						if(_model.StopRequested)
+						{	
+							_model.PlayingSong = null;
+							Stop();
+						}
 						break;
 					case AmpacheModel.REQUESTED_SEEK_TO_PERCENTAGE:
-						Seek();
+						Task.Factory.StartNew(() => Seek());
 						break;
 					default:
 						break;
@@ -87,110 +89,121 @@ namespace JohnMoore.AmpacheNet.Logic
 
 		public void PlayPause ()
 		{
-			Console.WriteLine ("Play Pause Requested");
-			if(_isPaused)
+			lock(_syncLock)
 			{
-				Unpause();
-				_isPaused = false;
-				_model.IsPlaying = true;
-			}
-			else if(_model.IsPlaying)
-			{
-				Pause();
-				_isPaused = true;
-				_model.IsPlaying = false;
-			}
-			else if((_model.Playlist ?? new List<AmpacheSong>()).Any())
-			{
-				Console.WriteLine ("Begining Playback");
-				if(_model.PlayingSong == null)
+				Console.WriteLine ("Play Pause Requested");
+				if(_isPaused)
 				{
-					Console.WriteLine ("Playback First Song");
-					_model.PlayingSong = _model.Playlist.First();
+					Unpause();
+					_isPaused = false;
+					_model.IsPlaying = true;
 				}
-				try
+				else if(_model.IsPlaying)
 				{
+					Pause();
+					_isPaused = true;
+					_model.IsPlaying = false;
+				}
+				else if((_model.Playlist ?? new List<AmpacheSong>()).Any())
+				{
+					Console.WriteLine ("Begining Playback");
+					if(_model.PlayingSong == null)
+					{
+						Console.WriteLine ("Playback First Song");
+						_model.PlayingSong = _model.Playlist.First();
+					}
+					try
+					{
+						_model.PercentPlayed = 0;
+						_model.PercentDownloaded = 0;
+						PlaySong (_model.PlayingSong);
+						_isPaused = false;
+						_model.IsPlaying = true;
+					} 
+					catch (Exception ex) 
+					{
+						_model.UserMessage = ex.Message;
+						Console.WriteLine (ex.Message);
+					}
+				}
+				_model.PlayPauseRequested = false;
+				Console.WriteLine ("PlayPause done");
+			}
+		}
+
+		void Next ()
+		{
+			lock(_syncLock)
+			{
+				Console.WriteLine ("Next Requested");
+				if (_model.Playlist == null || _model.Playlist.Count == 0) 
+				{
+					if (_model.IsPlaying)
+					{
+						StopPlay();
+						_model.PercentPlayed = 0;
+						_model.PercentDownloaded = 0;
+					}
+					_model.PlayingSong = null;
+				}
+				else
+				{
+					int nextIndex = 0;
+					if(_model.Shuffling)
+					{
+						nextIndex = new Random().Next(0, _model.Playlist.Count - 1);
+					}
+					else if(_model.PlayingSong != null)
+					{
+						nextIndex = (_model.Playlist.IndexOf(_model.PlayingSong) + 1) % _model.Playlist.Count;
+					}
+					_model.PlayingSong = _model.Playlist[nextIndex];
+					Console.WriteLine ("Playing next Song: " + _model.PlayingSong.Name);
 					_model.PercentPlayed = 0;
 					_model.PercentDownloaded = 0;
 					PlaySong (_model.PlayingSong);
 					_isPaused = false;
 					_model.IsPlaying = true;
-				} 
-				catch (Exception ex) 
-				{
-					_model.UserMessage = ex.Message;
-					Console.WriteLine (ex.Message);
 				}
+				_model.NextRequested = false;
+				Console.WriteLine ("Next done");
 			}
-			_model.PlayPauseRequested = false;
-		}
-
-		void Next ()
-		{
-			Console.WriteLine ("Next Requested");
-			if (_model.Playlist == null || _model.Playlist.Count == 0) 
-			{
-				if (_model.IsPlaying)
-				{
-					StopPlay();
-					_model.PercentPlayed = 0;
-					_model.PercentDownloaded = 0;
-				}
-				_model.PlayingSong = null;
-			}
-			else
-			{
-				int nextIndex = 0;
-				if(_model.Shuffling)
-				{
-					nextIndex = new Random().Next(0, _model.Playlist.Count - 1);
-				}
-				else if(_model.PlayingSong != null)
-				{
-					nextIndex = (_model.Playlist.IndexOf(_model.PlayingSong) + 1) % _model.Playlist.Count;
-				}
-				_model.PlayingSong = _model.Playlist[nextIndex];
-				Console.WriteLine ("Playing next Song: " + _model.PlayingSong.Name);
-				_model.PercentPlayed = 0;
-				_model.PercentDownloaded = 0;
-				PlaySong (_model.PlayingSong);
-				_isPaused = false;
-				_model.IsPlaying = true;
-			}
-			_model.NextRequested = false;
 		}
 
 		void Previous ()
 		{
-			Console.WriteLine ("Previous Requested");
-			if (_model.Playlist == null || _model.Playlist.Count == 0) 
+			lock(_syncLock)
 			{
-				if (_model.IsPlaying)
+				Console.WriteLine ("Previous Requested");
+				if (_model.Playlist == null || _model.Playlist.Count == 0) 
 				{
-					StopPlay();
-					_model.PercentPlayed = 0;
-					_model.PercentDownloaded = 0;
-					_model.PlayingSong = null;
+					if (_model.IsPlaying)
+					{
+						StopPlay();
+						_model.PercentPlayed = 0;
+						_model.PercentDownloaded = 0;
+						_model.PlayingSong = null;
+					}
+					_model.PreviousRequested = false;
+					return;
 				}
+				if(PlayerPositionMilliSecond < 2000)
+				{
+					_model.PlayingSong = _model.Playlist[(_model.Playlist.IndexOf(_model.PlayingSong) + _model.Playlist.Count - 1) % _model.Playlist.Count];
+					Console.WriteLine ("Playing Previous Song");
+				}
+				_model.PercentPlayed = 0;
+				_model.PercentDownloaded = 0;
+				PlaySong (_model.PlayingSong);
+				_isPaused = false;
 				_model.PreviousRequested = false;
-				return;
+				Console.WriteLine ("Previous done");
 			}
-			if(PlayerPositionMilliSecond < 2000)
-			{
-				_model.PlayingSong = _model.Playlist[(_model.Playlist.IndexOf(_model.PlayingSong) + _model.Playlist.Count - 1) % _model.Playlist.Count];
-				Console.WriteLine ("Playing Previous Song");
-			}
-			_model.PercentPlayed = 0;
-			_model.PercentDownloaded = 0;
-			PlaySong (_model.PlayingSong);
-			_isPaused = false;
-			_model.PreviousRequested = false;
 		}
 
 		void Stop ()
 		{
 			Console.WriteLine ("Stop Requested");
-			_model.PlayingSong = null;
 			if (_model.IsPlaying || _isPaused)
 			{
 				StopPlay();
@@ -200,6 +213,7 @@ namespace JohnMoore.AmpacheNet.Logic
 				_model.IsPlaying = false;
 			}
 			_model.StopRequested = false;
+			Console.WriteLine ("Stop done");
 		}
 
 		void Seek ()

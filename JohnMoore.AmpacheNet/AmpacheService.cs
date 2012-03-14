@@ -44,7 +44,7 @@ namespace JohnMoore.AmpacheNet
 	[Service]
 	public class AmpacheService : Service
 	{
-		private readonly AmpacheModel _model = new AmpacheModel();
+		private static readonly AmpacheModel _model = new AmpacheModel();
 		private static AlbumArtLoader _loader;
 		private const string CONFIGURATION = "configuration";
 		private const string URL_KEY = "url";
@@ -56,9 +56,9 @@ namespace JohnMoore.AmpacheNet
 		private Authenticate _handshake;
 		private AndroidPlayer _player;
 		private Timer _ping;
-		private Timer _selfStop;
 		private AmpacheNotifications _notifications;
-				
+		private PendingIntent _stopIntent;
+		const int STOP_ACTION = 94839;	
 		#region implemented abstract members of Android.App.Service
 		public override IBinder OnBind (Intent intent)
 		{
@@ -89,7 +89,10 @@ namespace JohnMoore.AmpacheNet
 			config.CacheArt = settings.GetBoolean(AmpacheService.CACHE_ART_KEY, true);
 			_model.Configuration = config;			
 			AmpacheSelectionFactory.ArtLocalDirectory =  CacheDir.AbsolutePath;
-			_selfStop = new Timer((o) => Stop (), null, TimeSpan.FromMinutes(30), TimeSpan.FromMilliseconds(Timeout.Infinite));
+			var am = (AlarmManager)ApplicationContext.GetSystemService(Context.AlarmService);
+			var intent = new Intent(ApplicationContext, typeof(StopServiceReceiver));
+			_stopIntent = PendingIntent.GetBroadcast(ApplicationContext, STOP_ACTION, intent, PendingIntentFlags.NoCreate);
+			//am.Set(AlarmType.ElapsedRealtimeWakeup, Java.Util.Calendar.GetInstance(Java.Util.Locale.Default).TimeInMillis , _stopIntent);
 		}
 		
 		private void ServiceStartup()
@@ -160,12 +163,14 @@ namespace JohnMoore.AmpacheNet
 				if(_model.IsPlaying)
 				{
 					StartForeground(AmpacheNotifications.NOTIFICATION_ID, _notifications.AmpacheNotification);
-					_selfStop.Change(Timeout.Infinite, Timeout.Infinite);
+					var am = (AlarmManager)ApplicationContext.GetSystemService(Context.AlarmService);
+					am.Cancel(_stopIntent);
 				}
 				else
 				{
 					StopForeground(false);
-					_selfStop.Change(TimeSpan.FromMinutes(30), TimeSpan.FromMilliseconds(Timeout.Infinite));
+					var am = (AlarmManager)ApplicationContext.GetSystemService(Context.AlarmService);
+					am.Set(AlarmType.ElapsedRealtimeWakeup, Java.Lang.JavaSystem.CurrentTimeMillis() + (long)TimeSpan.FromMinutes(30).Milliseconds, _stopIntent);
 				}
 			}
 			if(e.PropertyName == AmpacheModel.PLAYLIST)
@@ -175,14 +180,12 @@ namespace JohnMoore.AmpacheNet
 				editor.PutString(PLAYLIST_CSV_KEY, string.Join(",", _model.Playlist.Select(s=>s.Id.ToString()).ToArray()));
 				editor.Commit();
 			}
+			if(e.PropertyName == AmpacheModel.IS_DISPOSED && _model.IsDisposed)
+			{
+				StopSelf();
+			}
 		}
 		
-		private void Stop()
-		{
-			_model.PropertyChanged -= Handle_modelPropertyChanged;
-			_model.Dispose();
-			StopSelf();
-		}
 		#region Binding Classes
 		public class Binder : Android.OS.Binder
 		{
@@ -220,6 +223,17 @@ namespace JohnMoore.AmpacheNet
 			{}
 			#endregion
 
+		}
+		
+		[BroadcastReceiver(Enabled = true)]
+		[IntentFilter(new string[] {"STOP_SERVICE_INTENT"})]
+		private class StopServiceReceiver : BroadcastReceiver
+		{
+			public override void OnReceive (Context context, Intent intent)
+			{
+				Console.WriteLine ("Shutdown Broadcast Received");
+				_model.Dispose();
+			}
 		}
 		#endregion
 	}

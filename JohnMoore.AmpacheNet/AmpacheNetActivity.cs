@@ -67,10 +67,12 @@ namespace JohnMoore.AmpacheNet
 			lv.SmoothScrollToPosition(e.Position);
 			var adp = lv.Adapter as AmpacheArrayAdapter<AmpacheSong>;
 			var sng = adp.GetItem(e.Position);
-			var tsk = new Task(() => _model.StopRequested = true);
-			tsk.ContinueWith((t) => _model.PlayingSong = sng);
-			tsk.ContinueWith((t) =>	_model.PlayPauseRequested = true);
-			tsk.Start();
+			var t0 = new Task (() => _model.StopRequested = true);
+			var t1 = t0.ContinueWith((t) =>
+			                 _model.PlayingSong = sng);
+			var t2 = t1.ContinueWith((t) => _model.PlayPauseRequested = true);
+			
+			t0.Start();
 		}
 		
 		protected override void OnModelLoaded ()
@@ -94,10 +96,10 @@ namespace JohnMoore.AmpacheNet
 			{
 				var adp = lv.Adapter as AmpacheArrayAdapter<AmpacheSong>;
 				var sng = adp.GetItem(e.Position);
-				var tsk = new Task(() => _model.StopRequested = true);
-				tsk.ContinueWith((t) =>	_model.PlayingSong = sng);
-				tsk.ContinueWith((t) =>	_model.PlayPauseRequested = true);
-				tsk.Start();
+				var t0 = new Task(() => _model.StopRequested = true);
+				var t1 = t0.ContinueWith((t) =>	_model.PlayingSong = sng);
+				var t2 = t1.ContinueWith((t) =>	_model.PlayPauseRequested = true);
+				t0.Start();
 			}
 		}
 		
