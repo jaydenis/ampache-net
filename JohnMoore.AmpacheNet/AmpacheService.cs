@@ -27,7 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
+using System.Threading.Tasks;
 using System.ComponentModel;
 
 using Android.App;
@@ -44,7 +44,7 @@ namespace JohnMoore.AmpacheNet
 	[Service]
 	public class AmpacheService : Service
 	{
-		private static readonly AmpacheModel _model = new AmpacheModel();
+		private static AmpacheModel _model;
 		private static AlbumArtLoader _loader;
 		private const string CONFIGURATION = "configuration";
 		private const string URL_KEY = "url";
@@ -53,12 +53,10 @@ namespace JohnMoore.AmpacheNet
 		private const string ALLOW_SEEKING_KEY = "allowSeeking";
 		private const string CACHE_ART_KEY = "cacheArt";
 		private const string PLAYLIST_CSV_KEY = "playlist";
-		private Authenticate _handshake;
 		private AndroidPlayer _player;
-		private Timer _ping;
 		private AmpacheNotifications _notifications;
 		private PendingIntent _stopIntent;
-		const int STOP_ACTION = 94839;	
+		private PendingIntent _pingIntent;
 		#region implemented abstract members of Android.App.Service
 		public override IBinder OnBind (Intent intent)
 		{
@@ -71,10 +69,16 @@ namespace JohnMoore.AmpacheNet
 		}
 		#endregion
 		
+		public override StartCommandResult OnStartCommand (Intent intent, StartCommandFlags flags, int startId)
+		{
+			return StartCommandResult.NotSticky;
+		}
+		
 		public override void OnCreate ()
 		{
-			base.OnCreate ();			
-			System.Threading.ThreadPool.QueueUserWorkItem((o) => ServiceStartup());
+			base.OnCreate ();
+			_model = new AmpacheModel();
+			Task.Factory.StartNew(() => ServiceStartup());
 			var telSvc = this.ApplicationContext.GetSystemService(Context.TelephonyService) as Android.Telephony.TelephonyManager;
 			if(telSvc != null)
 			{
@@ -90,9 +94,12 @@ namespace JohnMoore.AmpacheNet
 			_model.Configuration = config;			
 			AmpacheSelectionFactory.ArtLocalDirectory =  CacheDir.AbsolutePath;
 			var am = (AlarmManager)ApplicationContext.GetSystemService(Context.AlarmService);
-			var intent = new Intent(ApplicationContext, typeof(StopServiceReceiver));
-			_stopIntent = PendingIntent.GetBroadcast(ApplicationContext, STOP_ACTION, intent, PendingIntentFlags.NoCreate);
-			//am.Set(AlarmType.ElapsedRealtimeWakeup, Java.Util.Calendar.GetInstance(Java.Util.Locale.Default).TimeInMillis , _stopIntent);
+			var stop = new Intent(StopServiceReceiver.INTENT);
+			var ping = new Intent(PingReceiver.INTENT);
+			_stopIntent = PendingIntent.GetBroadcast(ApplicationContext, 0, stop, PendingIntentFlags.UpdateCurrent);
+			_pingIntent = PendingIntent.GetBroadcast(ApplicationContext, 0, ping, PendingIntentFlags.UpdateCurrent);
+			am.Set(AlarmType.RtcWakeup, Java.Lang.JavaSystem.CurrentTimeMillis() + (long)TimeSpan.FromMinutes(1).TotalMilliseconds , _stopIntent);
+			am.SetRepeating(AlarmType.RtcWakeup, Java.Lang.JavaSystem.CurrentTimeMillis() + (long)TimeSpan.FromMinutes(5).TotalMilliseconds, (long)TimeSpan.FromMinutes(5).TotalMilliseconds, _pingIntent);
 		}
 		
 		private void ServiceStartup()
@@ -107,13 +114,12 @@ namespace JohnMoore.AmpacheNet
 			{
 				if (_model.Configuration.ServerUrl != string.Empty) 
 				{
-					_handshake = new Authenticate(_model.Configuration.ServerUrl, _model.Configuration.User, _model.Configuration.Password);
-					_model.Factory = new AmpacheSelectionFactory(_handshake);
+					var hs = new Authenticate(_model.Configuration.ServerUrl, _model.Configuration.User, _model.Configuration.Password);
+					_model.Factory = new AmpacheSelectionFactory(hs);
 					_model.UserMessage = GetString(Resource.String.connectedToAmpache);
 					var sngLookup = _model.Factory.GetInstanceSelectorFor<AmpacheSong> ();
 					var settings = GetSharedPreferences (CONFIGURATION, FileCreationMode.Private);
 					_model.Playlist = settings.GetString (PLAYLIST_CSV_KEY, string.Empty).Split (new [] {','}, StringSplitOptions.RemoveEmptyEntries).Select (s => sngLookup.SelectBy (int.Parse (s))).ToList ();
-					_ping = new Timer((o) => _handshake.Ping(), new object(), TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(5));
 				}
 			}
 			catch (Exception ex) 
@@ -129,13 +135,14 @@ namespace JohnMoore.AmpacheNet
 		
 		public override void OnDestroy ()
 		{
-			Console.WriteLine("Service Destroy");
 			base.OnDestroy ();
 			_model.PropertyChanged -= Handle_modelPropertyChanged;
-			_ping.Dispose();
 			_player.Dispose();
 			_loader.Dispose();
 			_notifications.Dispose();
+			Console.WriteLine ("So long and Thanks for all the fish!");
+			Java.Lang.JavaSystem.RunFinalizersOnExit(true);
+			Java.Lang.JavaSystem.Exit(0);
 		}
 			
 		
@@ -182,9 +189,13 @@ namespace JohnMoore.AmpacheNet
 			}
 			if(e.PropertyName == AmpacheModel.IS_DISPOSED && _model.IsDisposed)
 			{
+				StopForeground(true);
+				var am = (AlarmManager)ApplicationContext.GetSystemService(Context.AlarmService);
+				am.Cancel(_pingIntent);
+				am.Cancel(_stopIntent);
 				StopSelf();
 			}
-		}
+		}		
 		
 		#region Binding Classes
 		public class Binder : Android.OS.Binder
@@ -225,14 +236,35 @@ namespace JohnMoore.AmpacheNet
 
 		}
 		
+		#endregion
+		
+		#region Receiver Classes
+		
 		[BroadcastReceiver(Enabled = true)]
-		[IntentFilter(new string[] {"STOP_SERVICE_INTENT"})]
-		private class StopServiceReceiver : BroadcastReceiver
+		[IntentFilter(new string[] {StopServiceReceiver.INTENT})]
+		public class StopServiceReceiver : BroadcastReceiver
 		{
+			public const string INTENT = "JohnMoore.AmpacheNET.STOP_SERVICE_INTENT";
+			
 			public override void OnReceive (Context context, Intent intent)
 			{
 				Console.WriteLine ("Shutdown Broadcast Received");
 				_model.Dispose();
+			}
+		}
+		[BroadcastReceiver(Enabled = true)]
+		[IntentFilter(new string[] {PingReceiver.INTENT})]
+		public class PingReceiver : BroadcastReceiver
+		{
+			public const string INTENT = "JohnMoore.AmpacheNET.PING";
+			
+			public override void OnReceive (Context context, Intent intent)
+			{
+				Console.WriteLine ("Ping Broadcast Received");
+				if(_model.Factory != null)
+				{
+					_model.Factory.Ping();
+				}
 			}
 		}
 		#endregion

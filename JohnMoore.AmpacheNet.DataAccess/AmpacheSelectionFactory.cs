@@ -33,13 +33,13 @@ namespace JohnMoore.AmpacheNet.DataAccess
 {
     public class AmpacheSelectionFactory
     {
-        private Handshake _handshake;
+        private Authenticate _handshake;
 		public static string ArtLocalDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), ".AmpacheNet");
 		
 		public AmpacheSelectionFactory ()
 		{}
 		
-        public AmpacheSelectionFactory (Handshake hs)
+        public AmpacheSelectionFactory (Authenticate hs)
         {
             _handshake = hs;
         }
@@ -85,6 +85,14 @@ namespace JohnMoore.AmpacheNet.DataAccess
 		{
 			var tmp = new Authenticate(server, user, password);
 			return tmp;
+		}
+		
+		public virtual void Ping()
+		{
+			if(_handshake != null)
+			{
+				_handshake.Ping();
+			}
 		}
     }
 }
