@@ -98,7 +98,7 @@ namespace JohnMoore.AmpacheNet
 			var ping = new Intent(PingReceiver.INTENT);
 			_stopIntent = PendingIntent.GetBroadcast(ApplicationContext, 0, stop, PendingIntentFlags.UpdateCurrent);
 			_pingIntent = PendingIntent.GetBroadcast(ApplicationContext, 0, ping, PendingIntentFlags.UpdateCurrent);
-			am.Set(AlarmType.RtcWakeup, Java.Lang.JavaSystem.CurrentTimeMillis() + (long)TimeSpan.FromMinutes(1).TotalMilliseconds , _stopIntent);
+			am.Set(AlarmType.RtcWakeup, Java.Lang.JavaSystem.CurrentTimeMillis() + (long)TimeSpan.FromMinutes(30).TotalMilliseconds , _stopIntent);
 			am.SetRepeating(AlarmType.RtcWakeup, Java.Lang.JavaSystem.CurrentTimeMillis() + (long)TimeSpan.FromMinutes(5).TotalMilliseconds, (long)TimeSpan.FromMinutes(5).TotalMilliseconds, _pingIntent);
 		}
 		
@@ -244,7 +244,7 @@ namespace JohnMoore.AmpacheNet
 		[IntentFilter(new string[] {StopServiceReceiver.INTENT})]
 		public class StopServiceReceiver : BroadcastReceiver
 		{
-			public const string INTENT = "JohnMoore.AmpacheNET.STOP_SERVICE_INTENT";
+			public const string INTENT = "JohnMoore.AmpacheNET.STOP";
 			
 			public override void OnReceive (Context context, Intent intent)
 			{
