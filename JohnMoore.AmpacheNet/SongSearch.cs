@@ -62,18 +62,21 @@ namespace JohnMoore.AmpacheNet
 
 		void ExecuteSearch ()
 		{
-			RunOnUiThread(() => _prgDlg = ProgressDialog.Show(this, GetString(Resource.String.loading), GetString(Resource.String.loading)));
-			RunOnUiThread(() => FindViewById<EditText>(Resource.Id.txtFilter).ClearFocus());
-			try 
+			if(!string.IsNullOrEmpty(_searchString))
 			{
-				var res = Search (_searchString).ToList ();
-				RunOnUiThread(() => UpdateUi(res));
-			}
-			catch (Exception ex)
-			{
-				Console.WriteLine (ex.Message);
-				RunOnUiThread(() => _prgDlg.Dismiss());
-				_model.UserMessage = ex.Message;
+				RunOnUiThread(() => _prgDlg = ProgressDialog.Show(this, GetString(Resource.String.loading), GetString(Resource.String.loading)));
+				RunOnUiThread(() => FindViewById<EditText>(Resource.Id.txtFilter).ClearFocus());
+				try 
+				{
+					var res = Search (_searchString).ToList ();
+					RunOnUiThread(() => UpdateUi(res));
+				}
+				catch (Exception ex)
+				{
+					Console.WriteLine (ex.Message);
+					RunOnUiThread(() => _prgDlg.Dismiss());
+					_model.UserMessage = ex.Message;
+				}
 			}
 		}
 	}
