@@ -43,7 +43,7 @@ using JohnMoore.AmpacheNet.Logic;
 
 namespace JohnMoore.AmpacheNet
 {
-	[Activity(Theme="@android:style/Theme.Dialog")]			
+	[Activity(Theme="@android:style/Theme.Dialog", Label = "@string/configure")]
 	public class ConfigurationActivity : Configuration
 	{
 		private AmpacheService.Connection _connection;

@@ -217,6 +217,9 @@ namespace JohnMoore.AmpacheNet
 			// aapt resource value: 0x7f04000e
 			public const int cancel = 2130968590;
 			
+			// aapt resource value: 0x7f040015
+			public const int configure = 2130968597;
+			
 			// aapt resource value: 0x7f04000f
 			public const int configureRequest = 2130968591;
 			
