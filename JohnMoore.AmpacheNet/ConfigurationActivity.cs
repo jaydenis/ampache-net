@@ -4,7 +4,7 @@
 // Author:
 //       John Moore <jcwmoore@gmail.com>
 //
-// Copyright (c) 2011 John Moore
+// Copyright (c) 2012 John Moore
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -45,7 +45,7 @@ namespace JohnMoore.AmpacheNet
 {
 	[Activity(Theme="@android:style/Theme.Dialog")]			
 	public class ConfigurationActivity : Configuration
-	{		
+	{
 		private AmpacheService.Connection _connection;
 		private static UserConfiguration _config = null;
 		

@@ -67,11 +67,11 @@ namespace JohnMoore.AmpacheNet
 		public partial class Id
 		{
 			
-			// aapt resource value: 0x7f06001d
-			public const int albums = 2131099677;
-			
 			// aapt resource value: 0x7f06001c
-			public const int artists = 2131099676;
+			public const int albums = 2131099676;
+			
+			// aapt resource value: 0x7f06001b
+			public const int artists = 2131099675;
 			
 			// aapt resource value: 0x7f06000a
 			public const int btnConfigCancel = 2131099658;
@@ -88,14 +88,17 @@ namespace JohnMoore.AmpacheNet
 			// aapt resource value: 0x7f060007
 			public const int chkSeeking = 2131099655;
 			
-			// aapt resource value: 0x7f06001e
-			public const int clearPlaylist = 2131099678;
+			// aapt resource value: 0x7f06001d
+			public const int clearPlaylist = 2131099677;
 			
-			// aapt resource value: 0x7f06001a
-			public const int configure = 2131099674;
+			// aapt resource value: 0x7f06001f
+			public const int configure = 2131099679;
 			
 			// aapt resource value: 0x7f06000c
 			public const int filterLayout = 2131099660;
+			
+			// aapt resource value: 0x7f06001e
+			public const int help = 2131099678;
 			
 			// aapt resource value: 0x7f060014
 			public const int imgPlayingAlbumArt = 2131099668;
@@ -139,14 +142,11 @@ namespace JohnMoore.AmpacheNet
 			// aapt resource value: 0x7f06000e
 			public const int mainLayout = 2131099662;
 			
-			// aapt resource value: 0x7f06001b
-			public const int playlists = 2131099675;
+			// aapt resource value: 0x7f06001a
+			public const int playlists = 2131099674;
 			
 			// aapt resource value: 0x7f060019
 			public const int prgSeeking = 2131099673;
-			
-			// aapt resource value: 0x7f06001f
-			public const int search = 2131099679;
 			
 			// aapt resource value: 0x7f060002
 			public const int txtConfigUrl = 2131099650;

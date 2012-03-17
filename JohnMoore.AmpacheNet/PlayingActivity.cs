@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 using Android.App;
 using Android.Content;
@@ -210,30 +211,22 @@ namespace JohnMoore.AmpacheNet
 		}
 		void HandleShuffleClick (object sender, EventArgs e)
 		{
-			System.Threading.ThreadPool.QueueUserWorkItem((o) => _model.Shuffling = !_model.Shuffling);
+			Task.Factory.StartNew(() => _model.Shuffling = !_model.Shuffling);
 		}
 
 		void HandlePlayClick (object sender, EventArgs e)
 		{
-			if(_model.IsPlaying)
-			{
-				FindViewById<ImageButton>(Resource.Id.imgPlayingPlayPause).SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_media_play));
-			}
-			else
-			{
-				FindViewById<ImageButton>(Resource.Id.imgPlayingPlayPause).SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_media_pause));
-			}
-			System.Threading.ThreadPool.QueueUserWorkItem((o) => _model.PlayPauseRequested = true);
+			Task.Factory.StartNew(() => _model.PlayPauseRequested = true);
 		}
 
 		void HandlePreviousClick (object sender, EventArgs e)
 		{
-			System.Threading.ThreadPool.QueueUserWorkItem((o) => _model.PreviousRequested = true);
+			Task.Factory.StartNew(() => _model.PreviousRequested = true);
 		}
 
 		void HandleNextClick (object sender, EventArgs e)
 		{
-			System.Threading.ThreadPool.QueueUserWorkItem((o) => _model.NextRequested = true);
+			Task.Factory.StartNew(() => _model.NextRequested = true);
 		}
 		
 		void ModelDisposed(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -266,11 +259,13 @@ namespace JohnMoore.AmpacheNet
 				case Resource.Id.playlists:
 					StartActivity(typeof(PlaylistLookupActivity));
 					break;
-				case Resource.Id.search:
-					StartActivity(typeof(SongSearch));
+				case Resource.Id.help:
+					var intent = new Intent(Intent.ActionView);
+					intent.SetData(Android.Net.Uri.Parse("https://gitorious.org/ampache-net/pages/Android"));
+					StartActivity(intent);
 					break;
 				case Resource.Id.clearPlaylist:
-					System.Threading.ThreadPool.QueueUserWorkItem((o) => _model.Playlist = new List<AmpacheSong>());
+					Task.Factory.StartNew(() => _model.Playlist = new List<AmpacheSong>());
 					break;
 				default:
 					// unknown
@@ -278,7 +273,13 @@ namespace JohnMoore.AmpacheNet
 			}
 			return true;
 		}
-			
+		
+		public override bool OnSearchRequested ()
+		{
+			StartActivity(typeof(SongSearch));
+			return true;
+		}
+		
 		protected override void OnStop ()
 		{
 			base.OnStop ();
@@ -312,9 +313,12 @@ namespace JohnMoore.AmpacheNet
 			{
 				btn.Click -= HandleShuffleClick;
 			}
-			_currentAlbumArt.Recycle();
-			_currentAlbumArt.Dispose();
-			_currentAlbumArt = null;
+			if (_currentAlbumArt != null)
+			{
+				_currentAlbumArt.Recycle ();
+				_currentAlbumArt.Dispose ();
+				_currentAlbumArt = null;
+			}
 			UnbindService(_connection);
 			_connection.Dispose();
 			_connection = null;

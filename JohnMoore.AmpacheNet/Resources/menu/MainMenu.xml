@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/configure"
-          android:title="Configure" />
     <item android:id="@+id/playlists"
           android:title="Playlists" />
     <item android:id="@+id/artists"
@@ -10,6 +8,8 @@
           android:title="Albums" />
     <item android:id="@+id/clearPlaylist"
           android:title="Clear Playlist" />
-    <item android:id="@+id/search"
-          android:title="Search" />
+    <item android:id="@+id/help"
+          android:title="Help" />
+    <item android:id="@+id/configure"
+          android:title="Configure" />
 </menu>

@@ -25,11 +25,9 @@
 // THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.ComponentModel;
 using System.Threading;
+using System.Threading.Tasks;
 
 using Android.Media;
 using Android.Content;
@@ -51,7 +49,7 @@ namespace JohnMoore.AmpacheNet
 		
 		void Handle_playerCompletion (object sender, EventArgs e)
 		{
-			System.Threading.ThreadPool.QueueUserWorkItem((o) => _model.NextRequested = true);
+			Task.Factory.StartNew(() => _model.NextRequested = true);
 		}
 		
 		void Handle_playerBufferingUpdate (object sender, MediaPlayer.BufferingUpdateEventArgs e)

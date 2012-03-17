@@ -57,6 +57,7 @@ namespace JohnMoore.AmpacheNet
 		private AmpacheNotifications _notifications;
 		private PendingIntent _stopIntent;
 		private PendingIntent _pingIntent;
+		private int _intentId = 1;
 		#region implemented abstract members of Android.App.Service
 		public override IBinder OnBind (Intent intent)
 		{
@@ -67,7 +68,6 @@ namespace JohnMoore.AmpacheNet
 		{
 			GC.Collect();
 		}
-		#endregion
 		
 		public override StartCommandResult OnStartCommand (Intent intent, StartCommandFlags flags, int startId)
 		{
@@ -92,15 +92,28 @@ namespace JohnMoore.AmpacheNet
 			config.AllowSeeking = settings.GetBoolean(AmpacheService.ALLOW_SEEKING_KEY, true);
 			config.CacheArt = settings.GetBoolean(AmpacheService.CACHE_ART_KEY, true);
 			_model.Configuration = config;			
-			AmpacheSelectionFactory.ArtLocalDirectory =  CacheDir.AbsolutePath;
+			AmpacheSelectionFactory.ArtLocalDirectory = CacheDir.AbsolutePath;
 			var am = (AlarmManager)ApplicationContext.GetSystemService(Context.AlarmService);
 			var stop = new Intent(StopServiceReceiver.INTENT);
 			var ping = new Intent(PingReceiver.INTENT);
-			_stopIntent = PendingIntent.GetBroadcast(ApplicationContext, 0, stop, PendingIntentFlags.UpdateCurrent);
+			_stopIntent = PendingIntent.GetBroadcast(ApplicationContext, ++_intentId, stop, PendingIntentFlags.UpdateCurrent);
 			_pingIntent = PendingIntent.GetBroadcast(ApplicationContext, 0, ping, PendingIntentFlags.UpdateCurrent);
 			am.Set(AlarmType.RtcWakeup, Java.Lang.JavaSystem.CurrentTimeMillis() + (long)TimeSpan.FromMinutes(30).TotalMilliseconds , _stopIntent);
 			am.SetRepeating(AlarmType.RtcWakeup, Java.Lang.JavaSystem.CurrentTimeMillis() + (long)TimeSpan.FromMinutes(5).TotalMilliseconds, (long)TimeSpan.FromMinutes(5).TotalMilliseconds, _pingIntent);
 		}
+		
+		public override void OnDestroy ()
+		{
+			base.OnDestroy ();
+			_model.PropertyChanged -= Handle_modelPropertyChanged;
+			_player.Dispose();
+			_loader.Dispose();
+			_notifications.Dispose();
+			Console.WriteLine ("So long and Thanks for all the fish!");
+			Java.Lang.JavaSystem.RunFinalizersOnExit(true);
+			Java.Lang.JavaSystem.Exit(0);
+		}
+		#endregion
 		
 		private void ServiceStartup()
 		{
@@ -133,19 +146,6 @@ namespace JohnMoore.AmpacheNet
 			_model.PropertyChanged += Handle_modelPropertyChanged;
 		}
 		
-		public override void OnDestroy ()
-		{
-			base.OnDestroy ();
-			_model.PropertyChanged -= Handle_modelPropertyChanged;
-			_player.Dispose();
-			_loader.Dispose();
-			_notifications.Dispose();
-			Console.WriteLine ("So long and Thanks for all the fish!");
-			Java.Lang.JavaSystem.RunFinalizersOnExit(true);
-			Java.Lang.JavaSystem.Exit(0);
-		}
-			
-		
 		void Handle_modelPropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
 			if(e.PropertyName == AmpacheModel.CONFIGURATION)
@@ -172,12 +172,17 @@ namespace JohnMoore.AmpacheNet
 					StartForeground(AmpacheNotifications.NOTIFICATION_ID, _notifications.AmpacheNotification);
 					var am = (AlarmManager)ApplicationContext.GetSystemService(Context.AlarmService);
 					am.Cancel(_stopIntent);
+					_stopIntent.Dispose();
+					_stopIntent = null;
 				}
 				else
 				{
 					StopForeground(false);
 					var am = (AlarmManager)ApplicationContext.GetSystemService(Context.AlarmService);
 					am.Set(AlarmType.ElapsedRealtimeWakeup, Java.Lang.JavaSystem.CurrentTimeMillis() + (long)TimeSpan.FromMinutes(30).Milliseconds, _stopIntent);
+					var stop = new Intent(StopServiceReceiver.INTENT);
+					_stopIntent = PendingIntent.GetBroadcast(ApplicationContext, ++_intentId, stop, PendingIntentFlags.UpdateCurrent);
+					am.Set(AlarmType.RtcWakeup, Java.Lang.JavaSystem.CurrentTimeMillis() + (long)TimeSpan.FromMinutes(30).TotalMilliseconds , _stopIntent);
 				}
 			}
 			if(e.PropertyName == AmpacheModel.PLAYLIST)
