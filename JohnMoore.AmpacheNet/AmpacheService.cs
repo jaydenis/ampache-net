@@ -134,6 +134,10 @@ namespace JohnMoore.AmpacheNet
 					var settings = GetSharedPreferences (CONFIGURATION, FileCreationMode.Private);
 					_model.Playlist = settings.GetString (PLAYLIST_CSV_KEY, string.Empty).Split (new [] {','}, StringSplitOptions.RemoveEmptyEntries).Select (s => sngLookup.SelectBy (int.Parse (s))).ToList ();
 				}
+				else
+				{
+					_model.Factory = new AmpacheSelectionFactory();
+				}
 			}
 			catch (Exception ex) 
 			{

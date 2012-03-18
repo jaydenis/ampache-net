@@ -97,10 +97,9 @@ namespace JohnMoore.AmpacheNet
 			config.Password =  FindViewById<EditText>(Resource.Id.txtPasswordConfig).Text;
 			config.User =  FindViewById<EditText>(Resource.Id.txtConfigUser).Text;
 			config.ServerUrl =  FindViewById<EditText>(Resource.Id.txtConfigUrl).Text;
-			var task = new Task(() => success = TrySaveConfiguration(config));
-			task.ContinueWith((t) => RunOnUiThread(()=> dlg.Dismiss()));
-			task.ContinueWith(delegate(Task obj) { if(success) { Finish(); _config = null; } });
-			task.Start();
+			Task.Factory.StartNew(() => success = TrySaveConfiguration(config))
+						.ContinueWith((t) => RunOnUiThread(()=> dlg.Dismiss()))
+						.ContinueWith(delegate(Task obj) { if(success) { Finish(); _config = null; } });
 		}
 
 		void HandleCancelClick (object sender, EventArgs e)
