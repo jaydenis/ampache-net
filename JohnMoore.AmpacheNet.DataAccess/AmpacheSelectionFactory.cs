@@ -74,9 +74,9 @@ namespace JohnMoore.AmpacheNet.DataAccess
             throw new InvalidOperationException(string.Format("{0} is not yet supported for persisting", typeof(TEntity).Name));
 		}
 		
-		public virtual Authenticate AuthenticateToServer(string server, string user, string password)
+		public virtual Authenticate AuthenticateToServer(UserConfiguration config)
 		{
-			var tmp = new Authenticate(server, user, password);
+			var tmp = new Authenticate(config.ServerUrl, config.User, config.Password);
 			_handshake = tmp;
 			return tmp;
 		}

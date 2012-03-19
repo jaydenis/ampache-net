@@ -43,6 +43,7 @@
     <Compile Include="AmpachePlayerFixture.cs" />
     <Compile Include="LookupFixture.cs" />
     <Compile Include="ConfigurationFixture.cs" />
+    <Compile Include="BackgroundFixture.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

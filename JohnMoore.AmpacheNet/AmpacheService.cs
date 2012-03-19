@@ -42,10 +42,8 @@ using JohnMoore.AmpacheNet.Logic;
 namespace JohnMoore.AmpacheNet
 {
 	[Service]
-	public class AmpacheService : Service
+	public class AmpacheService : Background
 	{
-		private static AmpacheModel _model;
-		private static AlbumArtLoader _loader;
 		private const string CONFIGURATION = "configuration";
 		private const string URL_KEY = "url";
 		private const string USER_NAME_KEY = "user";
@@ -58,6 +56,7 @@ namespace JohnMoore.AmpacheNet
 		private PendingIntent _stopIntent;
 		private PendingIntent _pingIntent;
 		private int _intentId = 1;
+		
 		#region implemented abstract members of Android.App.Service
 		public override IBinder OnBind (Intent intent)
 		{
@@ -77,35 +76,27 @@ namespace JohnMoore.AmpacheNet
 		public override void OnCreate ()
 		{
 			base.OnCreate ();
-			_model = new AmpacheModel();
-			Task.Factory.StartNew(() => ServiceStartup());
+			Console.SetOut(new AndroidLogTextWriter());
 			var telSvc = this.ApplicationContext.GetSystemService(Context.TelephonyService) as Android.Telephony.TelephonyManager;
 			if(telSvc != null)
 			{
 				telSvc.Listen(new AmpachePhoneStateListener(_model), Android.Telephony.PhoneStateListenerFlags.CallState);
 			}
-			var settings = GetSharedPreferences(CONFIGURATION,FileCreationMode.Private);
-			var config = new UserConfiguration();
-			config.ServerUrl = settings.GetString(AmpacheService.URL_KEY, string.Empty);
-			config.User = settings.GetString(AmpacheService.USER_NAME_KEY, string.Empty);
-			config.Password = settings.GetString(AmpacheService.PASSWORD_KEY, string.Empty);
-			config.AllowSeeking = settings.GetBoolean(AmpacheService.ALLOW_SEEKING_KEY, true);
-			config.CacheArt = settings.GetBoolean(AmpacheService.CACHE_ART_KEY, true);
-			_model.Configuration = config;			
-			AmpacheSelectionFactory.ArtLocalDirectory = CacheDir.AbsolutePath;
+			_artCachePath = CacheDir.AbsolutePath;
 			var am = (AlarmManager)ApplicationContext.GetSystemService(Context.AlarmService);
-			var stop = new Intent(StopServiceReceiver.INTENT);
 			var ping = new Intent(PingReceiver.INTENT);
-			_stopIntent = PendingIntent.GetBroadcast(ApplicationContext, ++_intentId, stop, PendingIntentFlags.UpdateCurrent);
 			_pingIntent = PendingIntent.GetBroadcast(ApplicationContext, 0, ping, PendingIntentFlags.UpdateCurrent);
-			am.Set(AlarmType.RtcWakeup, Java.Lang.JavaSystem.CurrentTimeMillis() + (long)TimeSpan.FromMinutes(30).TotalMilliseconds , _stopIntent);
 			am.SetRepeating(AlarmType.RtcWakeup, Java.Lang.JavaSystem.CurrentTimeMillis() + (long)TimeSpan.FromMinutes(5).TotalMilliseconds, (long)TimeSpan.FromMinutes(5).TotalMilliseconds, _pingIntent);
+			var stream = new System.IO.MemoryStream();
+			Android.Graphics.BitmapFactory.DecodeResource(Resources, Resource.Drawable.icon_thumbnail).Compress(Android.Graphics.Bitmap.CompressFormat.Png, 100, stream);
+			Start(stream);
+			_player = new AndroidPlayer(_model, ApplicationContext);
+			_notifications = new AmpacheNotifications(this.ApplicationContext, _model);
 		}
 		
 		public override void OnDestroy ()
 		{
 			base.OnDestroy ();
-			_model.PropertyChanged -= Handle_modelPropertyChanged;
 			_player.Dispose();
 			_loader.Dispose();
 			_notifications.Dispose();
@@ -115,98 +106,83 @@ namespace JohnMoore.AmpacheNet
 		}
 		#endregion
 		
-		private void ServiceStartup()
+		#region implemented abstract members of JohnMoore.AmpacheNet.Logic.Background
+		public override UserConfiguration LoadPersistedConfiguration ()
 		{
-			Console.SetOut(new AndroidLogTextWriter());
-			Console.WriteLine ("service created");
-			var stm = Resources.OpenRawResource(Resource.Drawable.icon);
-			var stream = new System.IO.MemoryStream();
-			Android.Graphics.BitmapFactory.DecodeResource(Resources, Resource.Drawable.icon_thumbnail).Compress(Android.Graphics.Bitmap.CompressFormat.Png, 100, stream);
-			_loader = new AlbumArtLoader(_model, stream);
-			try 
-			{
-				if (_model.Configuration.ServerUrl != string.Empty) 
-				{
-					var hs = new Authenticate(_model.Configuration.ServerUrl, _model.Configuration.User, _model.Configuration.Password);
-					_model.Factory = new AmpacheSelectionFactory(hs);
-					_model.UserMessage = GetString(Resource.String.connectedToAmpache);
-					var sngLookup = _model.Factory.GetInstanceSelectorFor<AmpacheSong> ();
-					var settings = GetSharedPreferences (CONFIGURATION, FileCreationMode.Private);
-					_model.Playlist = settings.GetString (PLAYLIST_CSV_KEY, string.Empty).Split (new [] {','}, StringSplitOptions.RemoveEmptyEntries).Select (s => sngLookup.SelectBy (int.Parse (s))).ToList ();
-				}
-				else
-				{
-					_model.Factory = new AmpacheSelectionFactory();
-				}
-			}
-			catch (Exception ex) 
-			{
-				_model.UserMessage = ex.Message;
-				Console.WriteLine (ex.GetType().Name);
-				Console.WriteLine (ex.Message);
-			}
-			_player = new AndroidPlayer(_model, ApplicationContext);
-			_notifications = new AmpacheNotifications(this.ApplicationContext, _model);
-			_model.PropertyChanged += Handle_modelPropertyChanged;
+			var settings = GetSharedPreferences(CONFIGURATION,FileCreationMode.Private);
+			var config = new UserConfiguration();
+			config.ServerUrl = settings.GetString(AmpacheService.URL_KEY, string.Empty);
+			config.User = settings.GetString(AmpacheService.USER_NAME_KEY, string.Empty);
+			config.Password = settings.GetString(AmpacheService.PASSWORD_KEY, string.Empty);
+			config.AllowSeeking = settings.GetBoolean(AmpacheService.ALLOW_SEEKING_KEY, true);
+			config.CacheArt = settings.GetBoolean(AmpacheService.CACHE_ART_KEY, true);
+			return config;
 		}
-		
-		void Handle_modelPropertyChanged (object sender, PropertyChangedEventArgs e)
+
+		public override List<AmpacheSong> LoadPersistedSongs ()
 		{
-			if(e.PropertyName == AmpacheModel.CONFIGURATION)
+			var settings = GetSharedPreferences(CONFIGURATION, FileCreationMode.Private);
+			var sngLookup = _model.Factory.GetInstanceSelectorFor<AmpacheSong>();
+			return settings.GetString (PLAYLIST_CSV_KEY, string.Empty).Split (new [] {','}, StringSplitOptions.RemoveEmptyEntries).Select (s => sngLookup.SelectBy (int.Parse (s))).ToList ();
+		}
+
+		public override void PersistUserConfig (UserConfiguration config)
+		{
+			var settings = GetSharedPreferences(CONFIGURATION, FileCreationMode.Private);
+			var editor = settings.Edit();
+			editor.PutString(URL_KEY, config.ServerUrl);
+			editor.PutString(USER_NAME_KEY, config.User);
+			editor.PutString(PASSWORD_KEY, config.Password);
+			editor.PutBoolean(ALLOW_SEEKING_KEY, config.AllowSeeking);				
+			editor.Commit();
+			if(!config.CacheArt)
 			{
-				var settings = GetSharedPreferences(CONFIGURATION, FileCreationMode.Private);
-				var editor = settings.Edit();
-				editor.PutString(URL_KEY, _model.Configuration.ServerUrl);
-				editor.PutString(USER_NAME_KEY, _model.Configuration.User);
-				editor.PutString(PASSWORD_KEY, _model.Configuration.Password);
-				editor.PutBoolean(ALLOW_SEEKING_KEY, _model.Configuration.AllowSeeking);				
-				editor.Commit();
-				if(!_model.Configuration.CacheArt)
+				foreach(var file in System.IO.Directory.GetFiles(CacheDir.AbsolutePath))
 				{
-					foreach(var file in System.IO.Directory.GetFiles(CacheDir.AbsolutePath))
-					{
-						System.IO.File.Delete(file);
-					}
+					System.IO.File.Delete(file);
 				}
 			}
-			if(e.PropertyName == AmpacheModel.IS_PLAYING)
-			{
-				if(_model.IsPlaying)
-				{
-					StartForeground(AmpacheNotifications.NOTIFICATION_ID, _notifications.AmpacheNotification);
-					var am = (AlarmManager)ApplicationContext.GetSystemService(Context.AlarmService);
-					am.Cancel(_stopIntent);
-					_stopIntent.Dispose();
-					_stopIntent = null;
-				}
-				else
-				{
-					StopForeground(false);
-					var am = (AlarmManager)ApplicationContext.GetSystemService(Context.AlarmService);
-					am.Set(AlarmType.ElapsedRealtimeWakeup, Java.Lang.JavaSystem.CurrentTimeMillis() + (long)TimeSpan.FromMinutes(30).Milliseconds, _stopIntent);
-					var stop = new Intent(StopServiceReceiver.INTENT);
-					_stopIntent = PendingIntent.GetBroadcast(ApplicationContext, ++_intentId, stop, PendingIntentFlags.UpdateCurrent);
-					am.Set(AlarmType.RtcWakeup, Java.Lang.JavaSystem.CurrentTimeMillis() + (long)TimeSpan.FromMinutes(30).TotalMilliseconds , _stopIntent);
-				}
-			}
-			if(e.PropertyName == AmpacheModel.PLAYLIST)
-			{
-				var settings = GetSharedPreferences(CONFIGURATION, FileCreationMode.Private);
-				var editor = settings.Edit();
-				editor.PutString(PLAYLIST_CSV_KEY, string.Join(",", _model.Playlist.Select(s=>s.Id.ToString()).ToArray()));
-				editor.Commit();
-			}
-			if(e.PropertyName == AmpacheModel.IS_DISPOSED && _model.IsDisposed)
-			{
-				StopForeground(true);
-				var am = (AlarmManager)ApplicationContext.GetSystemService(Context.AlarmService);
-				am.Cancel(_pingIntent);
-				am.Cancel(_stopIntent);
-				StopSelf();
-			}
-		}		
+		}
+
+		public override void PersistSongs (IList<AmpacheSong> songs)
+		{
+			var settings = GetSharedPreferences(CONFIGURATION, FileCreationMode.Private);
+			var editor = settings.Edit();
+			editor.PutString(PLAYLIST_CSV_KEY, string.Join(",", songs.Select(s=>s.Id.ToString()).ToArray()));
+			editor.Commit();
+		}
+
+		public override void PlatformFinalize ()
+		{
+			StopForeground(true);
+			var am = (AlarmManager)ApplicationContext.GetSystemService(Context.AlarmService);
+			am.Cancel(_pingIntent);
+			am.Cancel(_stopIntent);
+			StopSelf();
+		}
+
+		public override void StartAutoShutOff ()
+		{
+			StopForeground(false);
+			var am = (AlarmManager)ApplicationContext.GetSystemService(Context.AlarmService);
+			am.Set(AlarmType.ElapsedRealtimeWakeup, Java.Lang.JavaSystem.CurrentTimeMillis() + (long)TimeSpan.FromMinutes(30).Milliseconds, _stopIntent);
+			var stop = new Intent(StopServiceReceiver.INTENT);
+			_stopIntent = PendingIntent.GetBroadcast(ApplicationContext, ++_intentId, stop, PendingIntentFlags.UpdateCurrent);
+			am.Set(AlarmType.RtcWakeup, Java.Lang.JavaSystem.CurrentTimeMillis() + (long)TimeSpan.FromMinutes(30).TotalMilliseconds , _stopIntent);
+		}
+
+		public override void StopAutoShutOff ()
+		{
+			StartForeground(AmpacheNotifications.NOTIFICATION_ID, _notifications.AmpacheNotification);
+			var am = (AlarmManager)ApplicationContext.GetSystemService(Context.AlarmService);
+			am.Cancel(_stopIntent);
+			_stopIntent.Dispose();
+			_stopIntent = null;
+		}
+		#endregion
 		
 		#region Binding Classes
+		
 		public class Binder : Android.OS.Binder
 		{
 			public readonly AmpacheModel Model;
@@ -222,20 +198,13 @@ namespace JohnMoore.AmpacheNet
 			public event EventHandler OnConnected;
 			public AmpacheModel Model { get; private set; }
 			
-			public Connection ()
-			{}
-
 			#region IServiceConnection implementation
 			public void OnServiceConnected (ComponentName name, IBinder service)
 			{
-				var bind = service as Binder;
-				if(bind != null)
+				Model = ((Binder)service).Model;
+				if (OnConnected != null)
 				{
-					Model = bind.Model;
-					if (OnConnected != null)
-					{
-						OnConnected(this, EventArgs.Empty);
-					}
+					OnConnected(this, EventArgs.Empty);
 				}
 			}
 

@@ -169,6 +169,10 @@
       <Link>Logic\Configuration.cs</Link>
     </Compile>
     <Compile Include="Logic\Lookup.Android.cs" />
+    <Compile Include="..\JohnMoore.AmpacheNet.Logic\Background.cs">
+      <Link>Logic\Background.cs</Link>
+    </Compile>
+    <Compile Include="Logic\Background.Android.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\AboutAssets.txt" />

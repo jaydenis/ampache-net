@@ -39,6 +39,7 @@
     <Compile Include="AmpachePlayer.cs" />
     <Compile Include="Lookup.cs" />
     <Compile Include="Configuration.cs" />
+    <Compile Include="Background.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -58,8 +58,8 @@ namespace JohnMoore.AmpacheNet.Logic
 		
 		void Handle_modelPropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
-			lock(_syncLock)
-			{
+//			lock(_syncLock)
+//			{
 				switch (e.PropertyName) 
 				{
 					case AmpacheModel.PLAY_PAUSE_REQUESTED:
@@ -73,7 +73,7 @@ namespace JohnMoore.AmpacheNet.Logic
 						break;
 					case AmpacheModel.STOP_REQUESTED:
 						if(_model.StopRequested)
-						{	
+						{
 							_model.PlayingSong = null;
 							Stop();
 						}
@@ -84,7 +84,7 @@ namespace JohnMoore.AmpacheNet.Logic
 					default:
 						break;
 				}
-			}
+//			}
 		}
 
 		public void PlayPause ()
@@ -203,17 +203,19 @@ namespace JohnMoore.AmpacheNet.Logic
 
 		void Stop ()
 		{
-			Console.WriteLine ("Stop Requested");
-			if (_model.IsPlaying || _isPaused)
+			lock (_syncLock)
 			{
-				StopPlay();
-				_model.PercentPlayed = 0;
-				_model.PercentDownloaded = 0;
-				_isPaused = false;
-				_model.IsPlaying = false;
+				Console.WriteLine ("Stop Requested");
+				if (_model.IsPlaying || _isPaused) {
+					StopPlay ();
+					_model.PercentPlayed = 0;
+					_model.PercentDownloaded = 0;
+					_isPaused = false;
+					_model.IsPlaying = false;
+				}
+				_model.StopRequested = false;
+				Console.WriteLine ("Stop done");
 			}
-			_model.StopRequested = false;
-			Console.WriteLine ("Stop done");
 		}
 
 		void Seek ()

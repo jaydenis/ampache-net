@@ -82,7 +82,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			var model = new AmpacheModel();
 			var factory = Substitute.For<AmpacheSelectionFactory>();
 			model.Factory = factory;			
-			factory.AuthenticateToServer(Arg.Any<string>(),Arg.Any<string>(),Arg.Any<string>()).Returns((Authenticate)null);
+			factory.AuthenticateToServer(Arg.Any<UserConfiguration>()).Returns((Authenticate)null);
 			
 			var target = new Configuration(model);
 			Assert.That(model.UserMessage, Is.Null);
@@ -100,7 +100,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			var factory = Substitute.For<AmpacheSelectionFactory>();
 			model.Factory = factory;			
 			var message = "error message";
-			factory.When(x => x.AuthenticateToServer(Arg.Any<string>(),Arg.Any<string>(),Arg.Any<string>())).Do((obj) => { throw new Exception(message); });
+			factory.When(x => x.AuthenticateToServer(Arg.Any<UserConfiguration>())).Do((obj) => { throw new Exception(message); });
 			
 			var target = new Configuration(model);
 			Assert.That(model.UserMessage, Is.Null);

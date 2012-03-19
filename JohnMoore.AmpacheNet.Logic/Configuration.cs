@@ -62,7 +62,7 @@ namespace JohnMoore.AmpacheNet.Logic
 			{
 				try 
 				{
-					var tmp = _model.Factory.AuthenticateToServer(config.ServerUrl, config.User, config.Password);
+					var tmp = _model.Factory.AuthenticateToServer(config);
 					_model.UserMessage = _successMessage ?? "Success";
 					_model.Configuration = config;
 					return true;

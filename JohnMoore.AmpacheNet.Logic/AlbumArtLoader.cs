@@ -28,6 +28,7 @@ using System;
 using System.Net;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using JohnMoore.AmpacheNet.Entities;
 
 namespace JohnMoore.AmpacheNet.Logic
@@ -50,7 +51,7 @@ namespace JohnMoore.AmpacheNet.Logic
 		{
 			if (e.PropertyName == AmpacheModel.PLAYING_SONG && _model.PlayingSong != null)
 			{
-				System.Threading.ThreadPool.QueueUserWorkItem((o) => LoadAlbumImage());
+				Task.Factory.StartNew(() => LoadAlbumImage());
 			}
 		}
 		
