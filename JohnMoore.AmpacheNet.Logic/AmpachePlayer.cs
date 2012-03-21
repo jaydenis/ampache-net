@@ -58,33 +58,30 @@ namespace JohnMoore.AmpacheNet.Logic
 		
 		void Handle_modelPropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
-//			lock(_syncLock)
-//			{
-				switch (e.PropertyName) 
-				{
-					case AmpacheModel.PLAY_PAUSE_REQUESTED:
-						if(_model.PlayPauseRequested) Task.Factory.StartNew(() => PlayPause());
-						break;
-					case AmpacheModel.NEXT_REQUESTED:
-						if(_model.NextRequested) Task.Factory.StartNew(() => Next());
-						break;
-					case AmpacheModel.PREVIOUS_REQUESTED:
-						if(_model.PreviousRequested) Task.Factory.StartNew(() => Previous());
-						break;
-					case AmpacheModel.STOP_REQUESTED:
-						if(_model.StopRequested)
-						{
-							_model.PlayingSong = null;
-							Stop();
-						}
-						break;
-					case AmpacheModel.REQUESTED_SEEK_TO_PERCENTAGE:
-						Task.Factory.StartNew(() => Seek());
-						break;
-					default:
-						break;
-				}
-//			}
+			switch (e.PropertyName) 
+			{
+				case AmpacheModel.PLAY_PAUSE_REQUESTED:
+					if(_model.PlayPauseRequested) Task.Factory.StartNew(() => PlayPause());
+					break;
+				case AmpacheModel.NEXT_REQUESTED:
+					if(_model.NextRequested) Task.Factory.StartNew(() => Next());
+					break;
+				case AmpacheModel.PREVIOUS_REQUESTED:
+					if(_model.PreviousRequested) Task.Factory.StartNew(() => Previous());
+					break;
+				case AmpacheModel.STOP_REQUESTED:
+					if(_model.StopRequested)
+					{
+						_model.PlayingSong = null;
+						Stop();
+					}
+					break;
+				case AmpacheModel.REQUESTED_SEEK_TO_PERCENTAGE:
+					Task.Factory.StartNew(() => Seek());
+					break;
+				default:
+					break;
+			}
 		}
 
 		public void PlayPause ()
