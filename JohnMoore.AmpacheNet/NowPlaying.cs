@@ -50,7 +50,7 @@ namespace JohnMoore.AmpacheNet
 			base.OnCreate (bundle);
 			SetContentView(Resource.Layout.NowPlaying);
 			var ori = WindowManager.DefaultDisplay.Rotation;
-			if(ori == SurfaceOrientation.Rotation0 || ori == SurfaceOrientation.Rotation180)
+			if(WindowManager.DefaultDisplay.Height > WindowManager.DefaultDisplay.Width)
 			{
 				FindViewById<LinearLayout>(Resource.Id.mainLayout).Orientation = Orientation.Vertical;
 			}
