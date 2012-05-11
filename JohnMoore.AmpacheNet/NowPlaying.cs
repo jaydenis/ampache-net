@@ -39,7 +39,8 @@ using JohnMoore.AmpacheNet.Logic;
 
 namespace JohnMoore.AmpacheNet
 {
-	[Activity (Label = "@string/nowPlayingLabel")]			
+	[Activity (Label = "@string/nowPlayingLabel")]
+	[MetaData("android.app.default_searchable", Value = ".Search")]
 	public class NowPlaying : PlayingActivity, Android.Widget.SeekBar.IOnSeekBarChangeListener
 	{
 		private bool _listenForPlayingPositionUpdates = true;

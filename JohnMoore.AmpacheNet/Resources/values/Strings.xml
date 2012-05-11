@@ -22,4 +22,5 @@
 	<string name="search">Search</string>
 	<string name="cacheArt">Cache Album Art</string>
 	<string name="configure">Configure</string>
+	<string name="search_hint">Search</string>
 </resources>
