@@ -27,37 +27,61 @@ namespace JohnMoore.AmpacheNet
 		{
 			
 			// aapt resource value: 0x7f020000
-			public const int ic_media_next = 2130837504;
+			public const int ct_default_artwork = 2130837504;
 			
 			// aapt resource value: 0x7f020001
-			public const int ic_media_next_invert = 2130837505;
+			public const int ic_icon = 2130837505;
 			
 			// aapt resource value: 0x7f020002
-			public const int ic_media_pause = 2130837506;
+			public const int ic_icon_high_res = 2130837506;
 			
 			// aapt resource value: 0x7f020003
-			public const int ic_media_play = 2130837507;
+			public const int ic_media_next = 2130837507;
 			
 			// aapt resource value: 0x7f020004
-			public const int ic_media_previous = 2130837508;
+			public const int ic_media_next_invert = 2130837508;
 			
 			// aapt resource value: 0x7f020005
-			public const int ic_media_previous_invert = 2130837509;
+			public const int ic_media_pause = 2130837509;
 			
 			// aapt resource value: 0x7f020006
-			public const int ic_menu_shuffle = 2130837510;
+			public const int ic_media_play = 2130837510;
 			
 			// aapt resource value: 0x7f020007
-			public const int ic_menu_shuffle_invert = 2130837511;
+			public const int ic_media_previous = 2130837511;
 			
 			// aapt resource value: 0x7f020008
-			public const int icon = 2130837512;
+			public const int ic_media_previous_invert = 2130837512;
 			
 			// aapt resource value: 0x7f020009
-			public const int icon_thumbnail = 2130837513;
+			public const int ic_menu_album = 2130837513;
 			
 			// aapt resource value: 0x7f02000a
-			public const int stat_notify_musicplayer = 2130837514;
+			public const int ic_menu_artist = 2130837514;
+			
+			// aapt resource value: 0x7f02000b
+			public const int ic_menu_clear_playlist = 2130837515;
+			
+			// aapt resource value: 0x7f02000c
+			public const int ic_menu_help = 2130837516;
+			
+			// aapt resource value: 0x7f02000d
+			public const int ic_menu_playlist = 2130837517;
+			
+			// aapt resource value: 0x7f02000e
+			public const int ic_menu_search = 2130837518;
+			
+			// aapt resource value: 0x7f02000f
+			public const int ic_menu_settings_holo_light = 2130837519;
+			
+			// aapt resource value: 0x7f020010
+			public const int ic_menu_shuffle = 2130837520;
+			
+			// aapt resource value: 0x7f020011
+			public const int ic_menu_shuffle_invert = 2130837521;
+			
+			// aapt resource value: 0x7f020012
+			public const int ic_stat_notify_musicplayer = 2130837522;
 			
 			private Drawable()
 			{
@@ -147,6 +171,9 @@ namespace JohnMoore.AmpacheNet
 			
 			// aapt resource value: 0x7f070019
 			public const int prgSeeking = 2131165209;
+			
+			// aapt resource value: 0x7f070020
+			public const int search = 2131165216;
 			
 			// aapt resource value: 0x7f070002
 			public const int txtConfigUrl = 2131165186;

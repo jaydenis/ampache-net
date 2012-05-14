@@ -267,6 +267,9 @@ namespace JohnMoore.AmpacheNet
 				case Resource.Id.clearPlaylist:
 					Task.Factory.StartNew(() => _model.Playlist = new List<AmpacheSong>());
 					break;
+				case Resource.Id.search:
+					StartActivity(typeof(SongSearch));
+					break;
 				default:
 					// unknown
 					return false;	

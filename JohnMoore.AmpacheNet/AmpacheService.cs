@@ -87,8 +87,15 @@ namespace JohnMoore.AmpacheNet
 			var ping = new Intent(PingReceiver.INTENT);
 			_pingIntent = PendingIntent.GetBroadcast(ApplicationContext, 0, ping, PendingIntentFlags.UpdateCurrent);
 			am.SetRepeating(AlarmType.RtcWakeup, Java.Lang.JavaSystem.CurrentTimeMillis() + (long)TimeSpan.FromMinutes(5).TotalMilliseconds, (long)TimeSpan.FromMinutes(5).TotalMilliseconds, _pingIntent);
+			
+			
+			//var res = Android.Graphics.BitmapFactory.DecodeResource(Resources, Resource.Drawable.icon_thumbnail);
+			//var raw = Resources.GetDrawable(Resource.Drawable.icon_thumbnail);
+			//res.Compress(Android.Graphics.Bitmap.CompressFormat.Jpeg, 100, stream);
+			var stm = Resources.OpenRawResource(Resource.Drawable.ct_default_artwork);
 			var stream = new System.IO.MemoryStream();
-			Android.Graphics.BitmapFactory.DecodeResource(Resources, Resource.Drawable.icon_thumbnail).Compress(Android.Graphics.Bitmap.CompressFormat.Png, 100, stream);
+			stm.CopyTo(stream);
+			stream.Position = 0;
 			Start(stream);
 			_player = new AndroidPlayer(_model, ApplicationContext);
 			_notifications = new AmpacheNotifications(this.ApplicationContext, _model);
@@ -227,7 +234,9 @@ namespace JohnMoore.AmpacheNet
 			public override void OnReceive (Context context, Intent intent)
 			{
 				Console.WriteLine ("Shutdown Broadcast Received");
-				_model.Dispose();
+				if (!_model.IsPlaying) {
+					_model.Dispose ();
+				}
 			}
 		}
 		[BroadcastReceiver(Enabled = true)]
@@ -239,9 +248,9 @@ namespace JohnMoore.AmpacheNet
 			public override void OnReceive (Context context, Intent intent)
 			{
 				Console.WriteLine ("Ping Broadcast Received");
-				if(_model.Factory != null)
-				{
-					_model.Factory.Ping();
+				if(_model.Factory != null) {
+					Task.Factory.StartNew(() => _model.Factory.Ping ())
+						.ContinueWith((t) => Console.WriteLine (t.Exception.Message),TaskContinuationOptions.OnlyOnFaulted);
 				}
 			}
 		}

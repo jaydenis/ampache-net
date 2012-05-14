@@ -42,7 +42,7 @@ using JohnMoore.AmpacheNet.Logic;
 namespace JohnMoore.AmpacheNet
 {
 	[Activity (Label = "Ampache.NET", MainLauncher = true)]
-	[MetaData("android.app.default_searchable", Value = ".Search")]
+	[MetaData("android.app.default_searchable", Value = ".SongSearch")]
 	public class AmpacheNetActivity : PlayingActivity
 	{		
 		protected override void OnCreate (Bundle bundle)

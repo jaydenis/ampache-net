@@ -40,7 +40,7 @@ using JohnMoore.AmpacheNet.Logic;
 
 namespace JohnMoore.AmpacheNet
 {
-	[Activity (Label = "@string/search",Theme="@android:style/Theme.Dialog", Name=".Search")]	
+	[Activity (Label = "@string/search",Theme="@android:style/Theme.Dialog")]	
 	[IntentFilter(new [] {"android.intent.action.SEARCH"})]
 	[MetaData("android.app.searchable", Resource="@xml/search")]
 	public class SongSearch : Lookup<AmpacheSong>

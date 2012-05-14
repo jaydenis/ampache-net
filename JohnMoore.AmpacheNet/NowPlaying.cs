@@ -40,7 +40,7 @@ using JohnMoore.AmpacheNet.Logic;
 namespace JohnMoore.AmpacheNet
 {
 	[Activity (Label = "@string/nowPlayingLabel")]
-	[MetaData("android.app.default_searchable", Value = ".Search")]
+	[MetaData("android.app.default_searchable", Value = ".SongSearch")]
 	public class NowPlaying : PlayingActivity, Android.Widget.SeekBar.IOnSeekBarChangeListener
 	{
 		private bool _listenForPlayingPositionUpdates = true;
@@ -87,6 +87,8 @@ namespace JohnMoore.AmpacheNet
 				FindViewById<TextView>(Resource.Id.lblNowPlayingAlbum).Text = _model.PlayingSong.AlbumName;
 				FindViewById<TextView>(Resource.Id.lblNowPlayingArtist).Text = _model.PlayingSong.ArtistName;
 			}
+			UpdateDownloadProgress();
+			UpdatePlayerPosition();
 		}
 		
 		void UpdateDownloadProgress()

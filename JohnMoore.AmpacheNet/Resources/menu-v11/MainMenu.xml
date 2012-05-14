@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/search"
+          android:title="Search"
+		  android:showAsAction="ifRoom"
+		  android:icon="@drawable/ic_menu_search" />
+    <item android:id="@+id/playlists"
+          android:title="Playlists"
+		  android:showAsAction="ifRoom"
+		  android:icon="@drawable/ic_menu_playlist"  />
+    <item android:id="@+id/artists"
+          android:title="Artists"
+		  android:showAsAction="ifRoom"
+		  android:icon="@drawable/ic_menu_artist"  />
+    <item android:id="@+id/albums"
+          android:title="Albums"
+		  android:showAsAction="ifRoom"
+		  android:icon="@drawable/ic_menu_album"  />
+    <item android:id="@+id/clearPlaylist"
+          android:title="Clear Playlist"
+		  android:showAsAction="ifRoom"
+		  android:icon="@drawable/ic_menu_clear_playlist"  />
+    <item android:id="@+id/help"
+          android:title="Help"
+		  android:showAsAction="ifRoom"
+		  android:icon="@drawable/ic_menu_help"  />
+    <item android:id="@+id/configure"
+          android:title="Configure"
+		  android:showAsAction="ifRoom"
+		  android:icon="@drawable/ic_menu_settings_holo_light"  />
+</menu>

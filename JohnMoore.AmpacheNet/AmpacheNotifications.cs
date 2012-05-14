@@ -52,7 +52,7 @@ namespace JohnMoore.AmpacheNet
 			_model = model;
 			_context = context;
 			_model.PropertyChanged += Handle_modelPropertyChanged;
-			AmpacheNotification = new Notification(Resource.Drawable.stat_notify_musicplayer, "Ampache.NET");
+			AmpacheNotification = new Notification(Resource.Drawable.ic_stat_notify_musicplayer, "Ampache.NET");
 			((NotificationManager)_context.GetSystemService(Context.NotificationService)).CancelAll();
 		}
 

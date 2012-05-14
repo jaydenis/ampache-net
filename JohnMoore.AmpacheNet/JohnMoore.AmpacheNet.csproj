@@ -16,7 +16,7 @@
     <AndroidResgenFile>Resources\Resource.designer.cs</AndroidResgenFile>
     <AssemblyName>JohnMoore.AmpacheNet</AssemblyName>
     <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
-    <TargetFrameworkVersion>v2.3</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <AndroidLinkMode>SdkOnly</AndroidLinkMode>
     <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
   </PropertyGroup>
@@ -186,17 +186,58 @@
     <AndroidResource Include="Resources\drawable\ic_media_pause.png" />
     <AndroidResource Include="Resources\drawable\ic_media_play.png" />
     <AndroidResource Include="Resources\drawable\ic_media_previous.png" />
-    <AndroidResource Include="Resources\drawable\icon.png" />
     <AndroidResource Include="Resources\drawable\ic_menu_shuffle.png" />
     <AndroidResource Include="Resources\layout\NowPlaying.axml" />
     <AndroidResource Include="Resources\layout\Main.axml" />
-    <AndroidResource Include="Resources\drawable\icon_thumbnail.png" />
-    <AndroidResource Include="Resources\drawable\stat_notify_musicplayer.png" />
     <AndroidResource Include="Resources\drawable\ic_media_next_invert.png" />
     <AndroidResource Include="Resources\drawable\ic_media_previous_invert.png" />
     <AndroidResource Include="Resources\drawable\ic_menu_shuffle_invert.png" />
     <AndroidResource Include="Resources\layout\Filter.axml" />
     <AndroidResource Include="Resources\xml\Search.xml" />
+    <AndroidResource Include="Resources\menu-v11\MainMenu.xml" />
+    <AndroidResource Include="Resources\drawable\ic_menu_search.png" />
+    <AndroidResource Include="Resources\drawable\ic_menu_album.png" />
+    <AndroidResource Include="Resources\drawable\ic_menu_artist.png" />
+    <AndroidResource Include="Resources\drawable\ic_menu_clear_playlist.png" />
+    <AndroidResource Include="Resources\drawable\ic_menu_help.png" />
+    <AndroidResource Include="Resources\drawable\ic_menu_playlist.png" />
+    <AndroidResource Include="Resources\drawable\ic_menu_settings_holo_light.png" />
+    <AndroidResource Include="Resources\drawable-mdpi\ic_menu_album.png" />
+    <AndroidResource Include="Resources\drawable-mdpi\ic_menu_artist.png" />
+    <AndroidResource Include="Resources\drawable-mdpi\ic_menu_clear_playlist.png" />
+    <AndroidResource Include="Resources\drawable-mdpi\ic_menu_help.png" />
+    <AndroidResource Include="Resources\drawable-mdpi\ic_menu_playlist.png" />
+    <AndroidResource Include="Resources\drawable-mdpi\ic_menu_search.png" />
+    <AndroidResource Include="Resources\drawable-mdpi\ic_menu_settings_holo_light.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\ic_menu_album.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\ic_menu_artist.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\ic_menu_clear_playlist.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\ic_menu_help.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\ic_menu_playlist.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\ic_menu_search.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\ic_menu_settings_holo_light.png" />
+    <AndroidResource Include="Resources\drawable-ldpi\ic_menu_album.png" />
+    <AndroidResource Include="Resources\drawable-ldpi\ic_menu_artist.png" />
+    <AndroidResource Include="Resources\drawable-ldpi\ic_menu_clear_playlist.png" />
+    <AndroidResource Include="Resources\drawable-ldpi\ic_menu_help.png" />
+    <AndroidResource Include="Resources\drawable-ldpi\ic_menu_playlist.png" />
+    <AndroidResource Include="Resources\drawable-ldpi\ic_menu_search.png" />
+    <AndroidResource Include="Resources\drawable-ldpi\ic_menu_settings_holo_light.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_menu_album.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_menu_artist.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_menu_clear_playlist.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_menu_help.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_menu_playlist.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_menu_search.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_menu_settings_holo_light.png" />
+    <AndroidResource Include="Resources\drawable\ct_default_artwork.png" />
+    <AndroidResource Include="Resources\drawable\ic_icon.png" />
+    <AndroidResource Include="Resources\drawable\ic_icon_high_res.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_icon.png" />
+    <AndroidResource Include="Resources\drawable-ldpi\ic_icon.png" />
+    <AndroidResource Include="Resources\drawable-mdpi\ic_icon.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\ic_icon.png" />
+    <AndroidResource Include="Resources\drawable\ic_stat_notify_musicplayer.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
   <ItemGroup>
@@ -207,5 +248,9 @@
     <Folder Include="Resources\drawable-mdpi\" />
     <Folder Include="Logic\" />
     <Folder Include="Resources\xml\" />
+    <Folder Include="Resources\menu-v11\" />
+    <Folder Include="Resources\drawable-xhdpi\" />
+    <Folder Include="Resources\drawable-ldpi\" />
+    <Folder Include="Resources\drawable-hdpi\" />
   </ItemGroup>
 </Project>

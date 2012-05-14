@@ -99,8 +99,8 @@ android:layout_alignLeft="@+id/imgPlayingPrevious"
          android:layout_above="@+id/imgPlayingPlayPause"
          android:layout_centerHorizontal="true"
          android:layout_width="fill_parent"
-         android:layout_height="4mm"
-         android:clickable="true">
+         android:layout_height="wrap_content" 
+         android:clickable="true" >
 </SeekBar>			
 </RelativeLayout></LinearLayout>
 </LinearLayout>  
