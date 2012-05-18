@@ -96,7 +96,7 @@ namespace JohnMoore.AmpacheNet
 			}
 			_player.Completion += Handle_playerCompletion;
 			_player.BufferingUpdate += Handle_playerBufferingUpdate;
-			GC.Collect(0);
+			Task.Factory.StartNew(() => GC.Collect(0));
 		}
 
 		protected override void StopPlay ()

@@ -85,7 +85,7 @@ namespace JohnMoore.AmpacheNet
 			StartActivity(typeof(NowPlaying));
 		}
 
-		void HandleItemSelected (object sender, ItemEventArgs e)
+		void HandleItemSelected (object sender, AdapterView.ItemClickEventArgs e)
 		{
 			var lv = FindViewById<ListView>(Resource.Id.lstPlaylist);
 			lv.SetSelection(e.Position);
