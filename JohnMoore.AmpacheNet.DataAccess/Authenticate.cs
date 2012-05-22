@@ -85,7 +85,7 @@ namespace JohnMoore.AmpacheNet.DataAccess
                 AlbumCount = int.Parse(result.Descendants("albums").First().Value);
                 return true;
             }
-			Console.WriteLine (result);
+			Console.WriteLine (result.ToString());
             return false;
         }
 
