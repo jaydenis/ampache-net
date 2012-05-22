@@ -25,7 +25,6 @@
 // THE SOFTWARE.
 
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using System;
 using System.Collections.Generic;
 using JohnMoore.AmpacheNet.Logic;

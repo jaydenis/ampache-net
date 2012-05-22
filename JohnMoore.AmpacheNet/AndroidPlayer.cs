@@ -59,9 +59,14 @@ namespace JohnMoore.AmpacheNet
 		
 		void UpdatePlayProgress()
 		{
-			if(_player.IsPlaying)
-			{
-				PlayerPositionMilliSecond = _player.CurrentPosition;
+			try {
+				if(_player.IsPlaying) {
+					PlayerPositionMilliSecond = _player.CurrentPosition;
+				}
+			}
+			catch(Exception e) {
+				Console.WriteLine (e.Message);
+				Console.WriteLine (e.StackTrace);
 			}
 		}
 

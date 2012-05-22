@@ -82,8 +82,8 @@ namespace JohnMoore.AmpacheNet
 			FindViewById<EditText>(Resource.Id.txtConfigUrl).Text = tmp.ServerUrl;
 			FindViewById<EditText>(Resource.Id.txtConfigUser).Text = tmp.User;
 			FindViewById<EditText>(Resource.Id.txtPasswordConfig).Text = tmp.Password;
-			FindViewById<CheckBox>(Resource.Id.chkSeeking).Checked = tmp.AllowSeeking;
-			FindViewById<CheckBox>(Resource.Id.chkArtCache).Checked = tmp.CacheArt;
+			FindViewById<CompoundButton>(Resource.Id.chkSeeking).Checked = tmp.AllowSeeking;
+			FindViewById<CompoundButton>(Resource.Id.chkArtCache).Checked = tmp.CacheArt;
 			_model = _connection.Model;
 		}
 
@@ -92,8 +92,8 @@ namespace JohnMoore.AmpacheNet
 			var dlg = ProgressDialog.Show(this, GetString(Resource.String.connecting), GetString(Resource.String.connectingToAmpache));
 			bool success = false;
 			var config = new UserConfiguration();
-			config.AllowSeeking = FindViewById<CheckBox>(Resource.Id.chkSeeking).Checked;
-			config.CacheArt = FindViewById<CheckBox>(Resource.Id.chkArtCache).Checked;
+			config.AllowSeeking = FindViewById<CompoundButton>(Resource.Id.chkSeeking).Checked;
+			config.CacheArt = FindViewById<CompoundButton>(Resource.Id.chkArtCache).Checked;
 			config.Password =  FindViewById<EditText>(Resource.Id.txtPasswordConfig).Text;
 			config.User =  FindViewById<EditText>(Resource.Id.txtConfigUser).Text;
 			config.ServerUrl =  FindViewById<EditText>(Resource.Id.txtConfigUrl).Text;

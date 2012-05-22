@@ -178,6 +178,7 @@
     <None Include="Assets\AboutAssets.txt" />
     <None Include="Properties\AndroidManifest.xml" />
   </ItemGroup>
+
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml" />
     <AndroidResource Include="Resources\menu\MainMenu.xml" />
@@ -238,6 +239,7 @@
     <AndroidResource Include="Resources\drawable-mdpi\ic_icon.png" />
     <AndroidResource Include="Resources\drawable-xhdpi\ic_icon.png" />
     <AndroidResource Include="Resources\drawable\ic_stat_notify_musicplayer.png" />
+    <AndroidResource Include="Resources\Layout-v14\Configuration.axml" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
   <ItemGroup>
@@ -252,5 +254,6 @@
     <Folder Include="Resources\drawable-xhdpi\" />
     <Folder Include="Resources\drawable-ldpi\" />
     <Folder Include="Resources\drawable-hdpi\" />
+    <Folder Include="Resources\Layout-v14\" />
   </ItemGroup>
 </Project>

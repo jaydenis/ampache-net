@@ -97,20 +97,20 @@ namespace JohnMoore.AmpacheNet
 			// aapt resource value: 0x7f07001b
 			public const int artists = 2131165211;
 			
-			// aapt resource value: 0x7f07000a
-			public const int btnConfigCancel = 2131165194;
-			
-			// aapt resource value: 0x7f07000b
-			public const int btnConfigOk = 2131165195;
-			
 			// aapt resource value: 0x7f070009
-			public const int btnConfigTest = 2131165193;
+			public const int btnConfigCancel = 2131165193;
+			
+			// aapt resource value: 0x7f07000a
+			public const int btnConfigOk = 2131165194;
+			
+			// aapt resource value: 0x7f070007
+			public const int btnConfigTest = 2131165191;
 			
 			// aapt resource value: 0x7f070008
 			public const int chkArtCache = 2131165192;
 			
-			// aapt resource value: 0x7f070007
-			public const int chkSeeking = 2131165191;
+			// aapt resource value: 0x7f07000b
+			public const int chkSeeking = 2131165195;
 			
 			// aapt resource value: 0x7f07001d
 			public const int clearPlaylist = 2131165213;

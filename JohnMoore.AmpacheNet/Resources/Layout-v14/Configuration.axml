@@ -50,6 +50,18 @@
             android:password="true"
             android:layout_below="@+id/lblConfigPassword"
             android:layout_alignParentLeft="true" />
+        <Switch
+            android:id="@+id/chkSeeking"
+            android:text="@string/allowSeeking"
+            android:layout_below="@+id/txtPasswordConfig"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
+        <Switch
+            android:id="@+id/chkArtCache"
+            android:text="@string/cacheArt"
+            android:layout_below="@+id/chkSeeking"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
         <Button
             android:id="@+id/btnConfigTest"
             android:layout_width="wrap_content"
@@ -77,17 +89,5 @@
             android:minHeight="9mm"
             android:layout_alignTop="@+id/btnConfigTest"
             android:layout_toLeftOf="@+id/btnConfigTest" />
-        <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/txtPasswordConfig"
-            android:id="@+id/chkSeeking"
-            android:text="@string/allowSeeking" />
-        <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/chkSeeking"
-            android:id="@+id/chkArtCache"
-            android:text="@string/cacheArt" />
     </RelativeLayout>
 </ScrollView>
