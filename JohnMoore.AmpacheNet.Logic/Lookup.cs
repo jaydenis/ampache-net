@@ -83,6 +83,7 @@ namespace JohnMoore.AmpacheNet.Logic
 				}
 				catch (Exception ex)
 				{
+					_model.UserMessage = ex.Message;
 					Console.WriteLine (ex.Message);
 				}
 			}

@@ -45,7 +45,7 @@ namespace JohnMoore.AmpacheNet.DataAccess
         {
 			if(raw.Name.LocalName.ToLower() != "playlist")
 			{
-				throw new System.Xml.XmlException(string.Format("{0} can not be processed into an Album", raw.Name.LocalName));
+				throw new System.Xml.XmlException(string.Format("{0} can not be processed into an Playlist", raw.Name.LocalName));
 			}
             var result = BuildBase(raw);			
             if (!raw.Descendants("name").Any()) 

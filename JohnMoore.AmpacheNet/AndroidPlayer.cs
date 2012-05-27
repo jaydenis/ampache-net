@@ -78,6 +78,7 @@ namespace JohnMoore.AmpacheNet
 				return;
 			}
 			StopPlay();
+			_timer.Change(Timeout.Infinite, Timeout.Infinite);
 			_player.Release();
 			_player.Completion -= Handle_playerCompletion;
 			_player.BufferingUpdate -= Handle_playerBufferingUpdate;
@@ -101,11 +102,13 @@ namespace JohnMoore.AmpacheNet
 			}
 			_player.Completion += Handle_playerCompletion;
 			_player.BufferingUpdate += Handle_playerBufferingUpdate;
+			_timer.Change(TimeSpan.FromMilliseconds(500), TimeSpan.FromMilliseconds(500));
 			Task.Factory.StartNew(() => GC.Collect(0));
 		}
 
 		protected override void StopPlay ()
 		{
+			_timer.Change(Timeout.Infinite, Timeout.Infinite);
 			if(_player.IsPlaying) 
 			{
 				_player.Stop();

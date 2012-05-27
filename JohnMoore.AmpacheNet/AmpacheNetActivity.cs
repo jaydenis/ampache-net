@@ -128,7 +128,9 @@ namespace JohnMoore.AmpacheNet
 		
 		private View HydrateSong(AmpacheSong song, View v)
 		{
-			v.FindViewById<TextView>(Android.Resource.Id.Text1).Text = song.Name;
+			if(song != null){
+				v.FindViewById<TextView>(Android.Resource.Id.Text1).Text = song.Name;
+			}
 			return v;
 		}
 	}
