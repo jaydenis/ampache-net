@@ -38,7 +38,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
-    <AndroidSupportedAbis>armeabi</AndroidSupportedAbis>
+    <AndroidSupportedAbis>armeabi,armeabi-v7a</AndroidSupportedAbis>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -175,10 +175,6 @@
     <Compile Include="Logic\Background.Android.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\AboutAssets.txt" />
-    <None Include="Properties\AndroidManifest.xml" />
-  </ItemGroup>
-  <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml" />
     <AndroidResource Include="Resources\menu\MainMenu.xml" />
     <AndroidResource Include="Resources\layout\Configuration.axml" />
@@ -238,7 +234,8 @@
     <AndroidResource Include="Resources\drawable-mdpi\ic_icon.png" />
     <AndroidResource Include="Resources\drawable-xhdpi\ic_icon.png" />
     <AndroidResource Include="Resources\drawable\ic_stat_notify_musicplayer.png" />
-    <AndroidResource Include="Resources\Layout-v14\Configuration.axml" />
+    <AndroidResource Include="Resources\layout-v14\Configuration.axml" />
+    <AndroidResource Include="Resources\layout-xlarge\NowPlaying.axml" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
   <ItemGroup>
@@ -253,6 +250,7 @@
     <Folder Include="Resources\drawable-xhdpi\" />
     <Folder Include="Resources\drawable-ldpi\" />
     <Folder Include="Resources\drawable-hdpi\" />
-    <Folder Include="Resources\Layout-v14\" />
+    <Folder Include="Resources\layout-v14\" />
+    <Folder Include="Resources\layout-xlarge\" />
   </ItemGroup>
 </Project>

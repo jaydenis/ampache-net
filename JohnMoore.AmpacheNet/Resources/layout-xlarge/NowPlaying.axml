@@ -10,6 +10,19 @@
         android:layout_height="fill_parent"
         android:layout_width="fill_parent"
         android:orientation="vertical">
+        <ImageView
+            android:id="@+id/imgPlayingAlbumArt"
+            android:layout_above="@+id/imgPlayingPlayPause"
+            android:layout_below="@+id/imgPlayingShuffle"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_alignParentLeft="true" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_weight=".50"
+        android:layout_height="fill_parent"
+        android:layout_width="fill_parent"
+        android:orientation="vertical">
         <RelativeLayout
             android:id="@+id/layoutPlaying"
             android:layout_width="fill_parent"
@@ -46,24 +59,38 @@
                 android:layout_centerHorizontal="true"
                 android:src="@drawable/ic_media_play"
                 android:background="@null" />
-            <ImageView
-                android:id="@+id/imgPlayingAlbumArt"
+            <TextView
+                android:id="@+id/lblNowPlayingAlbum"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Album"
+                android:layout_centerVertical="true"
+                android:layout_alignLeft="@+id/imgPlayingPrevious"
+                android:textSize="40sp" />
+            <TextView
+                android:id="@+id/lblNowPlayingArtist"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Artist"
+                android:layout_below="@+id/lblNowPlayingAlbum"
+                android:layout_alignLeft="@+id/imgPlayingPrevious"
+                android:textSize="40sp" />
+            <TextView
+                android:id="@+id/lblNowPlayingTrack"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Track"
+                android:textSize="60sp"
+                android:layout_above="@+id/lblNowPlayingAlbum"
+                android:layout_alignLeft="@+id/imgPlayingPrevious" />
+            <SeekBar
+                android:id="@+id/prgSeeking"
+                style="@android:style/Widget.ProgressBar.Horizontal"
                 android:layout_above="@+id/imgPlayingPlayPause"
-                android:layout_below="@+id/imgPlayingShuffle"
+                android:layout_centerHorizontal="true"
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_alignParentLeft="true"
-                android:src="@drawable/ct_default_artwork" />
+                android:layout_height="wrap_content"
+                android:clickable="true" />
         </RelativeLayout>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_weight=".50"
-        android:layout_height="fill_parent"
-        android:layout_width="fill_parent"
-        android:orientation="vertical">
-        <ListView
-            android:id="@+id/lstPlaylist"
-            android:layout_height="fill_parent"
-            android:layout_width="fill_parent" />
     </LinearLayout>
 </LinearLayout>
