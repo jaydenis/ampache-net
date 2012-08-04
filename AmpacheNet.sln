@@ -30,6 +30,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{F9E5935A-2196-4545-8C33-1C37A3CD41C3}"
 	ProjectSection(SolutionItems) = preProject
 		Libraries\NSubstitute.dll = Libraries\NSubstitute.dll
+		Libraries\System.Data.Sqlite.Android.dll = Libraries\System.Data.Sqlite.Android.dll
+		Libraries\System.Data.Sqlite.dll = Libraries\System.Data.Sqlite.dll
 	EndProjectSection
 EndProject
 Global

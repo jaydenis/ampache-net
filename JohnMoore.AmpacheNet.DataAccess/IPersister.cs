@@ -30,7 +30,7 @@ using JohnMoore.AmpacheNet.Entities;
 
 namespace JohnMoore.AmpacheNet.DataAccess
 {
-	public interface IPersistor<TEntity> where TEntity : IEntity
+	public interface IPersister<TEntity> : IAmpacheSelector<TEntity>, IDisposable where TEntity : IEntity
 	{
 		/// <summary>
 		/// Determines whether this instance has persisted the specified entity.
@@ -41,19 +41,8 @@ namespace JohnMoore.AmpacheNet.DataAccess
 		/// <param name='entity'>
 		/// entity to check for persistence
 		/// </param>
-		bool IsPersisted(TEntity entity);
-		
-		/// <summary>
-		/// Determines whether this instance has persisted the art for the specified entity.
-		/// </summary>
-		/// <returns>
-		/// <c>true</c> if this instance is persisted the specified entity; otherwise, <c>false</c>.
-		/// </returns>
-		/// <param name='entity'>
-		/// If set to <c>true</c> entity.
-		/// </param>
-		bool IsPersisted (IArt entity);
-		
+		bool IsPersisted<TParameter>(TParameter parameter) where TParameter : IEntity;
+				
 		/// <summary>
 		/// Persist the specified entity.
 		/// </summary>

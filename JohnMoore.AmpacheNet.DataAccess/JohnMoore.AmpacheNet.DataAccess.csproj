@@ -32,6 +32,8 @@
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AlbumFactory.cs" />
@@ -51,8 +53,10 @@
     <Compile Include="SongFactory.cs" />
     <Compile Include="SongSelector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="IPersistor.cs" />
     <Compile Include="AlbumArtRepository.cs" />
+    <Compile Include="SongPersister.cs" />
+    <Compile Include="SqlBase.cs" />
+    <Compile Include="IPersister.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

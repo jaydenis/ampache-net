@@ -73,8 +73,8 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			var defaultStream = new MemoryStream();
 			
 			var factory = Substitute.For<AmpacheSelectionFactory>((Handshake)null);
-			var persistor = Substitute.For<IPersistor<AlbumArt>>();
-			persistor.IsPersisted(Arg.Any<IArt>()).Returns(false);
+			var persistor = Substitute.For<IPersister>();
+			persistor.IsPersisted(Arg.Any<IEntity>()).Returns(false);
 			var selector = Substitute.For<IAmpacheSelector<AlbumArt>>();
 			int timesCalled = 0;
 			selector.SelectBy<AmpacheSong>(Arg.Any<AmpacheSong>()).Returns(x => { ++timesCalled; Assert.That(model.AlbumArtStream, Is.SameAs(defaultStream)); return Enumerable.Empty<AlbumArt>();});
@@ -98,8 +98,8 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			var defaultStream = new MemoryStream();
 			
 			var factory = Substitute.For<AmpacheSelectionFactory>((Handshake)null);
-			var persistor = Substitute.For<IPersistor<AlbumArt>>();
-			persistor.IsPersisted(Arg.Any<IArt>()).Returns(false);
+			var persistor = Substitute.For<IPersister>();
+			persistor.IsPersisted(Arg.Any<IEntity>()).Returns(false);
 			var selector = Substitute.For<IAmpacheSelector<AlbumArt>>();
 			int timesCalled = 0;
 			selector.SelectBy<AmpacheSong>(Arg.Any<AmpacheSong>()).Returns(x => { ++timesCalled; return Enumerable.Empty<AlbumArt>();});
@@ -124,8 +124,8 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			var defaultStream = new MemoryStream();
 			
 			var factory = Substitute.For<AmpacheSelectionFactory>((Handshake)null);
-			var persistor = Substitute.For<IPersistor<AlbumArt>>();
-			persistor.IsPersisted(Arg.Any<IArt>()).Returns(false);
+			var persistor = Substitute.For<IPersister>();
+			persistor.IsPersisted(Arg.Any<IEntity>()).Returns(false);
 			var selector = Substitute.For<IAmpacheSelector<AlbumArt>>();
 			var art = new AlbumArt();
 			art.ArtStream = new MemoryStream();
@@ -153,8 +153,8 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			var defaultStream = new MemoryStream();
 			
 			var factory = Substitute.For<AmpacheSelectionFactory>((Handshake)null);
-			var persistor = Substitute.For<IPersistor<AlbumArt>>();
-			persistor.IsPersisted(Arg.Any<IArt>()).Returns(false);
+			var persistor = Substitute.For<IPersister>();
+			persistor.IsPersisted(Arg.Any<IEntity>()).Returns(false);
 			int timesCalled = 0;
 			persistor.When(x => x.Persist(Arg.Any<AlbumArt>())).Do( x => { ++timesCalled; });
 			var selector = Substitute.For<IAmpacheSelector<AlbumArt>>();
@@ -185,8 +185,8 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			var defaultStream = new MemoryStream();
 			
 			var factory = Substitute.For<AmpacheSelectionFactory>((Handshake)null);
-			var persistor = Substitute.For<IPersistor<AlbumArt>>();
-			persistor.IsPersisted(Arg.Any<IArt>()).Returns(true);
+			var persistor = Substitute.For<IPersister>();
+			persistor.IsPersisted(Arg.Any<IEntity>()).Returns(true);
 			var art = new AlbumArt();
 			persistor.IsPersisted(Arg.Is(art)).Returns(true);
 			int timesCalled = 0;
@@ -218,8 +218,8 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			var defaultStream = new MemoryStream();
 			
 			var factory = Substitute.For<AmpacheSelectionFactory>((Handshake)null);
-			var persistor = Substitute.For<IPersistor<AlbumArt>>();
-			persistor.IsPersisted(Arg.Any<IArt>()).Returns(false);
+			var persistor = Substitute.For<IPersister>();
+			persistor.IsPersisted(Arg.Any<IEntity>()).Returns(false);
 			var art = new AlbumArt();
 			persistor.IsPersisted(Arg.Is(art)).Returns(false);
 			int timesCalled = 0;

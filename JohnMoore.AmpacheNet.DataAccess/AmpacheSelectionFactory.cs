@@ -65,11 +65,11 @@ namespace JohnMoore.AmpacheNet.DataAccess
             throw new InvalidOperationException(string.Format("{0} is not yet supported for selection from ampache", typeof(TEntity).Name));
         }
 		
-		public virtual IPersistor<TEntity> GetPersistorFor<TEntity>() where TEntity : IEntity
+		public virtual IPersister<TEntity> GetPersistorFor<TEntity>() where TEntity : IEntity
 		{
 			if (typeof(TEntity) == typeof(AlbumArt))
 			{
-				return new AlbumArtRepository(ArtLocalDirectory) as IPersistor<TEntity>;
+				return new AlbumArtRepository(ArtLocalDirectory) as IPersister<TEntity>;
 			}
             throw new InvalidOperationException(string.Format("{0} is not yet supported for persisting", typeof(TEntity).Name));
 		}

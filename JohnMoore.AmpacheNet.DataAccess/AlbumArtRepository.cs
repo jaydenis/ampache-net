@@ -31,7 +31,7 @@ using System.Collections.Generic;
 
 namespace JohnMoore.AmpacheNet.DataAccess
 {
-	public class AlbumArtRepository : IAmpacheSelector<AlbumArt>, IPersistor<AlbumArt>
+	public class AlbumArtRepository : IPersister<AlbumArt>
 	{
 		private readonly string _directory;
 		
@@ -99,9 +99,15 @@ namespace JohnMoore.AmpacheNet.DataAccess
 		#endregion
 
 		#region IPersistor[JohnMoore.AmpacheNet.Entities.AlbumArt] implementation
-		public bool IsPersisted (JohnMoore.AmpacheNet.Entities.AlbumArt entity)
+		public bool IsPersisted<TParamter> (TParamter paramter) where TParamter : IEntity
 		{
-			return File.Exists(Path.Combine(_directory, entity.AlbumId.ToString()));
+			if(paramter is IArt){
+				return IsPersisted(paramter as IArt);
+			}
+			if(paramter is AlbumArt){
+				return File.Exists(Path.Combine(_directory, (paramter as AlbumArt).AlbumId.ToString()));
+			}
+			throw new NotImplementedException();
 		}
 		
 		public bool IsPersisted (JohnMoore.AmpacheNet.Entities.IArt entity)
@@ -130,6 +136,14 @@ namespace JohnMoore.AmpacheNet.DataAccess
 			}
 		}
 		#endregion
+
+		#region IDisposable implementation
+		public void Dispose ()
+		{
+		}
+		#endregion
+
+
 	}
 }
 

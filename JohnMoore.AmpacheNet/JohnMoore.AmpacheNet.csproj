@@ -153,9 +153,6 @@
     <Compile Include="..\JohnMoore.AmpacheNet.DataAccess\AlbumArtRepository.cs">
       <Link>Data Access\AlbumArtRepository.cs</Link>
     </Compile>
-    <Compile Include="..\JohnMoore.AmpacheNet.DataAccess\IPersistor.cs">
-      <Link>Data Access\IPersistor.cs</Link>
-    </Compile>
     <Compile Include="AndroidPlayer.cs" />
     <Compile Include="..\JohnMoore.AmpacheNet.Logic\AmpachePlayer.cs">
       <Link>Logic\AmpachePlayer.cs</Link>
@@ -173,6 +170,9 @@
       <Link>Logic\Background.cs</Link>
     </Compile>
     <Compile Include="Logic\Background.Android.cs" />
+    <Compile Include="..\JohnMoore.AmpacheNet.DataAccess\IPersister.cs">
+      <Link>Data Access\IPersistor.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml" />
