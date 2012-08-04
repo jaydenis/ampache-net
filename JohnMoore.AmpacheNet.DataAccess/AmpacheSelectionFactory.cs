@@ -28,6 +28,7 @@ using System;
 using System.Threading;
 using JohnMoore.AmpacheNet.Entities;
 using System.IO;
+using System.Data.Sqlite;
 
 namespace JohnMoore.AmpacheNet.DataAccess
 {
@@ -35,7 +36,9 @@ namespace JohnMoore.AmpacheNet.DataAccess
     {
         private Authenticate _handshake;
 		public static string ArtLocalDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), ".AmpacheNet");
-		
+		private static string DbConnString { get { return string.Format("Data Source={0}", Path.Combine (ArtLocalDirectory, "ampachenet.db3")); } }
+		public Handshake Handshake { get { return _handshake; } }
+
 		public AmpacheSelectionFactory ()
 		{}
 		
@@ -55,11 +58,10 @@ namespace JohnMoore.AmpacheNet.DataAccess
             if (typeof(TEntity) == typeof(AmpacheSong)) {
                 return new SongSelector(_handshake, new SongFactory()) as IAmpacheSelector<TEntity>;
             }
-            if (typeof(TEntity) == typeof(AmpachePlaylist)){
+            if (typeof(TEntity) == typeof(AmpachePlaylist)) {
                 return new PlaylistSelector(_handshake, new PlaylistFactory(), new SongFactory()) as IAmpacheSelector<TEntity>;
             }
-			if (typeof(TEntity) == typeof(AlbumArt))
-			{
+			if (typeof(TEntity) == typeof(AlbumArt)) {
 				return new AlbumArtRepository(ArtLocalDirectory) as IAmpacheSelector<TEntity>;
 			}
             throw new InvalidOperationException(string.Format("{0} is not yet supported for selection from ampache", typeof(TEntity).Name));
@@ -67,9 +69,11 @@ namespace JohnMoore.AmpacheNet.DataAccess
 		
 		public virtual IPersister<TEntity> GetPersistorFor<TEntity>() where TEntity : IEntity
 		{
-			if (typeof(TEntity) == typeof(AlbumArt))
-			{
+			if (typeof(TEntity) == typeof(AlbumArt)) {
 				return new AlbumArtRepository(ArtLocalDirectory) as IPersister<TEntity>;
+			}
+			if(typeof(TEntity) == typeof(AmpacheSong)) {
+				return new SongPersister(new SqliteConnection(DbConnString)) as IPersister<TEntity>;
 			}
             throw new InvalidOperationException(string.Format("{0} is not yet supported for persisting", typeof(TEntity).Name));
 		}

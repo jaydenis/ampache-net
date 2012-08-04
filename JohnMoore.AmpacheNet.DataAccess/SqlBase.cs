@@ -12,7 +12,7 @@ namespace JohnMoore.AmpacheNet.DataAccess
 		#region SQL Schema Strings
 		private const string VERSION_SELECT = @"SELECT [Value] FROM [Properties] WHERE [Key] = 'Version' LIMIT 1;";
 		private const string VERSION_000 = @"CREATE TABLE IF NOT EXISTS Properties (Key TEXT UNIQUE ON CONFLICT FAIL, Value TEXT); INSERT OR IGNORE INTO [Properties] VALUES('Version', '0');";
-		private const string VERSION_001 = @"CREATE TABLE IF NOT EXISTS SongCache (SongId INTEGER, ArtistId INTEGER, AlbumId INTEGER, SongName TEXT, AlbumName TEXT, ArtistName TEXT, TrackNumber INTEGER, ArtUrl TEXT, TrackLengthSeconds INTEGER, SorlURL TEXT, Rating INTEGER, PerciseRating INTEGER); UPDATE [Properties] SET [Value] = 1 WHERE [Key] = 'Version';";
+		private const string VERSION_001 = @"CREATE TABLE IF NOT EXISTS SongCache (SongId INTEGER UNIQUE ON CONFLICT FAIL, ArtistId INTEGER, AlbumId INTEGER, SongName TEXT, AlbumName TEXT, ArtistName TEXT, TrackNumber INTEGER, ArtUrl TEXT, TrackLengthSeconds FLOAT, SongURL TEXT, Rating INTEGER, PerciseRating INTEGER); UPDATE [Properties] SET [Value] = 1 WHERE [Key] = 'Version';";
 		#endregion
 
 		static SqlBase()

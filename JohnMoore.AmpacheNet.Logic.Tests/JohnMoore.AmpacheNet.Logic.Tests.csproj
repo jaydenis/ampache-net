@@ -48,6 +48,7 @@
     <Compile Include="LookupFixture.cs" />
     <Compile Include="ConfigurationFixture.cs" />
     <Compile Include="BackgroundFixture.cs" />
+    <Compile Include="SongHandshakeRemapperFixture.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

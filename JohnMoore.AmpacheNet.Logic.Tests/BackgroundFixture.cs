@@ -263,12 +263,6 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			{
 				return _config;
 			}
-			
-			public override List<AmpacheSong> LoadPersistedSongs ()
-			{
-				LoadSongsCalled = true;
-				return new List<AmpacheSong>();
-			}
 			public override AmpacheSelectionFactory CreateFactory ()
 			{
 				return _factory ?? base.CreateFactory();
@@ -281,10 +275,6 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			public override void PersistUserConfig (UserConfiguration config)
 			{
 				SavedConfigCalled = true;
-			}
-			public override void PersistSongs (IList<AmpacheSong> songs)
-			{
-				SavedSongsCalled = true;
 			}
 			public override void StartAutoShutOff ()
 			{

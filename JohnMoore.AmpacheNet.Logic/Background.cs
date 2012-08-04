@@ -82,12 +82,27 @@ namespace JohnMoore.AmpacheNet.Logic
 		
 		// TODO: use a file for user configuration so this operation is not platform dependent
 		public abstract UserConfiguration LoadPersistedConfiguration();
-		// TODO: use a file for loading saved playlist so this operation is not platform dependent
-		public abstract List<AmpacheSong> LoadPersistedSongs();
+
+		public List<AmpacheSong> LoadPersistedSongs()
+		{
+			using(var persister = _model.Factory.GetPersistorFor<AmpacheSong>()){
+				var old = persister.SelectAll().ToList();
+				old.ForEach(o => o.MapToHandshake(_model.Factory.Handshake));
+				return old;
+			}
+		}
 		// TODO: use a file for user configuration so this operation is not platform dependent
 		public abstract void PersistUserConfig(UserConfiguration config);
-		// TODO: use a file for loading saved playlist so this operation is not platform dependent
-		public abstract void PersistSongs(IList<AmpacheSong> songs);
+
+
+		public void PersistSongs(IList<AmpacheSong> songs)
+		{
+			using(var persister = _model.Factory.GetPersistorFor<AmpacheSong>()){
+				var old = persister.SelectAll().ToList();
+				old.ForEach(o => persister.Remove(o));
+				songs.ToList().ForEach(s => persister.Persist(s));
+			}
+		}
 		public abstract void PlatformFinalize();
 		public abstract void StartAutoShutOff();
 		public abstract void StopAutoShutOff();

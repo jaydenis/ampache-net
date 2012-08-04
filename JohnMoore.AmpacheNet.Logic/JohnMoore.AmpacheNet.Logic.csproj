@@ -40,6 +40,7 @@
     <Compile Include="Lookup.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="Background.cs" />
+    <Compile Include="SongHandshakeRemapper.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

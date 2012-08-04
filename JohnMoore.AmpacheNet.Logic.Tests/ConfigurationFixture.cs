@@ -68,6 +68,16 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			Assert.That(model.UserMessage, Is.SameAs(message));
 		}
 		
+		[Test()]
+		public void ConfigurationTrySaveNullInputTest ()
+		{
+			var model = new AmpacheModel();			
+			var target = new Configuration(model);
+			Assert.That(model.UserMessage, Is.Null);
+			var actual = target.TrySaveConfiguration(null);
+			Assert.That(actual, Is.False);
+		}
+		
 		[Test]
 		public void ConfigurationTrySaveConfigurationFailsByDefault()
 		{
