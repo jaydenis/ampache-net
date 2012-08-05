@@ -60,6 +60,7 @@
     <Compile Include="SongPersister.cs" />
     <Compile Include="SqlBase.cs" />
     <Compile Include="IPersister.cs" />
+    <Compile Include="UserConfigurationPersister.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -28,7 +28,7 @@ using System;
 
 namespace JohnMoore.AmpacheNet.Entities
 {
-	public class UserConfiguration
+	public class UserConfiguration : IEntity
 	{
 		public string ServerUrl { get; set; }
 		public string User { get; set; }
@@ -36,6 +36,12 @@ namespace JohnMoore.AmpacheNet.Entities
 		public bool AllowSeeking { get; set; }
 		public bool CacheArt { get; set; }
 		public bool CacheSongs { get; set; }
+		#region IEntity implementation
+		public int Id { get { return 0; } set {} }
+
+		public string Name { get { return string.Empty; } set { } }
+		#endregion
+
 	}
 }
 

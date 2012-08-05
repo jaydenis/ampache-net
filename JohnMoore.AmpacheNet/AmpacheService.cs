@@ -87,11 +87,7 @@ namespace JohnMoore.AmpacheNet
 			var ping = new Intent(PingReceiver.INTENT);
 			_pingIntent = PendingIntent.GetBroadcast(ApplicationContext, 0, ping, PendingIntentFlags.UpdateCurrent);
 			am.SetRepeating(AlarmType.RtcWakeup, Java.Lang.JavaSystem.CurrentTimeMillis() + (long)TimeSpan.FromMinutes(5).TotalMilliseconds, (long)TimeSpan.FromMinutes(5).TotalMilliseconds, _pingIntent);
-			
-			
-			//var res = Android.Graphics.BitmapFactory.DecodeResource(Resources, Resource.Drawable.icon_thumbnail);
-			//var raw = Resources.GetDrawable(Resource.Drawable.icon_thumbnail);
-			//res.Compress(Android.Graphics.Bitmap.CompressFormat.Jpeg, 100, stream);
+
 			var stm = Resources.OpenRawResource(Resource.Drawable.ct_default_artwork);
 			var stream = new System.IO.MemoryStream();
 			stm.CopyTo(stream);
@@ -99,6 +95,11 @@ namespace JohnMoore.AmpacheNet
 			Start(stream);
 			_player = new AndroidPlayer(_model, ApplicationContext);
 			_notifications = new AmpacheNotifications(this.ApplicationContext, _model);
+			var config = LoadPersistedConfiguration();
+			if(config != null){
+				_model.Factory.AuthenticateToServer(config);
+				_model.Configuration = config;
+			}
 		}
 		
 		public override void OnDestroy ()
@@ -114,49 +115,21 @@ namespace JohnMoore.AmpacheNet
 		#endregion
 		
 		#region implemented abstract members of JohnMoore.AmpacheNet.Logic.Background
-		public override UserConfiguration LoadPersistedConfiguration ()
+		[Obsolete("Use IPersister<UserConfiguration>")]
+		public UserConfiguration LoadPersistedConfiguration ()
 		{
 			var settings = GetSharedPreferences(CONFIGURATION,FileCreationMode.Private);
+			if (!settings.All.Any()){
+				return null;
+			}
 			var config = new UserConfiguration();
 			config.ServerUrl = settings.GetString(AmpacheService.URL_KEY, string.Empty);
 			config.User = settings.GetString(AmpacheService.USER_NAME_KEY, string.Empty);
 			config.Password = settings.GetString(AmpacheService.PASSWORD_KEY, string.Empty);
 			config.AllowSeeking = settings.GetBoolean(AmpacheService.ALLOW_SEEKING_KEY, true);
 			config.CacheArt = settings.GetBoolean(AmpacheService.CACHE_ART_KEY, true);
+			var editor = settings.Edit().Clear().Commit();
 			return config;
-		}
-
-		public override List<AmpacheSong> LoadPersistedSongs ()
-		{
-			var settings = GetSharedPreferences(CONFIGURATION, FileCreationMode.Private);
-			var sngLookup = _model.Factory.GetInstanceSelectorFor<AmpacheSong>();
-			return settings.GetString (PLAYLIST_CSV_KEY, string.Empty).Split (new [] {','}, StringSplitOptions.RemoveEmptyEntries).Select (s => sngLookup.SelectBy (int.Parse (s))).ToList ();
-		}
-
-		public override void PersistUserConfig (UserConfiguration config)
-		{
-			var settings = GetSharedPreferences(CONFIGURATION, FileCreationMode.Private);
-			var editor = settings.Edit();
-			editor.PutString(URL_KEY, config.ServerUrl);
-			editor.PutString(USER_NAME_KEY, config.User);
-			editor.PutString(PASSWORD_KEY, config.Password);
-			editor.PutBoolean(ALLOW_SEEKING_KEY, config.AllowSeeking);				
-			editor.Commit();
-			if(!config.CacheArt)
-			{
-				foreach(var file in System.IO.Directory.GetFiles(CacheDir.AbsolutePath))
-				{
-					System.IO.File.Delete(file);
-				}
-			}
-		}
-
-		public override void PersistSongs (IList<AmpacheSong> songs)
-		{
-			var settings = GetSharedPreferences(CONFIGURATION, FileCreationMode.Private);
-			var editor = settings.Edit();
-			editor.PutString(PLAYLIST_CSV_KEY, string.Join(",", songs.Select(s=>s.Id.ToString()).ToArray()));
-			editor.Commit();
 		}
 
 		public override void PlatformFinalize ()

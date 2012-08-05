@@ -1,3 +1,29 @@
+//
+// SongPersisterFixture.cs
+//
+// Author:
+//       John Moore <jcwmoore@gmail.com>
+//
+// Copyright (c) 2012 John Moore
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+
 using NUnit.Framework;
 using System;
 using System.Data;
@@ -79,6 +105,49 @@ namespace JohnMoore.AmpacheNet.DataAccess.Tests
 				Assert.That(reader["SongName"], Is.EqualTo(song.Name));
 				Assert.That(reader["AlbumName"], Is.EqualTo(song.AlbumName));
 				Assert.That(reader["ArtistName"], Is.EqualTo(song.ArtistName));
+				Assert.That(reader["TrackNumber"], Is.EqualTo(song.TrackNumber));
+				Assert.That(reader["ArtUrl"], Is.EqualTo(song.ArtUrl));
+				Assert.That(reader["TrackLengthSeconds"], Is.EqualTo(song.TrackLength.TotalSeconds));
+				Assert.That(reader["SongUrl"], Is.EqualTo(song.Url));
+				Assert.That(reader["Rating"], Is.EqualTo(song.Rating));
+				Assert.That(reader["PerciseRating"], Is.EqualTo(song.PerciseRating));
+				// NOTE: tags are not persisted!
+			}
+		}
+
+		[Test]
+		public void SongPersisterPersistWithSingleQuoteInTextTest()
+		{
+			
+			var conn = new SqliteConnection("Data Source=:memory:");
+			using(var target = new SongPersister(conn))
+			using(var cmd = conn.CreateCommand())
+			{
+				var song = new AmpacheSong();
+				song.Id = 555;
+				song.AlbumId = 88;
+				song.AlbumName = @"album's name";
+				song.ArtistId =45;
+				song.ArtistName = @"art'ist";
+				song.ArtUrl = @"url";
+				song.Name = @"A Demon's Fate";
+				song.PerciseRating = 2456;
+				song.Rating = 24;
+				song.Tags = new List<Tag>();
+				song.TrackLength = TimeSpan.FromSeconds(2442);
+				song.TrackNumber = 5;
+				song.Url = "sasasdf";
+				Assert.That(target.IsPersisted(song), Is.False);
+				target.Persist(song);
+				cmd.CommandText = string.Format("select * from SongCache where SongId = {0};", song.Id);
+				var reader = cmd.ExecuteReader();
+				Assert.That(reader.Read(), Is.True);
+				Assert.That(reader["SongId"], Is.EqualTo(song.Id));
+				Assert.That(reader["ArtistId"], Is.EqualTo(song.ArtistId));
+				Assert.That(reader["AlbumId"], Is.EqualTo(song.AlbumId));
+				Assert.That(reader["SongName"], Is.EqualTo(song.Name.Replace(@"'", "&QUOT;")));
+				Assert.That(reader["AlbumName"], Is.EqualTo(song.AlbumName.Replace(@"'", "&QUOT;")));
+				Assert.That(reader["ArtistName"], Is.EqualTo(song.ArtistName.Replace(@"'", "&QUOT;")));
 				Assert.That(reader["TrackNumber"], Is.EqualTo(song.TrackNumber));
 				Assert.That(reader["ArtUrl"], Is.EqualTo(song.ArtUrl));
 				Assert.That(reader["TrackLengthSeconds"], Is.EqualTo(song.TrackLength.TotalSeconds));

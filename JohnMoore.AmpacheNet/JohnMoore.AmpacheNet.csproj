@@ -30,6 +30,7 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
     <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
+    <AndroidSupportedAbis>armeabi-v7a,x86</AndroidSupportedAbis>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -38,7 +39,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
-    <AndroidSupportedAbis>armeabi,armeabi-v7a</AndroidSupportedAbis>
+    <AndroidSupportedAbis>armeabi-v7a</AndroidSupportedAbis>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -46,6 +47,10 @@
     <Reference Include="System.Core" />
     <Reference Include="Mono.Android" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.Sqlite.Android">
+      <HintPath>..\Libraries\System.Data.Sqlite.Android.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Resources\Resource.designer.cs" />
@@ -172,6 +177,18 @@
     <Compile Include="Logic\Background.Android.cs" />
     <Compile Include="..\JohnMoore.AmpacheNet.DataAccess\IPersister.cs">
       <Link>Data Access\IPersistor.cs</Link>
+    </Compile>
+    <Compile Include="..\JohnMoore.AmpacheNet.DataAccess\SqlBase.cs">
+      <Link>Data Access\SqlBase.cs</Link>
+    </Compile>
+    <Compile Include="..\JohnMoore.AmpacheNet.Logic\SongHandshakeRemapper.cs">
+      <Link>Logic\SongHandshakeRemapper.cs</Link>
+    </Compile>
+    <Compile Include="..\JohnMoore.AmpacheNet.DataAccess\SongPersister.cs">
+      <Link>Data Access\SongPersister.cs</Link>
+    </Compile>
+    <Compile Include="..\JohnMoore.AmpacheNet.DataAccess\UserConfigurationPersister.cs">
+      <Link>Data Access\UserConfigurationPersister.cs</Link>
     </Compile>
   </ItemGroup>
   <ItemGroup>

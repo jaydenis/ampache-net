@@ -22,6 +22,10 @@ namespace JohnMoore.AmpacheNet.Logic
 				throw new ArgumentNullException("defaultArtStream");
 			}
 			_model = new AmpacheModel();
+			AmpacheSelectionFactory.ArtLocalDirectory = _artCachePath ?? "Art";
+			_loader = new AlbumArtLoader(_model, defaultArtStream);
+			
+			_model.Factory = CreateFactory();			
 			var tmpConfig = LoadPersistedConfiguration();
 			if(tmpConfig == null)
 			{
@@ -33,10 +37,6 @@ namespace JohnMoore.AmpacheNet.Logic
 				tmpConfig.ServerUrl = string.Empty;
 			}
 			_model.Configuration = tmpConfig;
-			AmpacheSelectionFactory.ArtLocalDirectory = _artCachePath ?? "Art";
-			_loader = new AlbumArtLoader(_model, defaultArtStream);
-			
-			_model.Factory = CreateFactory();
 			if (_model.Configuration.ServerUrl != string.Empty) 
 			{
 				var task = new Task(() => _model.Factory.AuthenticateToServer(_model.Configuration));
@@ -79,11 +79,14 @@ namespace JohnMoore.AmpacheNet.Logic
 			_model.PropertyChanged -= Handle_modelPropertyChanged;
 			PlatformFinalize();
 		}
-		
-		// TODO: use a file for user configuration so this operation is not platform dependent
-		public abstract UserConfiguration LoadPersistedConfiguration();
 
-		public List<AmpacheSong> LoadPersistedSongs()
+		public UserConfiguration LoadPersistedConfiguration()
+		{
+			var res = _model.Factory.GetPersistorFor<UserConfiguration>().SelectBy(0);
+			return res ?? new UserConfiguration();
+		}
+
+		private List<AmpacheSong> LoadPersistedSongs()
 		{
 			using(var persister = _model.Factory.GetPersistorFor<AmpacheSong>()){
 				var old = persister.SelectAll().ToList();
@@ -91,11 +94,14 @@ namespace JohnMoore.AmpacheNet.Logic
 				return old;
 			}
 		}
-		// TODO: use a file for user configuration so this operation is not platform dependent
-		public abstract void PersistUserConfig(UserConfiguration config);
+
+		public void PersistUserConfig(UserConfiguration config)
+		{
+			_model.Factory.GetPersistorFor<UserConfiguration>().Persist(config);
+		}
 
 
-		public void PersistSongs(IList<AmpacheSong> songs)
+		private void PersistSongs(IList<AmpacheSong> songs)
 		{
 			using(var persister = _model.Factory.GetPersistorFor<AmpacheSong>()){
 				var old = persister.SelectAll().ToList();

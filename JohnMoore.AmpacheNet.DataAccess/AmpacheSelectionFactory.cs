@@ -37,7 +37,7 @@ namespace JohnMoore.AmpacheNet.DataAccess
         private Authenticate _handshake;
 		public static string ArtLocalDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), ".AmpacheNet");
 		private static string DbConnString { get { return string.Format("Data Source={0}", Path.Combine (ArtLocalDirectory, "ampachenet.db3")); } }
-		public Handshake Handshake { get { return _handshake; } }
+		public virtual Handshake Handshake { get { return _handshake; } }
 
 		public AmpacheSelectionFactory ()
 		{}
@@ -74,6 +74,9 @@ namespace JohnMoore.AmpacheNet.DataAccess
 			}
 			if(typeof(TEntity) == typeof(AmpacheSong)) {
 				return new SongPersister(new SqliteConnection(DbConnString)) as IPersister<TEntity>;
+			}
+			if(typeof(TEntity) == typeof(UserConfiguration)) {
+				return new UserConfigurationPersister(new SqliteConnection(DbConnString)) as IPersister<TEntity>;
 			}
             throw new InvalidOperationException(string.Format("{0} is not yet supported for persisting", typeof(TEntity).Name));
 		}

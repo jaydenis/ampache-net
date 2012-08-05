@@ -58,6 +58,7 @@
     <Compile Include="AuthenticateFixture.cs" />
     <Compile Include="AlbumArtRepositoryFixture.cs" />
     <Compile Include="SongPersisterFixture.cs" />
+    <Compile Include="UserConfigurationPersisterFixture.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

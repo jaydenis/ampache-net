@@ -41,7 +41,7 @@ namespace JohnMoore.AmpacheNet.DataAccess
 		public void Persist (AmpacheSong entity)
 		{
 			using (var cmd = _conn.CreateCommand()) {
-				cmd.CommandText = string.Format(INSERT_SQL, entity.Id, entity.ArtistId, entity.AlbumId, entity.Name, entity.AlbumName, entity.ArtistName, entity.TrackNumber, entity.ArtUrl, entity.TrackLength.TotalSeconds, entity.Url, entity.Rating, entity.PerciseRating);
+				cmd.CommandText = string.Format(INSERT_SQL, entity.Id, entity.ArtistId, entity.AlbumId, entity.Name.Replace(@"'", "&QUOT;"), entity.AlbumName.Replace(@"'", "&QUOT;"), entity.ArtistName.Replace(@"'", "&QUOT;"), entity.TrackNumber, entity.ArtUrl, entity.TrackLength.TotalSeconds, entity.Url, entity.Rating, entity.PerciseRating);
 				cmd.ExecuteNonQuery();
 			}
 		}
@@ -99,9 +99,9 @@ namespace JohnMoore.AmpacheNet.DataAccess
 			res.Id = (int)reader["SongId"];
 			res.ArtistId = (int)reader["ArtistId"];
 			res.AlbumId = (int)reader["AlbumId"];
-			res.Name = (string)reader["SongName"];
-			res.AlbumName = (string)reader["AlbumName"];
-			res.ArtistName = (string)reader["ArtistName"];
+			res.Name = ((string)reader["SongName"]).Replace("&QUOT;", @"'");
+			res.AlbumName = ((string)reader["AlbumName"]).Replace("&QUOT;", @"'");
+			res.ArtistName = ((string)reader["ArtistName"]).Replace("&QUOT;", @"'");
 			res.TrackNumber = (int)reader["TrackNumber"];
 			res.ArtUrl = (string)reader["ArtUrl"];
 			res.TrackLength = TimeSpan.FromSeconds((double)reader["TrackLengthSeconds"]);
