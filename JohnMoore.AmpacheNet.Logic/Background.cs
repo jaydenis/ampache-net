@@ -98,6 +98,9 @@ namespace JohnMoore.AmpacheNet.Logic
 		public void PersistUserConfig(UserConfiguration config)
 		{
 			_model.Factory.GetPersistorFor<UserConfiguration>().Persist(config);
+			if(config.CacheArt == false && Directory.Exists(AmpacheSelectionFactory.ArtLocalDirectory)){
+				Directory.GetFiles(AmpacheSelectionFactory.ArtLocalDirectory).Where(f=>f != "ampachenet.db3").ToList().ForEach(f => File.Delete(f));
+			}
 		}
 
 

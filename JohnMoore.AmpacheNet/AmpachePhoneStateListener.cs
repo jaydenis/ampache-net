@@ -36,22 +36,25 @@ namespace JohnMoore.AmpacheNet
 		
 		public AmpachePhoneStateListener (AmpacheModel model)
 		{
+			if(model == null){
+				throw new System.ArgumentNullException("model");
+			}
 			_model = model;
 		}
 		
 		public override void OnCallStateChanged (Android.Telephony.CallState state, string incomingNumber)
 		{
-			base.OnCallStateChanged (state, incomingNumber);
 			if(state == Android.Telephony.CallState.Idle && _resumeOnIdle)
 			{
-				_model.PlayPauseRequested = true;
+				System.Threading.Tasks.Task.Factory.StartNew(() => _model.PlayPauseRequested = true);
 				_resumeOnIdle = false;
 			}
 			else if(state == Android.Telephony.CallState.Ringing && _model.IsPlaying)
 			{
-				_model.PlayPauseRequested = true;
+				System.Threading.Tasks.Task.Factory.StartNew(() => _model.PlayPauseRequested = true);
 				_resumeOnIdle = true;
 			}
+			base.OnCallStateChanged (state, incomingNumber);
 		}
 	}
 }

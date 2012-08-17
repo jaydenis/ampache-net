@@ -77,11 +77,6 @@ namespace JohnMoore.AmpacheNet
 		{
 			base.OnCreate ();
 			Console.SetOut(new AndroidLogTextWriter());
-			var telSvc = this.ApplicationContext.GetSystemService(Context.TelephonyService) as Android.Telephony.TelephonyManager;
-			if(telSvc != null)
-			{
-				telSvc.Listen(new AmpachePhoneStateListener(_model), Android.Telephony.PhoneStateListenerFlags.CallState);
-			}
 			_artCachePath = CacheDir.AbsolutePath;
 			var am = (AlarmManager)ApplicationContext.GetSystemService(Context.AlarmService);
 			var ping = new Intent(PingReceiver.INTENT);
@@ -99,6 +94,11 @@ namespace JohnMoore.AmpacheNet
 			if(config != null){
 				_model.Factory.AuthenticateToServer(config);
 				_model.Configuration = config;
+			}
+			var telSvc = this.ApplicationContext.GetSystemService(Context.TelephonyService) as Android.Telephony.TelephonyManager;
+			if(telSvc != null)
+			{
+				telSvc.Listen(new AmpachePhoneStateListener(_model), Android.Telephony.PhoneStateListenerFlags.CallState);
 			}
 		}
 		
