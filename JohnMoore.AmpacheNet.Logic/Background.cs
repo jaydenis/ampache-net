@@ -99,7 +99,8 @@ namespace JohnMoore.AmpacheNet.Logic
 		{
 			_model.Factory.GetPersistorFor<UserConfiguration>().Persist(config);
 			if(config.CacheArt == false && Directory.Exists(AmpacheSelectionFactory.ArtLocalDirectory)){
-				Directory.GetFiles(AmpacheSelectionFactory.ArtLocalDirectory).Where(f=>f != "ampachenet.db3").ToList().ForEach(f => File.Delete(f));
+				var files = Directory.GetFiles(AmpacheSelectionFactory.ArtLocalDirectory).Where(f=>!f.Contains("ampachenet.db3")).ToList();
+				files.ForEach(f => File.Delete(f));
 			}
 		}
 

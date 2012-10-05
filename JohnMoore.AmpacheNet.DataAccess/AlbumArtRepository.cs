@@ -117,15 +117,24 @@ namespace JohnMoore.AmpacheNet.DataAccess
 	
 		public void Persist (JohnMoore.AmpacheNet.Entities.AlbumArt entity)
 		{
+			if(entity.ArtStream.Length == 0){
+				return;
+			}
 			if(IsPersisted(entity))
 			{
 				Remove(entity);
 			}
-			var stream = File.Create(Path.Combine(_directory, entity.AlbumId.ToString()));
-			entity.ArtStream.Position = 0;
-			entity.ArtStream.CopyTo(stream);
-			entity.ArtStream.Position = 0;
-			stream.Close();
+			try{
+				using(var stream = File.Create(Path.Combine(_directory, entity.AlbumId.ToString()))){
+					entity.ArtStream.Position = 0;
+					entity.ArtStream.CopyTo(stream);
+					entity.ArtStream.Position = 0;
+					stream.Close();
+				}
+			}
+			catch{
+				Remove(entity);
+			}
 		}
 	
 		public void Remove (JohnMoore.AmpacheNet.Entities.AlbumArt entity)

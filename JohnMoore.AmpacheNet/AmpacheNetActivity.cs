@@ -114,6 +114,14 @@ namespace JohnMoore.AmpacheNet
 			var lv = FindViewById<ListView>(Resource.Id.lstPlaylist);
 			var adp = lv.Adapter as AmpacheArrayAdapter<AmpacheSong>;
 			lv.SetSelection(adp.GetPosition(_model.PlayingSong));
+			var lbl = FindViewById<TextView>(Resource.Id.lblNowPlayingTrack);
+			if(lbl != null){
+				lbl.Text = _model.PlayingSong.Name;
+			}
+			lbl = FindViewById<TextView>(Resource.Id.lblNowPlayingAlbum);
+			if(lbl != null){
+				lbl.Text = string.Format("{0} - {1}", _model.PlayingSong.AlbumName, _model.PlayingSong.ArtistName);
+			}
 		}
 		
 		protected override void OnDestroy ()

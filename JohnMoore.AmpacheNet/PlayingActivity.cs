@@ -164,25 +164,31 @@ namespace JohnMoore.AmpacheNet
 		
 		void UpdateNextButton()
 		{
-			if(_model.NextRequested)
-			{ 
-				FindViewById<ImageButton>(Resource.Id.imgPlayingNext).SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_media_next_invert));
-			}
-			else
-			{
-				FindViewById<ImageButton>(Resource.Id.imgPlayingNext).SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_media_next));
+			var view = FindViewById<ImageButton>(Resource.Id.imgPlayingNext);
+			if(view != null){
+				if(_model.NextRequested)
+				{ 
+					view.SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_media_next_invert));
+				}
+				else
+				{
+					view.SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_media_next));
+				}
 			}
 		}
 		
 		void UpdatePreviousButton()
 		{
-			if(_model.PreviousRequested)
-			{
-				FindViewById<ImageButton>(Resource.Id.imgPlayingPrevious).SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_media_previous_invert));
-			}
-			else
-			{
-				FindViewById<ImageButton>(Resource.Id.imgPlayingPrevious).SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_media_previous));
+			var view = FindViewById<ImageButton>(Resource.Id.imgPlayingPrevious);
+			if(view != null){
+				if(_model.PreviousRequested)
+				{
+					view.SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_media_previous_invert));
+				}
+				else
+				{
+					view.SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_media_previous));
+				}
 			}
 		}
 		
@@ -200,13 +206,16 @@ namespace JohnMoore.AmpacheNet
 		
 		void UpdateShuffleButton()
 		{
-			if(_model.Shuffling)
-			{
-				FindViewById<ImageButton>(Resource.Id.imgPlayingShuffle).SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_menu_shuffle_invert));
-			}
-			else
-			{
-				FindViewById<ImageButton>(Resource.Id.imgPlayingShuffle).SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_menu_shuffle));
+			var img = FindViewById<ImageButton>(Resource.Id.imgPlayingShuffle);
+			if(img != null){
+				if(_model.Shuffling)
+				{
+					img.SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_menu_shuffle_invert));
+				}
+				else
+				{
+					img.SetImageDrawable(Resources.GetDrawable(Resource.Drawable.ic_menu_shuffle));
+				}
 			}
 		}
 		void HandleShuffleClick (object sender, EventArgs e)
