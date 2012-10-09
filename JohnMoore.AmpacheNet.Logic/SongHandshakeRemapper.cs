@@ -13,7 +13,7 @@ namespace JohnMoore.AmpacheNet.Logic
 		/// 2: song id
 		/// </summary>
 		private const string URL_FORMAT = "{0}/play/index.php?ssid={1}&oid={2}";
-
+		private const string ART_URL = "{0}?id={1}&auth={2}&name=art.jpg";
 		private const string UID = @"&uid=";
 		private const string NAME = @"&name=";
 
@@ -22,7 +22,7 @@ namespace JohnMoore.AmpacheNet.Logic
 			if(handshake == null){
 				throw new ArgumentNullException("handshake");
 			}
-			var urlParts = song.Url.Split('?');
+			var urlParts = (song.Url ?? string.Empty).Split('?');
 			if(urlParts.Length == 2){
 				var parameterMap = new Dictionary<string, string>();
 				var strings = urlParts[1].Split('&');
@@ -42,6 +42,10 @@ namespace JohnMoore.AmpacheNet.Logic
 					builder.Append(parameterMap["name"]);
 				}
 				song.Url = builder.ToString();
+			}
+			urlParts = (song.ArtUrl ?? string.Empty).Split('?');
+			if(urlParts.Length == 2){
+				song.ArtUrl = string.Format(ART_URL, urlParts[0], song.ArtId, handshake.Passphrase);
 			}
 		}
 		

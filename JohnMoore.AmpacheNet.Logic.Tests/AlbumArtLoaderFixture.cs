@@ -225,7 +225,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			int timesCalled = 0;
 			persistor.When(x => x.Persist(Arg.Any<AlbumArt>())).Do( x => { ++timesCalled; });
 			var selector = Substitute.For<IAmpacheSelector<AlbumArt>>();
-			art.ArtStream = new MemoryStream();
+			art.ArtStream = new MemoryStream(new byte[8]);
 			selector.SelectBy<AmpacheSong>(Arg.Any<AmpacheSong>()).Returns(new [] {art});
 			factory.GetPersistorFor<AlbumArt>().Returns(persistor);
 			factory.GetInstanceSelectorFor<AlbumArt>().Returns(selector);
