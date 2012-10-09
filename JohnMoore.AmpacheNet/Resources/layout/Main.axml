@@ -51,6 +51,10 @@
             android:layout_below="@id/lblNowPlayingTrack"
             android:id="@+id/lblNowPlayingAlbum"
             android:layout_toRightOf="@id/imgPlayingAlbumArt"
-            android:layout_toLeftOf="@id/imgPlayingPlayPause" />
+            android:layout_toLeftOf="@id/imgPlayingPlayPause"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:singleLine="true"
+            android:ellipsize="marquee"
+            android:scrollHorizontally="true" />
     </RelativeLayout>
 </LinearLayout>

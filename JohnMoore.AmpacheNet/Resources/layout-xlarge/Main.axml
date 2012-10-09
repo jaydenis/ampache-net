@@ -71,5 +71,12 @@
 <!-- Widget Removed Conflict | id:@+id/layoutPlaying -->
 <!-- Widget Removed Conflict | id:@+id/layoutPlaying -->
 <!-- Widget Removed Conflict | id:@+id/layoutPlaying -->
-<!-- Widget Inserted Conflict | id:@+id/layoutPlaying | @+id/textView1 -->
+<!-- Property Change Conflict | id:@+id/lblNowPlayingAlbum | marqueeRepeatLimit=marquee_forever -->
+<!-- Property Change Conflict | id:@+id/lblNowPlayingAlbum | marqueeRepeatLimit removed -->
+<!-- Property Change Conflict | id:@+id/lblNowPlayingAlbum | marqueeRepeatLimit=marquee_forever -->
+<!-- Property Change Conflict | id:@+id/lblNowPlayingAlbum | singleLine=false -->
+<!-- Property Change Conflict | id:@+id/lblNowPlayingAlbum | singleLine=true -->
+<!-- Property Change Conflict | id:@+id/lblNowPlayingAlbum | ellipsize=marquee -->
+<!-- Property Change Conflict | id:@+id/lblNowPlayingAlbum | scrollHorizontally=false -->
+<!-- Property Change Conflict | id:@+id/lblNowPlayingAlbum | scrollHorizontally=true -->
 </LinearLayout>
