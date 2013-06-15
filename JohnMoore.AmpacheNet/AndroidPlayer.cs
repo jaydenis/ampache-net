@@ -44,7 +44,7 @@ namespace JohnMoore.AmpacheNet
 		public AndroidPlayer (AmpacheModel model, Context context) : base(model)
 		{
 			_context = context;
-			_timer = new Timer((o) => UpdatePlayProgress(), new object(), TimeSpan.FromMilliseconds(500), TimeSpan.FromMilliseconds(500));
+			_timer = new Timer(UpdatePlayProgress, null, TimeSpan.FromMilliseconds(500), TimeSpan.FromMilliseconds(500));
 		}
 		
 		void Handle_playerCompletion (object sender, EventArgs e)
@@ -57,7 +57,7 @@ namespace JohnMoore.AmpacheNet
 			_model.PercentDownloaded = e.Percent;
 		}
 		
-		void UpdatePlayProgress()
+		void UpdatePlayProgress(object o)
 		{
 			try {
 				if(_player.IsPlaying) {

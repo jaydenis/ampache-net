@@ -38,17 +38,19 @@ using Android.Widget;
 
 namespace JohnMoore.AmpacheNet
 {
-	class AmpacheArrayAdapter<TEntity> : ArrayAdapter<TEntity>
+	class AmpacheArrayAdapter<TEntity> : BaseAdapter<TEntity>
 	{
 		private readonly LayoutInflater _inflator;
 		private readonly int _viewId;
 		private readonly Func<TEntity, View, View> _hydrate;
+        private readonly IList<TEntity> _data;
 		
-		public AmpacheArrayAdapter (Func<TEntity, View, View> hydrate, LayoutInflater inflator, Context ctx, int viewId, IList<TEntity> data) : base(ctx, viewId, data)
+		public AmpacheArrayAdapter (Func<TEntity, View, View> hydrate, LayoutInflater inflator, Context ctx, int viewId, IList<TEntity> data)
 		{
 			_hydrate = hydrate;
 			_inflator = inflator;
 			_viewId = viewId;
+            _data = data.ToList();
 		}
 		
 		public override View GetView (int position, View convertView, ViewGroup parent)
@@ -62,8 +64,28 @@ namespace JohnMoore.AmpacheNet
 			{
 				row = convertView;
 			}
-			return _hydrate(GetItem(position), row);
+			return _hydrate(this[position], row);
 		}
-	}
+
+        public override TEntity this[int position]
+        {
+            get { return _data[position]; }
+        }
+
+        public override int Count
+        {
+            get { return _data.Count; }
+        }
+
+        public override long GetItemId(int position)
+        {
+            return (long)position;
+        }
+
+        internal int GetPosition(TEntity ampacheSong)
+        {
+            return _data.IndexOf(ampacheSong);
+        }
+    }
 }
 

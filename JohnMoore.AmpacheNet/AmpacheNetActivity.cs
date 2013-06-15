@@ -66,7 +66,7 @@ namespace JohnMoore.AmpacheNet
 			lv.SetSelection(e.Position);
 			lv.SmoothScrollToPosition(e.Position);
 			var adp = lv.Adapter as AmpacheArrayAdapter<AmpacheSong>;
-			var sng = adp.GetItem(e.Position);
+			var sng = adp[e.Position];
 			Task.Factory.StartNew(() => _model.StopRequested = true)
 						.ContinueWith((t) => _model.PlayingSong = sng)
 						.ContinueWith((t) => _model.PlayPauseRequested = true);
@@ -92,7 +92,7 @@ namespace JohnMoore.AmpacheNet
 			if(!_model.IsPlaying)
 			{
 				var adp = lv.Adapter as AmpacheArrayAdapter<AmpacheSong>;
-				var sng = adp.GetItem(e.Position);
+				var sng = adp[e.Position];
 				Task.Factory.StartNew(() => _model.StopRequested = true)
 							.ContinueWith((t) => _model.PlayingSong = sng)
 							.ContinueWith((t) => _model.PlayPauseRequested = true);

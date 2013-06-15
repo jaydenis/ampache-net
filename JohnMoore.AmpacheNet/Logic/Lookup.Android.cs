@@ -85,7 +85,7 @@ namespace JohnMoore.AmpacheNet.Logic
 		
 		void HandleListViewhandleItemLongClick (object sender, AdapterView.ItemLongClickEventArgs e)
 		{
-			var ent = _adapter.GetItem(e.Position);
+			var ent = _adapter[e.Position];
 			System.Threading.ThreadPool.QueueUserWorkItem((o) => AddSongsToPlaylistFor(ent));
 			Toast.MakeText(this.ApplicationContext, GetString(Resource.String.addToPlaylist), ToastLength.Short).Show();
 		}
