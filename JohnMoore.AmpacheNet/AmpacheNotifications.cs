@@ -4,7 +4,7 @@
 // Author:
 //       John Moore <jcwmoore@gmail.com>
 //
-// Copyright (c) 2011 John Moore
+// Copyright (c) 2013 John Moore
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -44,15 +44,19 @@ namespace JohnMoore.AmpacheNet
 	{
 		private readonly AmpacheModel _model;
 		private readonly Context _context;
-		public Notification AmpacheNotification { get; private set; }
+        public Notification AmpacheNotification { get { return _builder.Notification; } }
 		public const int NOTIFICATION_ID = 0;
+        private Notification.Builder _builder;
 		
 		public AmpacheNotifications (Context context, AmpacheModel model)
 		{
 			_model = model;
 			_context = context;
 			_model.PropertyChanged += Handle_modelPropertyChanged;
-			AmpacheNotification = new Notification(Resource.Drawable.ic_stat_notify_musicplayer, "Ampache.NET");
+            _builder = new Notification.Builder(context)
+                .SetSmallIcon(Resource.Drawable.ic_stat_notify_musicplayer)
+                .SetContentTitle("Amapche.NET")
+                .SetContentIntent(PendingIntent.GetActivity(_context, 0, new Intent(_context, typeof(NowPlaying)), PendingIntentFlags.OneShot));
 			((NotificationManager)_context.GetSystemService(Context.NotificationService)).CancelAll();
 		}
 
@@ -66,19 +70,31 @@ namespace JohnMoore.AmpacheNet
 				}
 				else
 				{
-					AmpacheNotification.TickerText = new Java.Lang.String(string.Format(_context.GetString(Resource.String.nowPlayingFormat), _model.PlayingSong.Name, _model.PlayingSong.ArtistName));
-					AmpacheNotification.When = Java.Lang.JavaSystem.CurrentTimeMillis();
-					AmpacheNotification.SetLatestEventInfo(_context, "Ampache.NET", new string(AmpacheNotification.TickerText.ToArray()), PendingIntent.GetActivity(_context, 0, new Intent(_context, typeof(AmpacheNetActivity)), 0));
-					((NotificationManager)_context.GetSystemService(Context.NotificationService)).Notify(NOTIFICATION_ID, AmpacheNotification);
+					_builder.SetTicker(new Java.Lang.String(string.Format(_context.GetString(Resource.String.nowPlayingFormat), _model.PlayingSong.Name, _model.PlayingSong.ArtistName)));
+					_builder.SetWhen(Java.Lang.JavaSystem.CurrentTimeMillis());
+                    _builder.SetContentText(string.Format("Playing {0}", _model.PlayingSong.Name));
+                    
+                    var old = _builder.Notification.LargeIcon;
+                    var map = Android.Graphics.BitmapFactory.DecodeByteArray(_model.AlbumArtStream.ToArray(), 0, (int)_model.AlbumArtStream.Length);
+
+                    var size = _context.Resources.GetDimensionPixelSize(Android.Resource.Dimension.NotificationLargeIconWidth);
+                    _builder.SetLargeIcon(Android.Graphics.Bitmap.CreateScaledBitmap(map, size, size, false));
+                    map.Recycle();
+                    map.Dispose();
+                    if (old != null)
+                    {
+                        old.Recycle();
+                        old.Dispose();
+                    }
+
+					((NotificationManager)_context.GetSystemService(Context.NotificationService)).Notify(NOTIFICATION_ID, _builder.Notification);
 				}
 			}
 			if(e.PropertyName == AmpacheModel.IS_PLAYING)
 			{
 				if(_model.IsPlaying)
 				{
-					AmpacheNotification.TickerText = new Java.Lang.String(string.Format(_context.GetString(Resource.String.nowPlayingFormat), _model.PlayingSong.Name, _model.PlayingSong.ArtistName));
-					AmpacheNotification.When = Java.Lang.JavaSystem.CurrentTimeMillis();
-					AmpacheNotification.SetLatestEventInfo(_context, "Ampache.NET", new string(AmpacheNotification.TickerText.ToArray()), PendingIntent.GetActivity(_context, 0, new Intent(_context, typeof(AmpacheNetActivity)), 0));
+					_builder.SetWhen(Java.Lang.JavaSystem.CurrentTimeMillis());
 					((NotificationManager)_context.GetSystemService(Context.NotificationService)).Notify(NOTIFICATION_ID, AmpacheNotification);
 				}
 				else
@@ -86,6 +102,9 @@ namespace JohnMoore.AmpacheNet
 					((NotificationManager)_context.GetSystemService(Context.NotificationService)).Cancel(NOTIFICATION_ID);	
 				}
 			}
+            if (e.PropertyName == AmpacheModel.ALBUM_ART_STREAM)
+            {
+            }
 		}
 
 		#region IDisposable implementation

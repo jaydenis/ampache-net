@@ -51,7 +51,8 @@ namespace JohnMoore.AmpacheNet.Logic
 		{
 			if (e.PropertyName == AmpacheModel.PLAYING_SONG && _model.PlayingSong != null)
 			{
-				Task.Factory.StartNew(() => LoadAlbumImage());
+                LoadAlbumImage();
+				//Task.Factory.StartNew(() => LoadAlbumImage());
 			}
 		}
 		
