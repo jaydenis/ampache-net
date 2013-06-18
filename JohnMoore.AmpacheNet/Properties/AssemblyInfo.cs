@@ -9,7 +9,7 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("")]
-[assembly: AssemblyCopyright("John Moore © 2012")]
+[assembly: AssemblyCopyright("John Moore © 2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -17,7 +17,7 @@ using System.Runtime.CompilerServices;
 // The form "{Major}.{Minor}.*" will automatically update the build and revision,
 // and "{Major}.{Minor}.{Build}.*" will update just the revision.
 
-[assembly: AssemblyVersion("2.0.*")]
+[assembly: AssemblyVersion("2.5.0.1")]
 [assembly: Android.App.UsesPermission(JohnMoore.AmpacheNet.AmpacheService.StopServiceReceiver.INTENT)]
 [assembly: Android.App.UsesPermission(JohnMoore.AmpacheNet.AmpacheService.PingReceiver.INTENT)]
 

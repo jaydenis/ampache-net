@@ -64,7 +64,7 @@ namespace JohnMoore.AmpacheNet.Logic
 					if(_model.PlayPauseRequested) Task.Factory.StartNew(() => PlayPause());
 					break;
 				case AmpacheModel.NEXT_REQUESTED:
-					if(_model.NextRequested) Task.Factory.StartNew(() => Next());
+					if(_model.NextRequested) Next();//Task.Factory.StartNew(() => Next());
 					break;
 				case AmpacheModel.PREVIOUS_REQUESTED:
 					if(_model.PreviousRequested) Task.Factory.StartNew(() => Previous());
@@ -154,11 +154,11 @@ namespace JohnMoore.AmpacheNet.Logic
 					{
 						nextIndex = (_model.Playlist.IndexOf(_model.PlayingSong) + 1) % _model.Playlist.Count;
 					}
-					_model.PlayingSong = _model.Playlist[nextIndex];
 					Console.WriteLine ("Playing next Song: " + _model.PlayingSong.Name);
 					_model.PercentPlayed = 0;
 					_model.PercentDownloaded = 0;
-					PlaySong (_model.PlayingSong);
+                    Task.Factory.StartNew(() => _model.PlayingSong = _model.Playlist[nextIndex]);
+                    PlaySong(_model.Playlist[nextIndex]);
 					_isPaused = false;
 					_model.IsPlaying = true;
 				}

@@ -56,7 +56,7 @@ namespace JohnMoore.AmpacheNet
             _builder = new Notification.Builder(context)
                 .SetSmallIcon(Resource.Drawable.ic_stat_notify_musicplayer)
                 .SetContentTitle("Amapche.NET")
-                .SetContentIntent(PendingIntent.GetActivity(_context, 0, new Intent(_context, typeof(NowPlaying)), PendingIntentFlags.OneShot));
+                .SetContentIntent(PendingIntent.GetActivity(_context, 0, new Intent(_context, typeof(NowPlaying)), PendingIntentFlags.UpdateCurrent));
 			((NotificationManager)_context.GetSystemService(Context.NotificationService)).CancelAll();
 		}
 
