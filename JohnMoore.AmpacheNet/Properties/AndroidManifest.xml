@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="36" android:versionName="2.5.0.1" package="johnmooreampachenet.johnmooreampachenet" android:installLocation="internalOnly">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="39" android:versionName="2.5.0.3" package="johnmooreampachenet.johnmooreampachenet" android:installLocation="internalOnly">
   <application android:label="JohnMoore.AmpacheNet" android:debuggable="true" android:icon="@drawable/ic_icon">
   </application>
   <uses-sdk android:minSdkVersion="15" android:targetSdkVersion="16" />

@@ -215,7 +215,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			Assert.That(model.PlayPauseRequested, Is.False);
 			Assert.That(mock.PauseCalls, Is.EqualTo(0));
 			Assert.That(mock.UnpauseCalls, Is.EqualTo(0));
-			Assert.That(mock.PlaySongCalls, Is.EqualTo(1));
+			Assert.That(mock.PlaySongCalls, Is.EqualTo(0));
 			Assert.That(mock.StopCalls, Is.EqualTo(0));
 			Assert.That(mock.SeekToCalls, Is.EqualTo(0));
 			Assert.That(mock.GetPauseState(), Is.False);

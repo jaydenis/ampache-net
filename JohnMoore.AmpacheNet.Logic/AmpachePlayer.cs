@@ -64,7 +64,7 @@ namespace JohnMoore.AmpacheNet.Logic
 					if(_model.PlayPauseRequested) Task.Factory.StartNew(() => PlayPause());
 					break;
 				case AmpacheModel.NEXT_REQUESTED:
-					if(_model.NextRequested) Next();//Task.Factory.StartNew(() => Next());
+					if(_model.NextRequested) Task.Factory.StartNew(() => Next());
 					break;
 				case AmpacheModel.PREVIOUS_REQUESTED:
 					if(_model.PreviousRequested) Task.Factory.StartNew(() => Previous());

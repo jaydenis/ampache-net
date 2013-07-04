@@ -35,8 +35,9 @@ namespace JohnMoore.AmpacheNet.DataAccess
     public class AmpacheSelectionFactory
     {
         private Authenticate _handshake;
-		public static string ArtLocalDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), ".AmpacheNet");
-		private static string DbConnString { get { return string.Format("Data Source={0}", Path.Combine (ArtLocalDirectory, "ampachenet.db3")); } }
+        public static string ArtLocalDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), ".AmpacheNet");
+        public static string DatabaseDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+        private static string DbConnString { get { return string.Format("Data Source={0}", Path.Combine(DatabaseDirectory, "ampachenet.db3")); } }
 		public virtual Handshake Handshake { get { return _handshake; } }
 
 		public AmpacheSelectionFactory ()
