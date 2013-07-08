@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -46,6 +46,7 @@
     <Compile Include="ArtistFactory.cs" />
     <Compile Include="ArtistSelector.cs" />
     <Compile Include="Authenticate.cs" />
+    <Compile Include="Configurator.cs" />
     <Compile Include="FactoryBase.cs" />
     <Compile Include="FactoryBaseRatable.cs" />
     <Compile Include="FactoryBaseTagable.cs" />
@@ -69,7 +70,5 @@
       <Name>JohnMoore.AmpacheNet.Entities</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
+  <ItemGroup />
 </Project>

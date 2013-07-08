@@ -32,60 +32,56 @@ using System.Data.Sqlite;
 
 namespace JohnMoore.AmpacheNet.DataAccess
 {
+    [Obsolete]
     public class AmpacheSelectionFactory
     {
         private Authenticate _handshake;
+        private Jice.JiceContainer _container = new Jice.JiceContainer();
         public static string ArtLocalDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), ".AmpacheNet");
         public static string DatabaseDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
         private static string DbConnString { get { return string.Format("Data Source={0}", Path.Combine(DatabaseDirectory, "ampachenet.db3")); } }
 		public virtual Handshake Handshake { get { return _handshake; } }
 
 		public AmpacheSelectionFactory ()
-		{}
+		{
+            DataAccess.Configurator.Configure(_container);
+        }
 		
-        public AmpacheSelectionFactory (Authenticate hs)
+        public AmpacheSelectionFactory (Authenticate hs) : this()
         {
             _handshake = hs;
+            _container.Register<Handshake>().To(_handshake);
         }
 
         public virtual IAmpacheSelector<TEntity> GetInstanceSelectorFor<TEntity>() where TEntity : IEntity
         {
-            if (typeof(TEntity) == typeof(AmpacheArtist)) {
-                return new ArtistSelector(_handshake, new ArtistFactory()) as IAmpacheSelector<TEntity>;
+            try
+            {
+                return _container.Resolve<IAmpacheSelector<TEntity>>();
             }
-            if (typeof(TEntity) == typeof(AmpacheAlbum)) {
-                return new AlbumSelector(_handshake, new AlbumFactory()) as IAmpacheSelector<TEntity>;
+            catch (Exception e)
+            {
+                throw new InvalidOperationException(string.Format("{0} is not yet supported for selection from ampache", typeof(TEntity).Name), e);
             }
-            if (typeof(TEntity) == typeof(AmpacheSong)) {
-                return new SongSelector(_handshake, new SongFactory()) as IAmpacheSelector<TEntity>;
-            }
-            if (typeof(TEntity) == typeof(AmpachePlaylist)) {
-                return new PlaylistSelector(_handshake, new PlaylistFactory(), new SongFactory()) as IAmpacheSelector<TEntity>;
-            }
-			if (typeof(TEntity) == typeof(AlbumArt)) {
-				return new AlbumArtRepository(ArtLocalDirectory) as IAmpacheSelector<TEntity>;
-			}
-            throw new InvalidOperationException(string.Format("{0} is not yet supported for selection from ampache", typeof(TEntity).Name));
         }
 		
 		public virtual IPersister<TEntity> GetPersistorFor<TEntity>() where TEntity : IEntity
 		{
-			if (typeof(TEntity) == typeof(AlbumArt)) {
-				return new AlbumArtRepository(ArtLocalDirectory) as IPersister<TEntity>;
-			}
-			if(typeof(TEntity) == typeof(AmpacheSong)) {
-				return new SongPersister(new SqliteConnection(DbConnString)) as IPersister<TEntity>;
-			}
-			if(typeof(TEntity) == typeof(UserConfiguration)) {
-				return new UserConfigurationPersister(new SqliteConnection(DbConnString)) as IPersister<TEntity>;
-			}
-            throw new InvalidOperationException(string.Format("{0} is not yet supported for persisting", typeof(TEntity).Name));
+            try
+            {
+                return _container.Resolve<IPersister<TEntity>>();
+            }
+            catch (Exception e)
+            {
+                throw new InvalidOperationException(string.Format("{0} is not yet supported for persisting", typeof(TEntity).Name), e);
+            }
 		}
 		
 		public virtual Authenticate AuthenticateToServer(UserConfiguration config)
 		{
 			var tmp = new Authenticate(config.ServerUrl, config.User, config.Password);
-			_handshake = tmp;
+            _handshake = tmp;
+            _container.Register<Handshake>().To(_handshake);
 			return tmp;
 		}
 		
