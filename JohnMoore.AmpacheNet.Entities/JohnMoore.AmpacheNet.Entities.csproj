@@ -36,21 +36,20 @@
     <Compile Include="AmpacheArtist.cs" />
     <Compile Include="AmpachePlaylist.cs" />
     <Compile Include="AmpacheSong.cs" />
+    <Compile Include="Demeter.cs" />
+    <Compile Include="DemeterFluentExtensions.cs" />
     <Compile Include="Handshake.cs" />
     <Compile Include="IEntity.cs" />
     <Compile Include="IRatable.cs" />
     <Compile Include="ITagable.cs" />
-    <Compile Include="Jice.cs" />
-    <Compile Include="JiceFluentExtensions.cs" />
     <Compile Include="Tag.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserConfiguration.cs" />
     <Compile Include="AlbumArt.cs" />
     <Compile Include="IArt.cs" />
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup />
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

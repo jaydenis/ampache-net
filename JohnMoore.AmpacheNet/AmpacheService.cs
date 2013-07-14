@@ -77,6 +77,10 @@ namespace JohnMoore.AmpacheNet
 		{
 			base.OnCreate ();
 			Console.SetOut(new AndroidLogTextWriter());
+            DataAccess.Configurator.ArtLocalDirectory = CacheDir.AbsolutePath;
+            var container = new Demeter.Container();
+            DataAccess.Configurator.Configure(container);
+            _model = new AmpacheModel(container);
 			_artCachePath = CacheDir.AbsolutePath;
 			var am = (AlarmManager)ApplicationContext.GetSystemService(Context.AlarmService);
 			var ping = new Intent(PingReceiver.INTENT);
@@ -96,8 +100,7 @@ namespace JohnMoore.AmpacheNet
 				_model.Configuration = config;
 			}
 			var telSvc = this.ApplicationContext.GetSystemService(Context.TelephonyService) as Android.Telephony.TelephonyManager;
-			if(telSvc != null)
-			{
+			if(telSvc != null) {
 				telSvc.Listen(new AmpachePhoneStateListener(_model), Android.Telephony.PhoneStateListenerFlags.CallState);
 			}
 		}
@@ -115,23 +118,7 @@ namespace JohnMoore.AmpacheNet
 		#endregion
 		
 		#region implemented abstract members of JohnMoore.AmpacheNet.Logic.Background
-		[Obsolete("Use IPersister<UserConfiguration>")]
-		public UserConfiguration LoadPersistedConfiguration ()
-		{
-			var settings = GetSharedPreferences(CONFIGURATION,FileCreationMode.Private);
-			if (!settings.All.Any()){
-				return null;
-			}
-			var config = new UserConfiguration();
-			config.ServerUrl = settings.GetString(AmpacheService.URL_KEY, string.Empty);
-			config.User = settings.GetString(AmpacheService.USER_NAME_KEY, string.Empty);
-			config.Password = settings.GetString(AmpacheService.PASSWORD_KEY, string.Empty);
-			config.AllowSeeking = settings.GetBoolean(AmpacheService.ALLOW_SEEKING_KEY, true);
-			config.CacheArt = settings.GetBoolean(AmpacheService.CACHE_ART_KEY, true);
-			var editor = settings.Edit().Clear().Commit();
-			return config;
-		}
-
+		
 		public override void PlatformFinalize ()
 		{
 			StopForeground(true);

@@ -1,5 +1,5 @@
 ﻿//
-// Jice.cs
+// Demeter.cs
 //
 // Author:
 //       John Moore <jcwmoore@gmail.com>
@@ -28,22 +28,22 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Jice
+namespace Demeter
 {
-    public sealed class JiceContainer : IDisposable
+    public sealed partial class Container : IDisposable
     {
         internal static readonly string DEFAULT_INSTANCE_NAME = Guid.NewGuid().ToString();
         private readonly Dictionary<Type, Dictionary<string, ResolutionInfoBase>> _resolutionMap = new Dictionary<Type, Dictionary<string, ResolutionInfoBase>>();
 
-        public JiceContainer()
+        public Container()
         {
-            Register<JiceContainer>().To(this);
+            Register<Container>().To(this);
         }
 
         /// <summary>
         /// Begins the registration syntax, must invoke the To operation to persist the registration
         /// </summary>
-        public JiceRegistationContext<TType> Register<TType>()
+        public DemeterRegistationContext<TType> Register<TType>()
         {
             return new RegistrationContext<TType>(this);
         }
@@ -59,21 +59,22 @@ namespace Jice
         /// <summary>
         /// Returns the named implementation of <typeparamref name="TType"/>
         /// </summary>
-        public TType Resolve<TType>(string name)
+        public TType Resolve<TType>(string name) 
         {
-            if (!_resolutionMap.ContainsKey(typeof(TType)))
+            var t = typeof(TType);
+            if (!_resolutionMap.ContainsKey(t))
             {
-                if(typeof(TType).IsInterface || typeof(TType).IsAbstract)
+                if (t.IsInterface || t.IsAbstract)
                 {
                     throw new ResolutionException(string.Format("The requested type is not available: {0}", typeof(TType).Name), typeof(TType));
                 }
-                Register<TType>().To<TType>(); // we will try to register the new type and see what happens
+                ((RegistrationContext<TType>)Register<TType>().Named(name)).ToDynamically<TType>(); // we will try to register the new type and see what happens
             }
-            if (!_resolutionMap[typeof(TType)].ContainsKey(name))
+            if (!_resolutionMap[t].ContainsKey(name))
             {
                 throw new ResolutionException(string.Format("The requested type, {0}, is not available with name {1}", typeof(TType).Name, name), typeof(TType));
             }
-            return ((ResolutionInfo<TType>)_resolutionMap[typeof(TType)][name]).LifeCycleManager.GetConcrete();
+            return ((ResolutionInfo<TType>)_resolutionMap[t][name]).LifeCycleManager.GetConcrete();
         }
 
         /// <summary>
@@ -98,7 +99,7 @@ namespace Jice
         /// </summary>
         public void Dispose()
         {
-            foreach (var obj in _resolutionMap.Where(m => m.Key != typeof(JiceContainer)).SelectMany(m => m.Value.Values))
+            foreach (var obj in _resolutionMap.Where(m => m.Key != typeof(Container)).SelectMany(m => m.Value.Values))
             {
                 obj.ObjectManager.Dispose();
             }
@@ -125,16 +126,16 @@ namespace Jice
             return (TInterface)ri.ConstructorInfo.Invoke(parameters);
         }
 
-        internal class TransientLifecycle<TInterface> : IJiceLifeCycleManager<TInterface>
-        {
-            private readonly ResolutionInfo<TInterface> _info;
 
+        internal class TransientLifecycle<TInterface> : IDemeterLifeCycleManager<TInterface>
+        {
+            protected readonly ResolutionInfo<TInterface> _info;
             public TransientLifecycle(ResolutionInfo<TInterface> info)
             {
                 _info = info;
             }
 
-            public TInterface GetConcrete()
+            public virtual TInterface GetConcrete()
             {
                 return _info.BuildInstance(_info.Container);
             }
@@ -144,51 +145,54 @@ namespace Jice
                 return GetConcrete();
             }
 
-            public void Dispose() { }
+            public virtual void Dispose() { }
         }
 
-        internal class SingletonLifecycle<TInterface> : IJiceLifeCycleManager<TInterface>
+        internal abstract class SingletonLifecycleBase<TInterface, TImplementation> : TransientLifecycle<TInterface> where TImplementation : TInterface
         {
-            private readonly ResolutionInfo<TInterface> _info;
-            private TInterface _instance;
-
-            public SingletonLifecycle(ResolutionInfo<TInterface> info, TInterface instance)
+            protected TImplementation _instance;
+            public SingletonLifecycleBase(ResolutionInfo<TInterface> info, TImplementation instance) : base(info)
             {
-                _info = info;
                 _instance = instance;
             }
 
-            public TInterface GetConcrete()
+            public override TInterface GetConcrete()
             {
-                if(_instance == null)
-                {
-                    _instance = _info.BuildInstance(_info.Container);
-                }
                 return _instance;
             }
 
-            public object GetObject()
+            public override void Dispose() 
             {
-                return GetConcrete();
-            }
-
-            public void Dispose() 
-            {
-                var dis = _instance as IDisposable;
-                if (dis != null) 
+                if (_instance as IDisposable != null) 
                 {
-                    dis.Dispose();
+                    ((IDisposable)_instance).Dispose();
                 }
             }
         }
 
-        private class RegistrationContext<TInterface> : JiceRegistationContext<TInterface>
+        internal class SingletonStructLifecycle<TInterface, TImplementation> : SingletonLifecycleBase<TInterface, TImplementation> where TImplementation : struct, TInterface 
         {
-            private readonly JiceContainer _container;
+            public SingletonStructLifecycle(ResolutionInfo<TInterface> info, TImplementation instance) : base(info, instance) { }
+        }
+
+        internal class SingletonObjectLifecycle<TInterface, TImplementation> : SingletonLifecycleBase<TInterface, TImplementation> where TImplementation : class, TInterface 
+        {
+            public SingletonObjectLifecycle(ResolutionInfo<TInterface> info, TImplementation instance) : base(info, instance)
+            {
+                if (instance == null)
+                {
+                    _instance = (TImplementation)_info.BuildInstance(_info.Container);
+                }
+            }
+        }
+        
+        private class RegistrationContext<TInterface> : DemeterRegistationContext<TInterface>
+        {
+            private readonly Container _container;
             private readonly ResolutionInfo<TInterface> _info = new ResolutionInfo<TInterface>();
             internal override ResolutionInfo<TInterface> ResolutionInfo { get { return _info; } }
 
-            public RegistrationContext(JiceContainer container)
+            public RegistrationContext(Container container)
             {
                 _container = container;
                 _info.ParentContainer = _container;
@@ -198,11 +202,8 @@ namespace Jice
 
             private void BuildBase<TImplementation>() where TImplementation : TInterface
             {
-                if (typeof(TImplementation).IsAbstract)
-                {
-                    throw new RegistrationException(string.Format("Cannot register {0} to abstract type {1}", typeof(TInterface).Name, typeof(TImplementation).Name), typeof(TImplementation));
-                }
                 _info.BuildInstance = (j) => _container.ReflectionBuild<TInterface, TImplementation>(_info);
+                _info.IsReflectionBuild = true;
                 if (!_container._resolutionMap.ContainsKey(typeof(TInterface)))
                 {
                     _container._resolutionMap.Add(typeof(TInterface), new Dictionary<string, ResolutionInfoBase>());
@@ -214,25 +215,56 @@ namespace Jice
                 _container._resolutionMap[typeof(TInterface)].Add(_info.Name, _info);
             }
 
-            public override JiceRegistration<TInterface, TImplementation> To<TImplementation>()
+            public override DemeterRegistration<TInterface, TImplementation> As<TImplementation>(Func<Container, TImplementation> fun)
             {
                 BuildBase<TImplementation>();
+                _info.IsReflectionBuild = false;
+                _info.BuildInstance = (c) => fun(c);
                 _info.LifeCycleManager = new TransientLifecycle<TInterface>(_info);
                 return new Registration<TInterface, TImplementation>(_info);
             }
 
-            public override JiceRegistration<TInterface, TImplementation> To<TImplementation>(TImplementation ti)
+            public override DemeterRegistration<TInterface, TImplementation> To<TImplementation>()
             {
                 BuildBase<TImplementation>();
-                _info.LifeCycleManager = new SingletonLifecycle<TInterface>(_info, ti);
+                if (typeof(TImplementation).IsAbstract)
+                {
+                    throw new RegistrationException(string.Format("Cannot register {0} to abstract type {1}", typeof(TInterface).Name, typeof(TImplementation).Name), typeof(TImplementation));
+                }
+                _info.LifeCycleManager = new TransientLifecycle<TInterface>(_info);
+                return new Registration<TInterface, TImplementation>(_info);
+            }
+
+            public DemeterRegistration<TInterface, TImplementation> ToDynamically<TImplementation>() where TImplementation : TInterface
+            {
+                if (typeof(TImplementation).IsAbstract)
+                {
+                    throw new RegistrationException(string.Format("Cannot register {0} to abstract type {1}", typeof(TInterface).Name, typeof(TImplementation).Name), typeof(TImplementation));
+                }
+                _info.LifeCycleManager = new TransientLifecycle<TInterface>(_info);
+                BuildBase<TImplementation>();
+                return new Registration<TInterface, TImplementation>(_info);
+            }
+
+            public override DemeterRegistration<TInterface, TImplementation> To<TImplementation>(TImplementation ti)
+            {
+                BuildBase<TImplementation>();
+                _info.LifeCycleManager = new SingletonObjectLifecycle<TInterface, TImplementation>(_info, ti);
+                return new Registration<TInterface, TImplementation>(_info);
+            }
+
+            public override DemeterRegistration<TInterface, TImplementation> ToValue<TImplementation>(TImplementation ti)
+            {
+                BuildBase<TImplementation>();
+                _info.LifeCycleManager = new SingletonStructLifecycle<TInterface, TImplementation>(_info, ti);
                 return new Registration<TInterface, TImplementation>(_info);
             }
         }
 
-        private class Registration<TInterface, TImplementation> : JiceRegistration<TInterface, TImplementation> where TImplementation : TInterface
+        private class Registration<TInterface, TImplementation> : DemeterRegistration<TInterface, TImplementation> where TImplementation : TInterface
         {
             private readonly ResolutionInfo<TInterface> _info;
-            private Func<JiceContainer, TImplementation> _fun;
+            private Func<Container, TImplementation> _fun;
             internal override ResolutionInfo<TInterface> ResolutionInfo { get { return _info; } }
 
             public Registration(ResolutionInfo<TInterface> info)
@@ -240,20 +272,21 @@ namespace Jice
                 _info = info;
             }
             
-            public override JiceRegistration<TInterface, TImplementation> ConstructAs(Func<JiceContainer, TImplementation> fun)
+            public override DemeterRegistration<TInterface, TImplementation> ConstructAs(Func<Container, TImplementation> fun)
             {
                 _fun = fun;
                 _info.BuildInstance = (c) => _fun(c);
+                _info.IsReflectionBuild = false;
                 return this;
             }
         }
 
         internal abstract class ResolutionInfoBase
         {
-            public JiceContainer Container { get; set; }
+            public Container Container { get; set; }
             public string Name { get; set; }
-            public abstract IJiceObjectManager ObjectManager { get; }
-            public JiceContainer ParentContainer { get; set; }
+            public abstract IDemeterObjectManager ObjectManager { get; }
+            public Container ParentContainer { get; set; }
             public System.Reflection.ConstructorInfo ConstructorInfo { get; set; }
             public System.Reflection.ParameterInfo[] Parameters { get; set; }
         }
@@ -261,12 +294,14 @@ namespace Jice
         internal class ResolutionInfo<TInterface> : ResolutionInfoBase
         {
             public TInterface Singleton { get; set; }
-            public Func<JiceContainer, TInterface> BuildInstance { get; set; }
-            public IJiceLifeCycleManager<TInterface> LifeCycleManager { get; set; }
-            public override IJiceObjectManager ObjectManager { get { return LifeCycleManager; } }
+            public bool IsReflectionBuild { get; set; }
+            public Func<Container, TInterface> BuildInstance { get; set; }
+            public IDemeterLifeCycleManager<TInterface> LifeCycleManager { get; set; }
+            public override IDemeterObjectManager ObjectManager { get { return LifeCycleManager; } }
         }
     }
-    
+
+    #region Exceptions
     /// <summary>
     /// This exception is thrown when the container is unable to complete the requested type Resolution
     /// </summary>
@@ -292,24 +327,36 @@ namespace Jice
             AttemptedType = attemptedType;
         }
     }
+    #endregion
 
+    #region Interfaces
     /// <summary>
     /// This is the pre registration object, any pre-registration operations (i.e. naming) will happen on this object
     /// </summary>
     /// <typeparam name="TInterface">Interface/Abstract type</typeparam>
-    public abstract class JiceRegistationContext<TInterface>
+    public abstract class DemeterRegistationContext<TInterface>
     {
-        internal abstract JiceContainer.ResolutionInfo<TInterface> ResolutionInfo { get; }
+        internal abstract Container.ResolutionInfo<TInterface> ResolutionInfo { get; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public abstract DemeterRegistration<TInterface, TImplementation> As<TImplementation>(Func<Container, TImplementation> fun) where TImplementation : TInterface;
 
         /// <summary>
         /// Assigns the registration to a concert type as a transient
         /// </summary>
-        public abstract JiceRegistration<TInterface, TImplementation> To<TImplementation>() where TImplementation : TInterface;
+        public abstract DemeterRegistration<TInterface, TImplementation> To<TImplementation>() where TImplementation : class, TInterface;
 
         /// <summary>
         /// Assigns the registration to a concert type with a predefined object as a singleton
         /// </summary>
-        public abstract JiceRegistration<TInterface, TImplementation> To<TImplementation>(TImplementation ti) where TImplementation : TInterface;
+        public abstract DemeterRegistration<TInterface, TImplementation> To<TImplementation>(TImplementation ti) where TImplementation : class, TInterface;
+
+        /// <summary>
+        /// Assigns the registration to a concert type with a predefined object as a singleton
+        /// </summary>
+        public abstract DemeterRegistration<TInterface, TImplementation> ToValue<TImplementation>(TImplementation ti) where TImplementation : struct, TInterface;
     }
 
     /// <summary>
@@ -318,21 +365,21 @@ namespace Jice
     /// </summary>
     /// <typeparam name="TInterface">Interface/Abstract type</typeparam>
     /// <typeparam name="TImplementation">Concrete type</typeparam>
-    public abstract class JiceRegistration<TInterface, TImplementation> where TImplementation : TInterface
+    public abstract class DemeterRegistration<TInterface, TImplementation> where TImplementation : TInterface
     {
-        internal abstract JiceContainer.ResolutionInfo<TInterface> ResolutionInfo { get; }
+        internal abstract Container.ResolutionInfo<TInterface> ResolutionInfo { get; }
 
         /// <summary>
         /// Provides the registration with a direct method for building an instance
         /// </summary>
         /// <returns>the original object</returns>
-        public abstract JiceRegistration<TInterface, TImplementation> ConstructAs(Func<JiceContainer, TImplementation> fun);
+        public abstract DemeterRegistration<TInterface, TImplementation> ConstructAs(Func<Container, TImplementation> fun);
     }
 
     /// <summary>
-    /// This is the base (non-generic) interface for object life cycle managers, custom life cycles should always implement <see cref="IJiceLifeCycleManager"/>
+    /// This is the base (non-generic) interface for object life cycle managers, custom life cycles should always implement <see cref="IDemeterLifeCycleManager"/>
     /// </summary>
-    public interface IJiceObjectManager : IDisposable
+    public interface IDemeterObjectManager : IDisposable
     {
         /// <summary>
         /// returns a non-generic object instance
@@ -341,14 +388,15 @@ namespace Jice
     }
 
     /// <summary>
-    /// Interface for all life cycle managers.  The life cycle manager for a <see cref="ResolutionInfo"/> can be set by an extension method on the <see cref="JiceRegistration"/> class.
+    /// Interface for all life cycle managers.  The life cycle manager for a <see cref="ResolutionInfo"/> can be set by an extension method on the <see cref="DemeterRegistration"/> class.
     /// </summary>
     /// <typeparam name="TInterface">Interface type, this is not the same as the concrete implementation type</typeparam>
-    public interface IJiceLifeCycleManager<TInterface> : IJiceObjectManager
+    public interface IDemeterLifeCycleManager<TInterface> : IDemeterObjectManager
     {
         /// <summary>
         /// Provides a generic object instance, as the interface type, for this Lifecycle
         /// </summary>
         TInterface GetConcrete();
     }
+#endregion
 }

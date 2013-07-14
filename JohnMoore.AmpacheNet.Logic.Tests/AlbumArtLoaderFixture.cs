@@ -43,7 +43,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test()]
 		public void AlbumArtLoaderUsesDefaultWhenInitializedTest ()
 		{
-			var model = new AmpacheModel();
+			var model = new AmpacheModel(new Demeter.Container());
 			var defaultStream = new MemoryStream();
 			
 			Assert.That(model.AlbumArtStream, Is.Not.SameAs(defaultStream));
@@ -54,7 +54,8 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test()]
 		public void AlbumArtLoaderUsesDefaultArtWhenNoArtAvailableTest ()
 		{
-			var model = new AmpacheModel();
+            var container = new Demeter.Container();
+            var model = new AmpacheModel(container);
 			var defaultStream = new MemoryStream();
 			
 			var target = new AlbumArtLoader(model, defaultStream);
@@ -69,19 +70,16 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test()]
 		public void AlbumArtLoaderUsesDefaultArtWhenLoadingArtTest ()
 		{
-			var model = new AmpacheModel();
+            var container = new Demeter.Container();
+            var model = new AmpacheModel(container);
 			var defaultStream = new MemoryStream();
 			
-			var factory = Substitute.For<AmpacheSelectionFactory>((Handshake)null);
 			var persistor = Substitute.For<IPersister<AlbumArt>>();
 			persistor.IsPersisted(Arg.Any<IEntity>()).Returns(false);
-			var selector = Substitute.For<IAmpacheSelector<AlbumArt>>();
 			int timesCalled = 0;
-			selector.SelectBy<AmpacheSong>(Arg.Any<AmpacheSong>()).Returns(x => { ++timesCalled; Assert.That(model.AlbumArtStream, Is.SameAs(defaultStream)); return Enumerable.Empty<AlbumArt>();});
-			factory.GetPersistorFor<AlbumArt>().Returns(persistor);
-			factory.GetInstanceSelectorFor<AlbumArt>().Returns(selector);
-			model.Factory = factory;
-			
+			persistor.SelectBy<AmpacheSong>(Arg.Any<AmpacheSong>()).Returns(x => { ++timesCalled; Assert.That(model.AlbumArtStream, Is.SameAs(defaultStream)); return Enumerable.Empty<AlbumArt>();});
+            container.Register<IPersister<AlbumArt>>().To(persistor);
+
 			var target = new AlbumArtLoader(model, defaultStream);
 			var sng = new AmpacheSong();
 			sng.ArtUrl = "test";
@@ -93,19 +91,16 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		
 		[Test()]
 		public void AlbumArtLoaderUsesDefaultArtWhenErrorLoadingArtTest ()
-		{
-			var model = new AmpacheModel();
+        {
+            var container = new Demeter.Container();
+            var model = new AmpacheModel(container);
 			var defaultStream = new MemoryStream();
 			
-			var factory = Substitute.For<AmpacheSelectionFactory>((Handshake)null);
 			var persistor = Substitute.For<IPersister<AlbumArt>>();
 			persistor.IsPersisted(Arg.Any<IEntity>()).Returns(false);
-			var selector = Substitute.For<IAmpacheSelector<AlbumArt>>();
 			int timesCalled = 0;
-			selector.SelectBy<AmpacheSong>(Arg.Any<AmpacheSong>()).Returns(x => { ++timesCalled; return Enumerable.Empty<AlbumArt>();});
-			factory.GetPersistorFor<AlbumArt>().Returns(persistor);
-			factory.GetInstanceSelectorFor<AlbumArt>().Returns(selector);
-			model.Factory = factory;
+			persistor.SelectBy<AmpacheSong>(Arg.Any<AmpacheSong>()).Returns(x => { ++timesCalled; return Enumerable.Empty<AlbumArt>();});
+            container.Register<IPersister<AlbumArt>>().To(persistor);
 			
 			var target = new AlbumArtLoader(model, defaultStream);
 			var sng = new AmpacheSong();
@@ -119,20 +114,17 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		
 		[Test()]
 		public void AlbumArtLoaderUsesLoadedArtAfterLoadingTest ()
-		{
-			var model = new AmpacheModel();
+        {
+            var container = new Demeter.Container();
+            var model = new AmpacheModel(container);
 			var defaultStream = new MemoryStream();
 			
-			var factory = Substitute.For<AmpacheSelectionFactory>((Handshake)null);
 			var persistor = Substitute.For<IPersister<AlbumArt>>();
+            container.Register<IPersister<AlbumArt>>().To(persistor);
 			persistor.IsPersisted(Arg.Any<IEntity>()).Returns(false);
-			var selector = Substitute.For<IAmpacheSelector<AlbumArt>>();
 			var art = new AlbumArt();
 			art.ArtStream = new MemoryStream();
-			selector.SelectBy<AmpacheSong>(Arg.Any<AmpacheSong>()).Returns(new [] {art});
-			factory.GetPersistorFor<AlbumArt>().Returns(persistor);
-			factory.GetInstanceSelectorFor<AlbumArt>().Returns(selector);
-			model.Factory = factory;
+			persistor.SelectBy<AmpacheSong>(Arg.Any<AmpacheSong>()).Returns(new [] {art});
 			var prefs = new UserConfiguration();
 			prefs.CacheArt = false;
 			model.Configuration = prefs;
@@ -148,22 +140,19 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		
 		[Test()]
 		public void AlbumArtLoaderRespectsCachingPerferencesTest ()
-		{
-			var model = new AmpacheModel();
+        {
+            var container = new Demeter.Container();
+            var model = new AmpacheModel(container);
 			var defaultStream = new MemoryStream();
 			
-			var factory = Substitute.For<AmpacheSelectionFactory>((Handshake)null);
 			var persistor = Substitute.For<IPersister<AlbumArt>>();
+            container.Register<IPersister<AlbumArt>>().To(persistor);
 			persistor.IsPersisted(Arg.Any<IEntity>()).Returns(false);
 			int timesCalled = 0;
 			persistor.When(x => x.Persist(Arg.Any<AlbumArt>())).Do( x => { ++timesCalled; });
-			var selector = Substitute.For<IAmpacheSelector<AlbumArt>>();
 			var art = new AlbumArt();
 			art.ArtStream = new MemoryStream();
-			selector.SelectBy<AmpacheSong>(Arg.Any<AmpacheSong>()).Returns(new [] {art});
-			factory.GetPersistorFor<AlbumArt>().Returns(persistor);
-			factory.GetInstanceSelectorFor<AlbumArt>().Returns(selector);
-			model.Factory = factory;
+			persistor.SelectBy<AmpacheSong>(Arg.Any<AmpacheSong>()).Returns(new [] {art});
 			var prefs = new UserConfiguration();
 			prefs.CacheArt = false;
 			model.Configuration = prefs;
@@ -180,23 +169,20 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		
 		[Test()]
 		public void AlbumArtLoaderIgnoresCachingPersistedItemTest ()
-		{
-			var model = new AmpacheModel();
+        {
+            var container = new Demeter.Container();
+            var model = new AmpacheModel(container);
 			var defaultStream = new MemoryStream();
 			
-			var factory = Substitute.For<AmpacheSelectionFactory>((Handshake)null);
 			var persistor = Substitute.For<IPersister<AlbumArt>>();
+            container.Register<IPersister<AlbumArt>>().To(persistor);
 			persistor.IsPersisted(Arg.Any<IEntity>()).Returns(true);
 			var art = new AlbumArt();
 			persistor.IsPersisted(Arg.Is(art)).Returns(true);
 			int timesCalled = 0;
 			persistor.When(x => x.Persist(Arg.Any<AlbumArt>())).Do( x => { ++timesCalled; });
-			var selector = Substitute.For<IAmpacheSelector<AlbumArt>>();
 			art.ArtStream = new MemoryStream();
-			selector.SelectBy<AmpacheSong>(Arg.Any<AmpacheSong>()).Returns(new [] {art});
-			factory.GetPersistorFor<AlbumArt>().Returns(persistor);
-			factory.GetInstanceSelectorFor<AlbumArt>().Returns(selector);
-			model.Factory = factory;
+			persistor.SelectBy<AmpacheSong>(Arg.Any<AmpacheSong>()).Returns(new [] {art});
 			var prefs = new UserConfiguration();
 			prefs.CacheArt = true;
 			model.Configuration = prefs;
@@ -213,23 +199,20 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		
 		[Test()]
 		public void AlbumArtLoaderCachesNewArtTest ()
-		{
-			var model = new AmpacheModel();
+        {
+            var container = new Demeter.Container();
+            var model = new AmpacheModel(container);
 			var defaultStream = new MemoryStream();
 			
-			var factory = Substitute.For<AmpacheSelectionFactory>((Handshake)null);
 			var persistor = Substitute.For<IPersister<AlbumArt>>();
-			persistor.IsPersisted(Arg.Any<IEntity>()).Returns(false);
+            container.Register<IPersister<AlbumArt>>().To(persistor);
+            persistor.IsPersisted(Arg.Any<IEntity>()).Returns(false);
 			var art = new AlbumArt();
 			persistor.IsPersisted(Arg.Is(art)).Returns(false);
 			int timesCalled = 0;
 			persistor.When(x => x.Persist(Arg.Any<AlbumArt>())).Do( x => { ++timesCalled; });
-			var selector = Substitute.For<IAmpacheSelector<AlbumArt>>();
 			art.ArtStream = new MemoryStream(new byte[8]);
-			selector.SelectBy<AmpacheSong>(Arg.Any<AmpacheSong>()).Returns(new [] {art});
-			factory.GetPersistorFor<AlbumArt>().Returns(persistor);
-			factory.GetInstanceSelectorFor<AlbumArt>().Returns(selector);
-			model.Factory = factory;
+			persistor.SelectBy<AmpacheSong>(Arg.Any<AmpacheSong>()).Returns(new [] {art});
 			var prefs = new UserConfiguration();
 			prefs.CacheArt = true;
 			model.Configuration = prefs;

@@ -75,7 +75,7 @@ namespace JohnMoore.AmpacheNet.Logic
 		{
 			if(CachedEntites == null)
 			{
-				var selector = _model.Factory.GetInstanceSelectorFor<TEntity>();
+				var selector = _model.Container.Resolve<DataAccess.IAmpacheSelector<TEntity>>();
 				try 
 				{
 					_cachedEntities = selector.SelectAll ().OrderBy (e => e.Name).ToList ();
@@ -95,7 +95,7 @@ namespace JohnMoore.AmpacheNet.Logic
 			ICollection<TEntity> res = null;
 			if(CachedEntites == null)
 			{
-				var selector = _model.Factory.GetInstanceSelectorFor<TEntity>();
+                var selector = _model.Container.Resolve<DataAccess.IAmpacheSelector<TEntity>>();
 				res = selector.SelectBy(searchText).ToList();
 			}
 			else
@@ -109,7 +109,7 @@ namespace JohnMoore.AmpacheNet.Logic
 		{
 			if(!_loadedSongs.ContainsKey(entity))
 			{
-				var selector = _model.Factory.GetInstanceSelectorFor<AmpacheSong>();
+				var selector = _model.Container.Resolve<DataAccess.IAmpacheSelector<AmpacheSong>>();
 				var res = selector.SelectBy(entity).ToList();
 				_loadedSongs.Add(entity, res);
 			}

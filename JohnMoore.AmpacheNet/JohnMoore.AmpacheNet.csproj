@@ -58,8 +58,8 @@
     <Compile Include="..\JohnMoore.AmpacheNet.DataAccess\Configurator.cs">
       <Link>Data Access\Configurator.cs</Link>
     </Compile>
-    <Compile Include="Jice.cs" />
-    <Compile Include="JiceFluentExtensions.cs" />
+    <Compile Include="Demeter.cs" />
+    <Compile Include="DemeterFluentExtensions.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AmpacheNetActivity.cs" />

@@ -41,7 +41,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test()]
 		public void AmpachePlayerSettingPlayerPositionMilliSecondUpdatesPercentPlayedOnModelTest ()
 		{
-			var model = new AmpacheModel();
+			var model = new AmpacheModel(new Demeter.Container());
 			var mock = new PlayerHandle(model);
 			var song = new AmpacheSong();
 			song.TrackLength = TimeSpan.FromSeconds(60);
@@ -53,7 +53,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test]
 		public void AmpachePlayerPlayPauseHasNoEffectWithoutPlaylistTest()
 		{
-			var model = new AmpacheModel();
+            var model = new AmpacheModel(new Demeter.Container());
 			var mock = new PlayerHandle(model);
 			model.Playlist = null;
 			model.PlayPauseRequested = true;
@@ -65,7 +65,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test]
 		public void AmpachePlayerPlayPauseResumesPlaybackWhenPasusedTest()
 		{
-			var model = new AmpacheModel();
+            var model = new AmpacheModel(new Demeter.Container());
 			var mock = new PlayerHandle(model);
 			
 			mock.SetPauseState(true);
@@ -83,7 +83,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test]
 		public void AmpachePlayerPlayPausePausesPlaybackWhenPlayingTest()
 		{
-			var model = new AmpacheModel();
+            var model = new AmpacheModel(new Demeter.Container());
 			var mock = new PlayerHandle(model);
 			
 			mock.SetPauseState(false);
@@ -103,7 +103,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test]
 		public void AmpachePlayerPlayPauseStartsPlaybackAtFirstSongTest()
 		{
-			var model = new AmpacheModel();
+            var model = new AmpacheModel(new Demeter.Container());
 			var mock = new PlayerHandle(model);
 			
 			mock.SetPauseState(false);
@@ -127,7 +127,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test]
 		public void AmpachePlayerPlayPauseRespectsSelectedSongWhenStartingPlaybackTest()
 		{
-			var model = new AmpacheModel();
+            var model = new AmpacheModel(new Demeter.Container());
 			var mock = new PlayerHandle(model);
 			
 			mock.SetPauseState(false);
@@ -152,7 +152,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test]
 		public void AmpachePlayerPlayPauseErrorStartingPlaybackWithSelectedSongTest()
 		{
-			var model = new AmpacheModel();
+            var model = new AmpacheModel(new Demeter.Container());
 			var mock = new PlayerErrorHandle(model);
 			
 			mock.SetPauseState(false);
@@ -177,7 +177,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test]
 		public void AmpachePlayerPlayPauseErrorStartingPlaybackWithOutSelectedSongTest()
 		{
-			var model = new AmpacheModel();
+            var model = new AmpacheModel(new Demeter.Container());
 			var mock = new PlayerErrorHandle(model);
 			
 			mock.SetPauseState(false);
@@ -201,7 +201,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test]
 		public void AmpachePlayerNextNotShufflingNotPlayingTest()
 		{
-			var model = new AmpacheModel();
+            var model = new AmpacheModel(new Demeter.Container());
 			var mock = new PlayerHandle(model);
 			
 			mock.SetPauseState(false);
@@ -215,7 +215,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			Assert.That(model.PlayPauseRequested, Is.False);
 			Assert.That(mock.PauseCalls, Is.EqualTo(0));
 			Assert.That(mock.UnpauseCalls, Is.EqualTo(0));
-			Assert.That(mock.PlaySongCalls, Is.EqualTo(0));
+			Assert.That(mock.PlaySongCalls, Is.EqualTo(1));
 			Assert.That(mock.StopCalls, Is.EqualTo(0));
 			Assert.That(mock.SeekToCalls, Is.EqualTo(0));
 			Assert.That(mock.GetPauseState(), Is.False);
@@ -227,7 +227,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test]
 		public void AmpachePlayerNextNotShufflingPlayingTest()
 		{
-			var model = new AmpacheModel();
+            var model = new AmpacheModel(new Demeter.Container());
 			var mock = new PlayerHandle(model);
 			
 			mock.SetPauseState(false);
@@ -253,7 +253,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test]
 		public void AmpachePlayerNextNotShufflingPlayingRollsToStartTest()
 		{
-			var model = new AmpacheModel();
+            var model = new AmpacheModel(new Demeter.Container());
 			var mock = new PlayerHandle(model);
 			
 			mock.SetPauseState(false);
@@ -282,7 +282,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test]
 		public void AmpachePlayerNextShufflingTest()
 		{
-			var model = new AmpacheModel();
+            var model = new AmpacheModel(new Demeter.Container());
 			var mock = new PlayerHandle(model);
 			
 			mock.SetPauseState(false);
@@ -307,7 +307,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test]
 		public void AmpachePlayerPreviousAfterSomePlayTest()
 		{
-			var model = new AmpacheModel();
+            var model = new AmpacheModel(new Demeter.Container());
 			var mock = new PlayerHandle(model);
 			
 			mock.SetPauseState(false);
@@ -333,7 +333,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test]
 		public void AmpachePlayerStopWhilePlayTest()
 		{
-			var model = new AmpacheModel();
+            var model = new AmpacheModel(new Demeter.Container());
 			var mock = new PlayerHandle(model);
 			
 			mock.SetPauseState(false);
@@ -357,7 +357,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test]
 		public void AmpachePlayerStopNotWhilePlayTest()
 		{
-			var model = new AmpacheModel();
+            var model = new AmpacheModel(new Demeter.Container());
 			var mock = new PlayerHandle(model);
 			
 			mock.SetPauseState(false);
@@ -381,7 +381,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test]
 		public void AmpachePlayerSeekingRespectsConfigurationTest()
 		{
-			var model = new AmpacheModel();
+            var model = new AmpacheModel(new Demeter.Container());
 			var mock = new PlayerHandle(model);
 			
 			mock.SetPauseState(false);
@@ -407,7 +407,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test]
 		public void AmpachePlayerSeekingTest()
 		{
-			var model = new AmpacheModel();
+            var model = new AmpacheModel(new Demeter.Container());
 			var mock = new PlayerHandle(model);
 			
 			mock.SetPauseState(false);
@@ -435,7 +435,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test]
 		public void AmpachePlayerPreviousAfterNoPlayTest()
 		{
-			var model = new AmpacheModel();
+            var model = new AmpacheModel(new Demeter.Container());
 			var mock = new PlayerHandle(model);
 			
 			mock.SetPauseState(false);

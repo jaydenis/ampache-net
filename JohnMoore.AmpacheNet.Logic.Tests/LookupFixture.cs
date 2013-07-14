@@ -79,11 +79,10 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test()]
 		public void LoadEntitiesLoadsAndCachedDataTest ()
 		{
-			var model = new AmpacheModel();
-			var factory = Substitute.For<AmpacheSelectionFactory>((Handshake)null);
-			model.Factory = factory;
+            var container = new Demeter.Container();
+            var model = new AmpacheModel(container);
 			var selector = Substitute.For<IAmpacheSelector<MockEntity>>();
-			factory.GetInstanceSelectorFor<MockEntity>().Returns(selector);
+            container.Register<IAmpacheSelector<MockEntity>>().To(selector);
 			var ent = new List<MockEntity>();
 			selector.SelectAll().Returns(ent);
 			
@@ -108,12 +107,11 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		
 		[Test()]
 		public void SeachGoesToServerWhenNoDataCachedDataTest ()
-		{
-			var model = new AmpacheModel();
-			var factory = Substitute.For<AmpacheSelectionFactory>((Handshake)null);
-			model.Factory = factory;
+        {
+            var container = new Demeter.Container();
+            var model = new AmpacheModel(container);
 			var selector = Substitute.For<IAmpacheSelector<MockEntity>>();
-			factory.GetInstanceSelectorFor<MockEntity>().Returns(selector);
+            container.Register<IAmpacheSelector<MockEntity>>().To(selector);
 			var ent = new List<MockEntity>();
 			string text = "test";
 			selector.SelectBy(text).Returns(ent);

@@ -154,7 +154,7 @@ namespace JohnMoore.AmpacheNet.Logic
 					{
 						nextIndex = (_model.Playlist.IndexOf(_model.PlayingSong) + 1) % _model.Playlist.Count;
 					}
-					Console.WriteLine ("Playing next Song: " + _model.PlayingSong.Name);
+					Console.WriteLine ("Playing next Song: " + _model.Playlist[nextIndex].Name);
 					_model.PercentPlayed = 0;
 					_model.PercentDownloaded = 0;
                     Task.Factory.StartNew(() => _model.PlayingSong = _model.Playlist[nextIndex]);

@@ -91,7 +91,7 @@ namespace JohnMoore.AmpacheNet.Logic
 		}
 		void AddSongsToPlaylistFor(TEntity ent)
 		{
-			var sel = _model.Factory.GetInstanceSelectorFor<AmpacheSong>();
+			var sel = _model.Container.Resolve<DataAccess.IAmpacheSelector<AmpacheSong>>();
 			var res = sel.SelectBy(ent);
 			_model.Playlist = new List<AmpacheSong>(_model.Playlist.Concat(res));
 		}

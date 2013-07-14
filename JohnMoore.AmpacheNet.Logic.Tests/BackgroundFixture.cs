@@ -40,18 +40,17 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 	public class BackgroundFixture
 	{
 		[Test()]
-		public void BackgroundStartInitializesModelTest ()
+		public void BackgroundStartInitializesModelConfigurationTest ()
 		{
-			var factory = Substitute.For<AmpacheSelectionFactory>();
+            var container = new Demeter.Container();
 			var persister = Substitute.For<IPersister<UserConfiguration>>();
-			factory.GetPersistorFor<UserConfiguration>().Returns(persister);
+            container.Register<IPersister<UserConfiguration>>().To(persister);
 			persister.SelectBy(Arg.Any<int>()).Returns(new UserConfiguration { ServerUrl = string.Empty });
-			var target = new BackgroundHandle(null, null, factory);
+			var target = new BackgroundHandle(null, null, new AmpacheModel(container));
 			var initial = target.Model;
 			target.Start(new MemoryStream());
-			var after = target.Model;
-			Assert.That(after, Is.Not.Null);
-			Assert.That(initial, Is.Not.SameAs(after));
+			var after = target.Model.Configuration;
+            Assert.That(after, Is.Not.Null);
 		}
 		
 		[Test()]
@@ -63,41 +62,43 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			Assert.Fail();
 		}
 		
+        // TODO: eliminate the factory
 		[Test()]
 		public void BackgroundStartPopulatesArtCacheLocationToDefaultTest ()
-		{
-			var factory = Substitute.For<AmpacheSelectionFactory>();
+        {
+            var container = new Demeter.Container();
 			var persister = Substitute.For<IPersister<UserConfiguration>>();
-			factory.GetPersistorFor<UserConfiguration>().Returns(persister);
+            container.Register<IPersister<UserConfiguration>>().To(persister);
 			persister.SelectBy(Arg.Any<int>()).Returns(new UserConfiguration { ServerUrl = string.Empty });
-			var target = new BackgroundHandle(null, null, factory);
+			var target = new BackgroundHandle(null, null, new AmpacheModel(container));
 			target.Start(new MemoryStream());
 			Assert.That(AmpacheSelectionFactory.ArtLocalDirectory, Is.EqualTo("Art"));
 		}
 		
 		[Test()]
 		public void BackgroundStartPopulatesArtLoaderTest ()
-		{
+        {
+            var container = new Demeter.Container();
 			string path = "myartpath";
-			var factory = Substitute.For<AmpacheSelectionFactory>();
 			var persister = Substitute.For<IPersister<UserConfiguration>>();
-			factory.GetPersistorFor<UserConfiguration>().Returns(persister);
+            container.Register<IPersister<UserConfiguration>>().To(persister);
 			persister.SelectBy(Arg.Any<int>()).Returns(new UserConfiguration { ServerUrl = string.Empty });
-			var target = new BackgroundHandle(null, path, factory);
+			var target = new BackgroundHandle(null, path, new AmpacheModel(container));
 			target.Start(new MemoryStream());
 			var exp = target.Loader;
 			Assert.That(exp, Is.Not.Null);
 		}
 		
+        // TODO: replace the factory
 		[Test()]
 		public void BackgroundStartPopulatesModelFactoryWhenNoUserConfigExistsTest ()
-		{
+        {
+            var container = new Demeter.Container();
 			string path = "myartpath";
-			var factory = Substitute.For<AmpacheSelectionFactory>();
 			var persister = Substitute.For<IPersister<UserConfiguration>>();
-			factory.GetPersistorFor<UserConfiguration>().Returns(persister);
+            container.Register<IPersister<UserConfiguration>>().To(persister);
 			persister.SelectBy(Arg.Any<int>()).Returns(new UserConfiguration { ServerUrl = string.Empty });
-			var target = new BackgroundHandle(null, path, factory);
+			var target = new BackgroundHandle(null, path, new AmpacheModel(container));
 			target.Start(new MemoryStream());
 			var exp = target.Model.Factory;
 			Assert.That(exp, Is.Not.Null);
@@ -105,37 +106,41 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		
 		[Test()]
 		public void BackgroundStartBeginsAutoShutOffTest ()
-		{
+        {
+            var container = new Demeter.Container();
 			string path = "myartpath";
-			var factory = Substitute.For<AmpacheSelectionFactory>();
 			var persister = Substitute.For<IPersister<UserConfiguration>>();
-			factory.GetPersistorFor<UserConfiguration>().Returns(persister);
+            container.Register<IPersister<UserConfiguration>>().To(persister);
 			persister.SelectBy(Arg.Any<int>()).Returns(new UserConfiguration { ServerUrl = string.Empty });
-			var target = new BackgroundHandle(null, path, factory);
+			var target = new BackgroundHandle(null, path, new AmpacheModel(container));
 			target.Start(new MemoryStream());
 			Assert.That(target.AutoShutOffCallCount, Is.EqualTo(1));
 		}
 		
 		[Test()]
 		public void BackgroundStartPopulatesModelFactoryWhenUserConfigExistsTest ()
-		{
+        {
+            var container = new Demeter.Container();
 			string path = "myartpath";
 			var config = new UserConfiguration();
 			config.ServerUrl = "test";
 			config.User = "test";
 			config.Password = "test";
-			var factory = Substitute.For<AmpacheSelectionFactory>();
 			var persister = Substitute.For<IPersister<AmpacheSong>>();
-			factory.GetPersistorFor<AmpacheSong>().Returns(persister);
+            container.Register<IPersister<AmpacheSong>>().To(persister);
+            var configpersist = Substitute.For<IPersister<UserConfiguration>>();
+            container.Register<IPersister<UserConfiguration>>().To(configpersist);
+            configpersist.SelectBy(Arg.Any<int>()).Returns(config);
 			var sngs = new List<AmpacheSong>();
 			sngs.Add(new AmpacheSong(){Url = "http://test"});
 			sngs.Add(new AmpacheSong(){Url = "http://test"});
-			persister.SelectAll().Returns(sngs);
+            persister.SelectAll().Returns(sngs);
+            var factory = Substitute.For<AmpacheSelectionFactory>();
 			factory.AuthenticateToServer(config).Returns(x => (Authenticate)null);
 			var mockHs = new MockHandShake();
 			mockHs.Setup("test", "test");
 			factory.Handshake.Returns(mockHs);
-			var target = new BackgroundHandle(config, path, factory);
+			var target = new BackgroundHandle(config, path, factory, new AmpacheModel(container));
 			target.Start(new MemoryStream());
 			System.Threading.Thread.Sleep(100);
 			var exp = target.Model.Factory;
@@ -147,33 +152,9 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		}
 		
 		[Test()]
-		public void BackgroundStartPopulatesModelFactoryWhenUserConfigExistsFailsToConnectToServerTest ()
-		{
-			string path = "myartpath";
-			var config = new UserConfiguration();
-			config.ServerUrl = "test";
-			config.User = "test";
-			config.Password = "test";
-			var factory = Substitute.For<AmpacheSelectionFactory>();
-			var persister = Substitute.For<IPersister<UserConfiguration>>();
-			factory.GetPersistorFor<UserConfiguration>().Returns(persister);
-			persister.SelectBy(Arg.Any<int>()).Returns(config);
-			string message = "ERROR";
-			factory.When(f => f.AuthenticateToServer(config)).Do(delegate { throw new Exception(message); });
-			var target = new BackgroundHandle(config, path, factory);
-			target.Start(new MemoryStream());
-			System.Threading.Thread.Sleep(100);
-			var exp = target.Model.Factory;
-			Assert.That(exp, Is.Not.Null);
-			var userMessage = target.Model.UserMessage;
-			Assert.That(userMessage, Is.Not.Null);
-			Assert.That(userMessage, Is.EqualTo(message));
-			Assert.That(target.LoadSongsCalled, Is.False);
-		}
-		
-		[Test()]
 		public void BackgroundStartPopulatesModelPlaylistWhenUserConfigExistsTest ()
-		{
+        {
+            var container = new Demeter.Container();
 			string path = "myartpath";
 			var config = new UserConfiguration();
 			config.ServerUrl = "test";
@@ -181,10 +162,11 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			config.Password = "test";
 			var persister = Substitute.For<IPersister<UserConfiguration>>();
 			persister.SelectBy(Arg.Any<int>()).Returns(config);
+            container.Register<IPersister<UserConfiguration>>().To(persister);
 			var factory = Substitute.For<AmpacheSelectionFactory>();
 			factory.AuthenticateToServer(config).Returns(x => (Authenticate)null);
-			factory.GetPersistorFor<UserConfiguration>().Returns(persister);
-			var target = new BackgroundHandle(config, path, factory);
+            container.Register<IPersister<UserConfiguration>>();
+			var target = new BackgroundHandle(config, path, factory, new AmpacheModel(container));
 			target.Start(new MemoryStream());
 			var exp = target.Model.Playlist;
 			Assert.That(exp, Is.Not.Null);
@@ -192,13 +174,13 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		
 		[Test()]
 		public void BackgroundListensForModelDispositionTest ()
-		{
+        {
+            var container = new Demeter.Container();
 			string path = "myartpath";
-			var factory = Substitute.For<AmpacheSelectionFactory>();
 			var persister = Substitute.For<IPersister<UserConfiguration>>();
-			factory.GetPersistorFor<UserConfiguration>().Returns(persister);
+            container.Register<IPersister<UserConfiguration>>().To(persister);
 			persister.SelectBy(Arg.Any<int>()).Returns(new UserConfiguration { ServerUrl = string.Empty });
-			var target = new BackgroundHandle(null, path, factory);
+			var target = new BackgroundHandle(null, path, null, new AmpacheModel(container));
 			target.Start(new MemoryStream());
 			target.Model.Dispose();
 			Assert.That(target.FinalizedCalled, Is.True);
@@ -206,15 +188,15 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		
 		[Test()]
 		public void BackgroundListensForConfigChangesTest ()
-		{
+        {
+            var container = new Demeter.Container();
 			string path = "myartpath";
-			var factory = Substitute.For<AmpacheSelectionFactory>();
 			var persister = Substitute.For<IPersister<UserConfiguration>>();
-			factory.GetPersistorFor<UserConfiguration>().Returns(persister);
+            container.Register<IPersister<UserConfiguration>>().To(persister);
 			bool persisted = false;
 			var config = new UserConfiguration();
 			persister.When(x => x.Persist(config)).Do(p => persisted = true);
-			var target = new BackgroundHandle(null, path, factory);
+			var target = new BackgroundHandle(null, path, new AmpacheModel(container));
 			target.Start(new MemoryStream());
 			System.Threading.Thread.Sleep(100);
 			target.Model.Configuration = config;
@@ -223,15 +205,17 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		
 		[Test()]
 		public void BackgroundListensForPlaylistChangesTest ()
-		{
-			var factory = Substitute.For<AmpacheSelectionFactory>();
+        {
+            var container = new Demeter.Container();
 			var persister = Substitute.For<IPersister<AmpacheSong>>();
 			var sng = new AmpacheSong();
-			factory.GetPersistorFor<AmpacheSong>().Returns(persister);
+            container.Register<IPersister<AmpacheSong>>().To(persister);
+            var usrp = Substitute.For<IPersister<UserConfiguration>>();
+            container.Register<IPersister<UserConfiguration>>().To(usrp);
 			bool persisted = false;
 			persister.When(p => p.Persist(sng)).Do(p => persisted = true);
 			string path = "myartpath";
-			var target = new BackgroundHandle(null, path, factory);
+			var target = new BackgroundHandle(null, path, new AmpacheModel(container));
 			target.Start(new MemoryStream());
 			System.Threading.Thread.Sleep(100);
 			var sngs = new List<AmpacheSong>();
@@ -242,13 +226,13 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		
 		[Test()]
 		public void BackgroundListensForPlayingChangesAndCancelsShutOffTest ()
-		{
+        {
+            var container = new Demeter.Container();
 			string path = "myartpath";
-			var factory = Substitute.For<AmpacheSelectionFactory>();
 			var persister = Substitute.For<IPersister<UserConfiguration>>();
-			factory.GetPersistorFor<UserConfiguration>().Returns(persister);
+            container.Register<IPersister<UserConfiguration>>().To(persister);
 			persister.SelectBy(Arg.Any<int>()).Returns(new UserConfiguration { ServerUrl = string.Empty });
-			var target = new BackgroundHandle(null, path, factory);
+			var target = new BackgroundHandle(null, path, new AmpacheModel(container));
 			target.Start(new MemoryStream());
 			System.Threading.Thread.Sleep(100);
 			target.Model.IsPlaying = true;
@@ -257,13 +241,13 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		
 		[Test()]
 		public void BackgroundListensForPlayingChangesAndStartsShutOffTest ()
-		{
+        {
+            var container = new Demeter.Container();
 			string path = "myartpath";
-			var factory = Substitute.For<AmpacheSelectionFactory>();
 			var persister = Substitute.For<IPersister<UserConfiguration>>();
-			factory.GetPersistorFor<UserConfiguration>().Returns(persister);
+            container.Register<IPersister<UserConfiguration>>().To(persister);
 			persister.SelectBy(Arg.Any<int>()).Returns(new UserConfiguration { ServerUrl = string.Empty });
-			var target = new BackgroundHandle(null, path, factory);
+			var target = new BackgroundHandle(null, path, new AmpacheModel(container));
 			target.Start(new MemoryStream());
 			System.Threading.Thread.Sleep(100);
 			target.Model.IsPlaying = true;
@@ -303,8 +287,15 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 				AutoShutOffCallCount = 0;
 				StopShutOffCallCount = 0;
 			}
-			
-			public BackgroundHandle (UserConfiguration config, string art, AmpacheSelectionFactory factory) : this(config, art)
+
+            public BackgroundHandle(UserConfiguration config, string art, AmpacheModel model)
+                : this(config, art)
+            {
+                _model = model;
+            }
+
+            public BackgroundHandle(UserConfiguration config, string art, AmpacheSelectionFactory factory, AmpacheModel model)
+                : this(config, art, model)
 			{
 				_factory = factory;
 			}

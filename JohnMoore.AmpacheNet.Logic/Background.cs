@@ -21,7 +21,6 @@ namespace JohnMoore.AmpacheNet.Logic
 			{
 				throw new ArgumentNullException("defaultArtStream");
 			}
-			_model = new AmpacheModel();
 			AmpacheSelectionFactory.ArtLocalDirectory = _artCachePath ?? "Art";
 			_loader = new AlbumArtLoader(_model, defaultArtStream);
 			
@@ -82,13 +81,13 @@ namespace JohnMoore.AmpacheNet.Logic
 
 		public UserConfiguration LoadPersistedConfiguration()
 		{
-			var res = _model.Factory.GetPersistorFor<UserConfiguration>().SelectBy(0);
+            var res = _model.Container.Resolve<IPersister<UserConfiguration>>().SelectBy(0); //_model.Factory.GetPersistorFor<UserConfiguration>().SelectBy(0);
 			return res ?? new UserConfiguration();
 		}
 
 		private List<AmpacheSong> LoadPersistedSongs()
 		{
-			using(var persister = _model.Factory.GetPersistorFor<AmpacheSong>()){
+			using(var persister = _model.Container.Resolve<IPersister<AmpacheSong>>()){
 				var old = persister.SelectAll().ToList();
 				old.ForEach(o => o.MapToHandshake(_model.Factory.Handshake));
 				return old;
@@ -97,7 +96,7 @@ namespace JohnMoore.AmpacheNet.Logic
 
 		public void PersistUserConfig(UserConfiguration config)
 		{
-			_model.Factory.GetPersistorFor<UserConfiguration>().Persist(config);
+			_model.Container.Resolve<IPersister<UserConfiguration>>().Persist(config);
 			if(config.CacheArt == false && Directory.Exists(AmpacheSelectionFactory.ArtLocalDirectory)){
 				var files = Directory.GetFiles(AmpacheSelectionFactory.ArtLocalDirectory).Where(f=>!f.Contains("ampachenet.db3")).ToList();
 				files.ForEach(f => File.Delete(f));
@@ -107,7 +106,7 @@ namespace JohnMoore.AmpacheNet.Logic
 
 		private void PersistSongs(IList<AmpacheSong> songs)
 		{
-			using(var persister = _model.Factory.GetPersistorFor<AmpacheSong>()){
+			using(var persister = _model.Container.Resolve<IPersister<AmpacheSong>>()){
 				var old = persister.SelectAll().ToList();
 				old.ForEach(o => persister.Remove(o));
 				songs.ToList().ForEach(s => persister.Persist(s));

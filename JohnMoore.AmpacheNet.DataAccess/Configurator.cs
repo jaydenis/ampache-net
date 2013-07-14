@@ -1,8 +1,8 @@
 ﻿using System;
 using JohnMoore.AmpacheNet.Entities;
-using Jice;
 using System.IO;
 using System.Data.Sqlite;
+using Demeter;
 
 namespace JohnMoore.AmpacheNet.DataAccess
 {
@@ -12,7 +12,7 @@ namespace JohnMoore.AmpacheNet.DataAccess
         public static string DatabaseDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
         private static string DbConnString { get { return string.Format("Data Source={0}", Path.Combine(DatabaseDirectory, "ampachenet.db3")); } }
 
-        public static void Configure(Jice.JiceContainer container)
+        public static void Configure(Container container)
         {
             container.Register<IEntityFactory<AmpacheArtist>>().To<ArtistFactory>().AsSingleton();
             container.Register<IAmpacheSelector<AmpacheArtist>>().To<ArtistSelector>();

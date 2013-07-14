@@ -31,16 +31,21 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using JohnMoore.AmpacheNet.Entities;
 using JohnMoore.AmpacheNet.DataAccess;
+using Demeter;
 
 namespace JohnMoore.AmpacheNet.Logic
 {
 	public class AmpacheModel : INotifyPropertyChanged, IDisposable
 	{
-	  	public AmpacheModel() 
+        public AmpacheModel(Demeter.Container container) 
 		{
+            Container = container;
+            container.Register<AmpacheModel>().To(this);
 			IsDisposed = false;
 		}
-		
+
+        public Demeter.Container Container { get; private set; }
+
 		#region Factory
 
 		public const string FACTORY = "Factory";

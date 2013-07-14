@@ -36,7 +36,7 @@ namespace JohnMoore.AmpacheNet.DataAccess
     public class AmpacheSelectionFactory
     {
         private Authenticate _handshake;
-        private Jice.JiceContainer _container = new Jice.JiceContainer();
+        private Demeter.Container _container = new Demeter.Container();
         public static string ArtLocalDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), ".AmpacheNet");
         public static string DatabaseDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
         private static string DbConnString { get { return string.Format("Data Source={0}", Path.Combine(DatabaseDirectory, "ampachenet.db3")); } }
@@ -49,6 +49,10 @@ namespace JohnMoore.AmpacheNet.DataAccess
 		
         public AmpacheSelectionFactory (Authenticate hs) : this()
         {
+            if (hs == null)
+            {
+                throw new ArgumentNullException("hs");
+            }
             _handshake = hs;
             _container.Register<Handshake>().To(_handshake);
         }

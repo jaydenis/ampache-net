@@ -67,12 +67,12 @@ namespace JohnMoore.AmpacheNet.Logic
 			{
 				_currentStream.Dispose();
 			}
-			var persit = _model.Factory.GetPersistorFor<AlbumArt>();
+            var persit = _model.Container.Resolve<DataAccess.IPersister<AlbumArt>>();//.Factory.GetPersistorFor<AlbumArt>();
 			if(!persit.IsPersisted(_model.PlayingSong))
 			{
 				_model.AlbumArtStream = _defaultStream;
 			}
-			var sel = _model.Factory.GetInstanceSelectorFor<AlbumArt>();
+            var sel = persit;
 			var art = sel.SelectBy(_model.PlayingSong).FirstOrDefault();
 			if(art != null)
 			{
