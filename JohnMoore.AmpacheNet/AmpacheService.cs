@@ -81,13 +81,11 @@ namespace JohnMoore.AmpacheNet
             var container = new Demeter.Container();
             DataAccess.Configurator.Configure(container);
             _model = new AmpacheModel(container);
-			_artCachePath = CacheDir.AbsolutePath;
 			var am = (AlarmManager)ApplicationContext.GetSystemService(Context.AlarmService);
 			var ping = new Intent(PingReceiver.INTENT);
 			_pingIntent = PendingIntent.GetBroadcast(ApplicationContext, 0, ping, PendingIntentFlags.UpdateCurrent);
 			am.SetRepeating(AlarmType.RtcWakeup, Java.Lang.JavaSystem.CurrentTimeMillis() + (long)TimeSpan.FromMinutes(5).TotalMilliseconds, (long)TimeSpan.FromMinutes(5).TotalMilliseconds, _pingIntent);
-
-			var stm = Resources.OpenRawResource(Resource.Drawable.ct_default_artwork);
+            var stm = Resources.OpenRawResource(Resource.Drawable.ct_default_artwork);
 			var stream = new System.IO.MemoryStream();
 			stm.CopyTo(stream);
 			stream.Position = 0;

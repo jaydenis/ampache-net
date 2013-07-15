@@ -36,51 +36,21 @@ namespace JohnMoore.AmpacheNet.DataAccess
     public class AmpacheSelectionFactory
     {
         private Authenticate _handshake;
-        private Demeter.Container _container = new Demeter.Container();
+        private readonly Demeter.Container _container;
         public static string ArtLocalDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), ".AmpacheNet");
         public static string DatabaseDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
         private static string DbConnString { get { return string.Format("Data Source={0}", Path.Combine(DatabaseDirectory, "ampachenet.db3")); } }
 		public virtual Handshake Handshake { get { return _handshake; } }
 
-		public AmpacheSelectionFactory ()
-		{
-            DataAccess.Configurator.Configure(_container);
-        }
-		
-        public AmpacheSelectionFactory (Authenticate hs) : this()
+        public AmpacheSelectionFactory()
         {
-            if (hs == null)
-            {
-                throw new ArgumentNullException("hs");
-            }
-            _handshake = hs;
-            _container.Register<Handshake>().To(_handshake);
         }
 
-        public virtual IAmpacheSelector<TEntity> GetInstanceSelectorFor<TEntity>() where TEntity : IEntity
-        {
-            try
-            {
-                return _container.Resolve<IAmpacheSelector<TEntity>>();
-            }
-            catch (Exception e)
-            {
-                throw new InvalidOperationException(string.Format("{0} is not yet supported for selection from ampache", typeof(TEntity).Name), e);
-            }
-        }
-		
-		public virtual IPersister<TEntity> GetPersistorFor<TEntity>() where TEntity : IEntity
+		public AmpacheSelectionFactory (Demeter.Container container)
 		{
-            try
-            {
-                return _container.Resolve<IPersister<TEntity>>();
-            }
-            catch (Exception e)
-            {
-                throw new InvalidOperationException(string.Format("{0} is not yet supported for persisting", typeof(TEntity).Name), e);
-            }
-		}
-		
+            _container = container;
+        }
+		        		
 		public virtual Authenticate AuthenticateToServer(UserConfiguration config)
 		{
 			var tmp = new Authenticate(config.ServerUrl, config.User, config.Password);

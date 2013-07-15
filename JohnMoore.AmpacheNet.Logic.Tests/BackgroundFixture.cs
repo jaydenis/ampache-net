@@ -62,19 +62,6 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			Assert.Fail();
 		}
 		
-        // TODO: eliminate the factory
-		[Test()]
-		public void BackgroundStartPopulatesArtCacheLocationToDefaultTest ()
-        {
-            var container = new Demeter.Container();
-			var persister = Substitute.For<IPersister<UserConfiguration>>();
-            container.Register<IPersister<UserConfiguration>>().To(persister);
-			persister.SelectBy(Arg.Any<int>()).Returns(new UserConfiguration { ServerUrl = string.Empty });
-			var target = new BackgroundHandle(null, null, new AmpacheModel(container));
-			target.Start(new MemoryStream());
-			Assert.That(AmpacheSelectionFactory.ArtLocalDirectory, Is.EqualTo("Art"));
-		}
-		
 		[Test()]
 		public void BackgroundStartPopulatesArtLoaderTest ()
         {
@@ -280,7 +267,6 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			{
 				_successConnectionMessage = SUCCESS_MESSAGE;
 				_config = config;
-				_artCachePath = art;
 				FinalizedCalled = false;
 				SavedSongsCalled = false;
 				LoadSongsCalled = false;

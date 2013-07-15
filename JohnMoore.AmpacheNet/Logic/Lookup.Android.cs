@@ -101,6 +101,7 @@ namespace JohnMoore.AmpacheNet.Logic
 			base.OnDestroy ();
 			this.ListView.ItemLongClick -= HandleListViewhandleItemLongClick;
 			UnbindService(_connection);
+            _prgDlg = null;
 		}
 	}
 }

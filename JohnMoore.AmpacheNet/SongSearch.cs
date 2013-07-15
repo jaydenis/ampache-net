@@ -81,6 +81,12 @@ namespace JohnMoore.AmpacheNet
 				}
 			}
 		}
+        protected override void OnPause()
+        {
+            _searchTimer.Change(Timeout.Infinite, Timeout.Infinite);
+            FindViewById<EditText>(Resource.Id.txtFilter).TextChanged -= HandleTextChanged;
+            base.OnPause();
+        }
 	}
 }
 

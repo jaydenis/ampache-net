@@ -12,7 +12,6 @@ namespace JohnMoore.AmpacheNet.Logic
 	{
 		protected static AmpacheModel _model;
 		protected static AlbumArtLoader _loader;
-		protected string _artCachePath;
 		protected string _successConnectionMessage;
 		
 		public virtual void Start(MemoryStream defaultArtStream)
@@ -21,7 +20,6 @@ namespace JohnMoore.AmpacheNet.Logic
 			{
 				throw new ArgumentNullException("defaultArtStream");
 			}
-			AmpacheSelectionFactory.ArtLocalDirectory = _artCachePath ?? "Art";
 			_loader = new AlbumArtLoader(_model, defaultArtStream);
 			
 			_model.Factory = CreateFactory();			
@@ -38,7 +36,7 @@ namespace JohnMoore.AmpacheNet.Logic
 			_model.Configuration = tmpConfig;
 			if (_model.Configuration.ServerUrl != string.Empty) 
 			{
-				var task = new Task(() => _model.Factory.AuthenticateToServer(_model.Configuration));
+                var task = new Task(() => _model.Factory.AuthenticateToServer(_model.Configuration));
 				task.ContinueWith((t) => _model.UserMessage = t.Exception.InnerExceptions.First().Message, TaskContinuationOptions.OnlyOnFaulted)
 					.ContinueWith((t) => _model.PropertyChanged += Handle_modelPropertyChanged, TaskContinuationOptions.NotOnCanceled);
 				task.ContinueWith((t) => _model.UserMessage = _successConnectionMessage, TaskContinuationOptions.NotOnFaulted)
@@ -118,7 +116,7 @@ namespace JohnMoore.AmpacheNet.Logic
 		
 		public virtual AmpacheSelectionFactory CreateFactory()
 		{
-			return new AmpacheSelectionFactory();
+			return new AmpacheSelectionFactory(_model.Container);
 		}
 	}
 }
