@@ -60,7 +60,7 @@ namespace JohnMoore.AmpacheNet
 		#region implemented abstract members of Android.App.Service
 		public override IBinder OnBind (Intent intent)
 		{
-			return new Binder(_model, _container);
+			return new Binder(_container);
 		}
 		
 		public override void OnLowMemory ()
@@ -82,7 +82,7 @@ namespace JohnMoore.AmpacheNet
             _model = new AmpacheModel();
             _container.Register<AmpacheModel>().To(_model);
             DataAccess.Configurator.Configure(_container);
-			var am = (AlarmManager)ApplicationContext.GetSystemService(Context.AlarmService);
+			var am = (AlarmManager)ApplicationContext.GetSystemService(Context.AlarmService);            
 			var ping = new Intent(PingReceiver.INTENT);
 			_pingIntent = PendingIntent.GetBroadcast(ApplicationContext, 0, ping, PendingIntentFlags.UpdateCurrent);
 			am.SetRepeating(AlarmType.RtcWakeup, Java.Lang.JavaSystem.CurrentTimeMillis() + (long)TimeSpan.FromMinutes(5).TotalMilliseconds, (long)TimeSpan.FromMinutes(5).TotalMilliseconds, _pingIntent);
@@ -151,20 +151,16 @@ namespace JohnMoore.AmpacheNet
 		
 		public class Binder : Android.OS.Binder
 		{
-			public readonly AmpacheModel Model;
             public readonly Demeter.Container Container;
-			public Binder (AmpacheModel model, Demeter.Container container)
+			public Binder (Demeter.Container container)
 			{
                 Container = container;
-				Model = model;
 			}
 		}
 		
 		public class Connection : Java.Lang.Object, IServiceConnection
 		{
 			public event EventHandler OnConnected;
-            [Obsolete]
-			public AmpacheModel Model { get; private set; }
             private readonly IClient _client;
 
             public Connection(IClient client) : base()
@@ -175,7 +171,6 @@ namespace JohnMoore.AmpacheNet
 			#region IServiceConnection implementation
 			public void OnServiceConnected (ComponentName name, IBinder service)
 			{
-				Model = ((Binder)service).Model;
                 _client.Connected(((Binder)service).Container);
 			}
 
