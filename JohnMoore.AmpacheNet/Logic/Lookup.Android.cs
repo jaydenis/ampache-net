@@ -37,7 +37,7 @@ using Android.Content;
 
 namespace JohnMoore.AmpacheNet.Logic
 {
-	public partial class Lookup<TEntity> : ListActivity where TEntity : IEntity
+    public partial class Lookup<TEntity> : ListActivity, AmpacheService.IClient where TEntity : IEntity
 	{
 		protected ProgressDialog _prgDlg;
 		protected AmpacheService.Connection _connection;
@@ -50,17 +50,16 @@ namespace JohnMoore.AmpacheNet.Logic
 		{
 			base.OnCreate (bundle);
 			SetContentView(Resource.Layout.Filter);
-			_connection = new AmpacheService.Connection();
-			_connection.OnConnected += Handle_connectionOnConnected;
+            _connection = new AmpacheService.Connection(this);
 			BindService(new Intent(this.ApplicationContext, typeof(AmpacheService)), _connection, Bind.AutoCreate);	
 			this.ListView.Enabled = true;
 			this.ListView.FastScrollEnabled = true;
 			this.ListView.ItemLongClick += HandleListViewhandleItemLongClick;
 		}
 		
-		void Handle_connectionOnConnected (object sender, EventArgs e)
+		public void Connected (Demeter.Container container)
 		{
-			_model = _connection.Model;
+            _model = container.Resolve<AmpacheModel>();
 			AfterConnection();
 		}	
 		
@@ -91,7 +90,7 @@ namespace JohnMoore.AmpacheNet.Logic
 		}
 		void AddSongsToPlaylistFor(TEntity ent)
 		{
-			var sel = _model.Container.Resolve<DataAccess.IAmpacheSelector<AmpacheSong>>();
+			var sel = _container.Resolve<DataAccess.IAmpacheSelector<AmpacheSong>>();
 			var res = sel.SelectBy(ent);
 			_model.Playlist = new List<AmpacheSong>(_model.Playlist.Concat(res));
 		}

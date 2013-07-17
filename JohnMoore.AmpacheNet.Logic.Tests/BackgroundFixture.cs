@@ -46,7 +46,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			var persister = Substitute.For<IPersister<UserConfiguration>>();
             container.Register<IPersister<UserConfiguration>>().To(persister);
 			persister.SelectBy(Arg.Any<int>()).Returns(new UserConfiguration { ServerUrl = string.Empty });
-			var target = new BackgroundHandle(null, null, new AmpacheModel(container));
+            var target = new BackgroundHandle(null, null, new AmpacheModel(), container);
 			var initial = target.Model;
 			target.Start(new MemoryStream());
 			var after = target.Model.Configuration;
@@ -70,7 +70,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			var persister = Substitute.For<IPersister<UserConfiguration>>();
             container.Register<IPersister<UserConfiguration>>().To(persister);
 			persister.SelectBy(Arg.Any<int>()).Returns(new UserConfiguration { ServerUrl = string.Empty });
-			var target = new BackgroundHandle(null, path, new AmpacheModel(container));
+            var target = new BackgroundHandle(null, path, new AmpacheModel(), container);
 			target.Start(new MemoryStream());
 			var exp = target.Loader;
 			Assert.That(exp, Is.Not.Null);
@@ -85,7 +85,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			var persister = Substitute.For<IPersister<UserConfiguration>>();
             container.Register<IPersister<UserConfiguration>>().To(persister);
 			persister.SelectBy(Arg.Any<int>()).Returns(new UserConfiguration { ServerUrl = string.Empty });
-			var target = new BackgroundHandle(null, path, new AmpacheModel(container));
+            var target = new BackgroundHandle(null, path, new AmpacheModel(), container);
 			target.Start(new MemoryStream());
 			var exp = target.Model.Factory;
 			Assert.That(exp, Is.Not.Null);
@@ -99,7 +99,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			var persister = Substitute.For<IPersister<UserConfiguration>>();
             container.Register<IPersister<UserConfiguration>>().To(persister);
 			persister.SelectBy(Arg.Any<int>()).Returns(new UserConfiguration { ServerUrl = string.Empty });
-			var target = new BackgroundHandle(null, path, new AmpacheModel(container));
+            var target = new BackgroundHandle(null, path, new AmpacheModel(), container);
 			target.Start(new MemoryStream());
 			Assert.That(target.AutoShutOffCallCount, Is.EqualTo(1));
 		}
@@ -127,7 +127,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			var mockHs = new MockHandShake();
 			mockHs.Setup("test", "test");
 			factory.Handshake.Returns(mockHs);
-			var target = new BackgroundHandle(config, path, factory, new AmpacheModel(container));
+            var target = new BackgroundHandle(config, path, factory, new AmpacheModel(), container);
 			target.Start(new MemoryStream());
 			System.Threading.Thread.Sleep(100);
 			var exp = target.Model.Factory;
@@ -153,7 +153,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			var factory = Substitute.For<AmpacheSelectionFactory>();
 			factory.AuthenticateToServer(config).Returns(x => (Authenticate)null);
             container.Register<IPersister<UserConfiguration>>();
-			var target = new BackgroundHandle(config, path, factory, new AmpacheModel(container));
+            var target = new BackgroundHandle(config, path, factory, new AmpacheModel(), container);
 			target.Start(new MemoryStream());
 			var exp = target.Model.Playlist;
 			Assert.That(exp, Is.Not.Null);
@@ -167,7 +167,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			var persister = Substitute.For<IPersister<UserConfiguration>>();
             container.Register<IPersister<UserConfiguration>>().To(persister);
 			persister.SelectBy(Arg.Any<int>()).Returns(new UserConfiguration { ServerUrl = string.Empty });
-			var target = new BackgroundHandle(null, path, null, new AmpacheModel(container));
+            var target = new BackgroundHandle(null, path, null, new AmpacheModel(), container);
 			target.Start(new MemoryStream());
 			target.Model.Dispose();
 			Assert.That(target.FinalizedCalled, Is.True);
@@ -183,7 +183,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			bool persisted = false;
 			var config = new UserConfiguration();
 			persister.When(x => x.Persist(config)).Do(p => persisted = true);
-			var target = new BackgroundHandle(null, path, new AmpacheModel(container));
+            var target = new BackgroundHandle(null, path, new AmpacheModel(), container);
 			target.Start(new MemoryStream());
 			System.Threading.Thread.Sleep(100);
 			target.Model.Configuration = config;
@@ -202,7 +202,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			bool persisted = false;
 			persister.When(p => p.Persist(sng)).Do(p => persisted = true);
 			string path = "myartpath";
-			var target = new BackgroundHandle(null, path, new AmpacheModel(container));
+            var target = new BackgroundHandle(null, path, new AmpacheModel(), container);
 			target.Start(new MemoryStream());
 			System.Threading.Thread.Sleep(100);
 			var sngs = new List<AmpacheSong>();
@@ -219,7 +219,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			var persister = Substitute.For<IPersister<UserConfiguration>>();
             container.Register<IPersister<UserConfiguration>>().To(persister);
 			persister.SelectBy(Arg.Any<int>()).Returns(new UserConfiguration { ServerUrl = string.Empty });
-			var target = new BackgroundHandle(null, path, new AmpacheModel(container));
+            var target = new BackgroundHandle(null, path, new AmpacheModel(), container);
 			target.Start(new MemoryStream());
 			System.Threading.Thread.Sleep(100);
 			target.Model.IsPlaying = true;
@@ -234,7 +234,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			var persister = Substitute.For<IPersister<UserConfiguration>>();
             container.Register<IPersister<UserConfiguration>>().To(persister);
 			persister.SelectBy(Arg.Any<int>()).Returns(new UserConfiguration { ServerUrl = string.Empty });
-			var target = new BackgroundHandle(null, path, new AmpacheModel(container));
+			var target = new BackgroundHandle(null, path, new AmpacheModel(), container);
 			target.Start(new MemoryStream());
 			System.Threading.Thread.Sleep(100);
 			target.Model.IsPlaying = true;
@@ -274,14 +274,15 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 				StopShutOffCallCount = 0;
 			}
 
-            public BackgroundHandle(UserConfiguration config, string art, AmpacheModel model)
+            public BackgroundHandle(UserConfiguration config, string art, AmpacheModel model, Demeter.Container container)
                 : this(config, art)
             {
                 _model = model;
+                _container = container;
             }
 
-            public BackgroundHandle(UserConfiguration config, string art, AmpacheSelectionFactory factory, AmpacheModel model)
-                : this(config, art, model)
+            public BackgroundHandle(UserConfiguration config, string art, AmpacheSelectionFactory factory, AmpacheModel model, Demeter.Container container)
+                : this(config, art, model, container)
 			{
 				_factory = factory;
 			}

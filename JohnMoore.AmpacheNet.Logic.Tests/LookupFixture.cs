@@ -41,14 +41,18 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test()]
 		public void LookupCachedEntitiesReturnsNullByDefaultTest ()
 		{
-			var target = new Lookup<MockEntity>(TimeSpan.Zero, null);
+            var container = new Demeter.Container();
+            container.Register<AmpacheModel>().To(new AmpacheModel());
+			var target = new Lookup<MockEntity>(TimeSpan.Zero, container);
 			var actual = target.CachedEntites;
 			Assert.That(actual, Is.Null);
 		}
 		[Test()]
 		public void LookupCachedEntitiesRespectsTimeToLiveParameterTest ()
-		{
-			var target = new LookupHandle(TimeSpan.Zero, null);
+        {
+            var container = new Demeter.Container();
+            container.Register<AmpacheModel>().To(new AmpacheModel());
+			var target = new LookupHandle(TimeSpan.Zero, container);
 			target.SetEntities(new List<MockEntity>());
 			target.SetLookupTime(DateTime.Now.AddSeconds(-1));
 			var actual = target.CachedEntites;
@@ -56,8 +60,10 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		}
 		[Test()]
 		public void LookupCachedEntitiesReturnsLiveDataTest ()
-		{
-			var target = new LookupHandle(TimeSpan.FromDays(2), null);
+        {
+            var container = new Demeter.Container();
+            container.Register<AmpacheModel>().To(new AmpacheModel());
+            var target = new LookupHandle(TimeSpan.FromDays(2), container);
 			var ent = new List<MockEntity>();
 			target.SetEntities(ent);
 			target.SetLookupTime(DateTime.Today);
@@ -67,8 +73,10 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		
 		[Test()]
 		public void LoadEntitiesReturnsCachedDataTest ()
-		{
-			var target = new LookupHandle(TimeSpan.FromDays(2), null);
+        {
+            var container = new Demeter.Container();
+            container.Register<AmpacheModel>().To(new AmpacheModel());
+            var target = new LookupHandle(TimeSpan.FromDays(2), container);
 			var ent = new List<MockEntity>();
 			target.SetEntities(ent);
 			target.SetLookupTime(DateTime.Today);
@@ -80,13 +88,14 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		public void LoadEntitiesLoadsAndCachedDataTest ()
 		{
             var container = new Demeter.Container();
-            var model = new AmpacheModel(container);
+            var model = new AmpacheModel();
+            container.Register<AmpacheModel>().To(model);
 			var selector = Substitute.For<IAmpacheSelector<MockEntity>>();
             container.Register<IAmpacheSelector<MockEntity>>().To(selector);
 			var ent = new List<MockEntity>();
 			selector.SelectAll().Returns(ent);
 			
-			var target = new LookupHandle(TimeSpan.FromMilliseconds(100), model);
+			var target = new LookupHandle(TimeSpan.FromMilliseconds(100), container);
 			var actual = target.LoadAll();
 			var cache = target.CachedEntites;
 			Assert.That(actual, Is.Not.SameAs(ent));
@@ -96,8 +105,10 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		
 		[Test()]
 		public void SearchEntitiesUsesCachedDataTest ()
-		{
-			var target = new LookupHandle(TimeSpan.FromDays(2), null);
+        {
+            var container = new Demeter.Container();
+            container.Register<AmpacheModel>().To(new AmpacheModel());
+            var target = new LookupHandle(TimeSpan.FromDays(2), container);
 			var ent = new List<MockEntity>();
 			target.SetEntities(ent);
 			target.SetLookupTime(DateTime.Today);
@@ -109,14 +120,15 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		public void SeachGoesToServerWhenNoDataCachedDataTest ()
         {
             var container = new Demeter.Container();
-            var model = new AmpacheModel(container);
+            var model = new AmpacheModel();
+            container.Register<AmpacheModel>().To(model);
 			var selector = Substitute.For<IAmpacheSelector<MockEntity>>();
             container.Register<IAmpacheSelector<MockEntity>>().To(selector);
 			var ent = new List<MockEntity>();
 			string text = "test";
 			selector.SelectBy(text).Returns(ent);
 			
-			var target = new LookupHandle(TimeSpan.FromDays(2), model);
+			var target = new LookupHandle(TimeSpan.FromDays(2), container);
 			var actual = target.Search(text);
 			var cache = target.CachedEntites;
 			Assert.That(actual, Is.Not.SameAs(ent));
@@ -125,7 +137,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		
 		private class LookupHandle : Lookup<MockEntity>
 		{
-			public LookupHandle (TimeSpan t, AmpacheModel m): base (t, m)
+			public LookupHandle (TimeSpan t, Demeter.Container c): base (t, c)
 			{}
 			
 			public void SetEntities(ICollection<MockEntity> ent)

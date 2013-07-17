@@ -43,7 +43,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		public void AmapcheModelPlayingSongNotifiesOnChange ()
 		{
 			int timesNotified = 0;
-            var target = new AmpacheModel(new Demeter.Container());
+            var target = new AmpacheModel();
 			target.PropertyChanged += (sender, e) => ++timesNotified;
 			target.PropertyChanged += (sender, e) => Assert.That(e.PropertyName, Is.EqualTo(AmpacheModel.PLAYING_SONG));
 			target.PlayingSong = new AmpacheSong();
@@ -54,7 +54,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		public void AmapcheModelPlayListNotifiesOnChange ()
 		{
 			int timesNotified = 0;
-            var target = new AmpacheModel(new Demeter.Container());
+            var target = new AmpacheModel();
 			target.PropertyChanged += (sender, e) => ++timesNotified;
 			target.PropertyChanged += (sender, e) => Assert.That(e.PropertyName, Is.EqualTo(AmpacheModel.PLAYLIST));
 			target.Playlist = new List<AmpacheSong>();
@@ -65,7 +65,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		public void AmapcheModelShufflingNotifiesOnChange ()
 		{
 			int timesNotified = 0;
-            var target = new AmpacheModel(new Demeter.Container());
+            var target = new AmpacheModel();
 			target.PropertyChanged += (sender, e) => ++timesNotified;
 			target.PropertyChanged += (sender, e) => Assert.That(e.PropertyName, Is.EqualTo(AmpacheModel.SHUFFELING));
 			target.Shuffling = true;
@@ -76,7 +76,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		public void AmapcheModelConfigurationNotifiesOnChange ()
 		{
 			int timesNotified = 0;
-            var target = new AmpacheModel(new Demeter.Container());
+            var target = new AmpacheModel();
 			target.PropertyChanged += (sender, e) => ++timesNotified;
 			target.PropertyChanged += (sender, e) => Assert.That(e.PropertyName, Is.EqualTo(AmpacheModel.CONFIGURATION));
 			target.Configuration = new UserConfiguration();
@@ -87,7 +87,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		public void AmapcheModelAlbumArtStreamNotifiesOnChange ()
 		{
 			int timesNotified = 0;
-            var target = new AmpacheModel(new Demeter.Container());
+            var target = new AmpacheModel();
 			target.PropertyChanged += (sender, e) => ++timesNotified;
 			target.PropertyChanged += (sender, e) => Assert.That(e.PropertyName, Is.EqualTo(AmpacheModel.ALBUM_ART_STREAM));
 			target.AlbumArtStream = new System.IO.MemoryStream();
@@ -98,7 +98,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		public void AmapcheModelPlayPauseRequestedNotifiesOnChange ()
 		{
 			int timesNotified = 0;
-            var target = new AmpacheModel(new Demeter.Container());
+            var target = new AmpacheModel();
 			target.PropertyChanged += (sender, e) => ++timesNotified;
 			target.PropertyChanged += (sender, e) => Assert.That(e.PropertyName, Is.EqualTo(AmpacheModel.PLAY_PAUSE_REQUESTED));
 			target.PlayPauseRequested = true;
@@ -109,7 +109,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		public void AmapcheModelNextRequestedNotifiesOnChange ()
 		{
 			int timesNotified = 0;
-            var target = new AmpacheModel(new Demeter.Container());
+            var target = new AmpacheModel();
 			target.PropertyChanged += (sender, e) => ++timesNotified;
 			target.PropertyChanged += (sender, e) => Assert.That(e.PropertyName, Is.EqualTo(AmpacheModel.NEXT_REQUESTED));
 			target.NextRequested = true;
@@ -120,7 +120,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		public void AmapcheModelPerviousRequestedNotifiesOnChange ()
 		{
 			int timesNotified = 0;
-            var target = new AmpacheModel(new Demeter.Container());
+            var target = new AmpacheModel();
 			target.PropertyChanged += (sender, e) => ++timesNotified;
 			target.PropertyChanged += (sender, e) => Assert.That(e.PropertyName, Is.EqualTo(AmpacheModel.PREVIOUS_REQUESTED));
 			target.PreviousRequested = true;
@@ -131,7 +131,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		public void AmapcheModelIsPlayingNotifiesOnChange ()
 		{
 			int timesNotified = 0;
-            var target = new AmpacheModel(new Demeter.Container());
+            var target = new AmpacheModel();
 			target.PropertyChanged += (sender, e) => ++timesNotified;
 			target.PropertyChanged += (sender, e) => Assert.That(e.PropertyName, Is.EqualTo(AmpacheModel.IS_PLAYING));
 			target.IsPlaying = true;
@@ -142,7 +142,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		public void AmapcheModelStopRequestedNotifiesOnChange ()
 		{
 			int timesNotified = 0;
-            var target = new AmpacheModel(new Demeter.Container());
+            var target = new AmpacheModel();
 			target.PropertyChanged += (sender, e) => ++timesNotified;
 			target.PropertyChanged += (sender, e) => Assert.That(e.PropertyName, Is.EqualTo(AmpacheModel.STOP_REQUESTED));
 			target.StopRequested = true;
@@ -153,7 +153,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		public void AmapcheModelPercentDownloadNotifiesOnChange ()
 		{
 			int timesNotified = 0;
-            var target = new AmpacheModel(new Demeter.Container());
+            var target = new AmpacheModel();
 			target.PropertyChanged += (sender, e) => ++timesNotified;
 			target.PropertyChanged += (sender, e) => Assert.That(e.PropertyName, Is.EqualTo(AmpacheModel.PERCENT_DOWNLOADED));
 			target.PercentDownloaded = 1000;
@@ -164,7 +164,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		public void AmapcheModelPercentPlayedNotifiesOnChange ()
 		{
 			int timesNotified = 0;
-            var target = new AmpacheModel(new Demeter.Container());
+            var target = new AmpacheModel();
 			target.PropertyChanged += (sender, e) => ++timesNotified;
 			target.PropertyChanged += (sender, e) => Assert.That(e.PropertyName, Is.EqualTo(AmpacheModel.PERCENT_PLAYED));
 			target.PercentPlayed = 1000;
@@ -175,7 +175,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		public void AmapcheModelRequestSeekToPercentageNotifiesOnChange ()
 		{
 			int timesNotified = 0;
-            var target = new AmpacheModel(new Demeter.Container());
+            var target = new AmpacheModel();
 			target.PropertyChanged += (sender, e) => ++timesNotified;
 			target.PropertyChanged += (sender, e) => Assert.That(e.PropertyName, Is.EqualTo(AmpacheModel.REQUESTED_SEEK_TO_PERCENTAGE));
 			target.RequestedSeekToPercentage = .50;
@@ -186,7 +186,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		public void AmapcheModelUserMessageNotifiesOnChange ()
 		{
 			int timesNotified = 0;
-            var target = new AmpacheModel(new Demeter.Container());
+            var target = new AmpacheModel();
 			target.PropertyChanged += (sender, e) => ++timesNotified;
 			target.PropertyChanged += (sender, e) => Assert.That(e.PropertyName, Is.EqualTo(AmpacheModel.USER_MESSAGE));
 			target.UserMessage = "message";
@@ -196,13 +196,13 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test()]
 		public void AmapcheModelIsNotDisposedAtDefaultTest ()
 		{
-            var target = new AmpacheModel(new Demeter.Container());
+            var target = new AmpacheModel();
 			Assert.That(target.IsDisposed, Is.False);
 		}
 		[Test()]
 		public void AmapcheModelIsDisposedAfterDisposalTest ()
 		{
-            var target = new AmpacheModel(new Demeter.Container());
+            var target = new AmpacheModel();
 			int timesNotified = 0;
 			target.PropertyChanged += (sender, e) => ++timesNotified;
 			target.PropertyChanged += (sender, e) => Assert.That(e.PropertyName, Is.EqualTo(AmpacheModel.IS_DISPOSED));
@@ -215,7 +215,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		public void AmapcheModelDisposalDisablesListenersTest ()
 		{
 			int timesNotified = 0;
-            var target = new AmpacheModel(new Demeter.Container());
+            var target = new AmpacheModel();
 			target.PropertyChanged += (sender, e) => ++timesNotified;
 			target.Dispose();
 			timesNotified = 0;

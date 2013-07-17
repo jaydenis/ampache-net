@@ -37,14 +37,10 @@ namespace JohnMoore.AmpacheNet.Logic
 {
 	public class AmpacheModel : INotifyPropertyChanged, IDisposable
 	{
-        public AmpacheModel(Demeter.Container container) 
-		{
-            Container = container;
-            container.Register<AmpacheModel>().To(this);
-			IsDisposed = false;
-		}
-
-        public Demeter.Container Container { get; private set; }
+        public AmpacheModel()
+        {
+            IsDisposed = false;
+        }
 
 		#region Factory
 

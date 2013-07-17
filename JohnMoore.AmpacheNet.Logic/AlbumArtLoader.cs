@@ -36,13 +36,15 @@ namespace JohnMoore.AmpacheNet.Logic
 	public class AlbumArtLoader : IDisposable
 	{
 		private readonly AmpacheModel _model;
+        private readonly Demeter.Container _container;
 		private readonly MemoryStream _defaultStream;
 		private MemoryStream _currentStream;
 		
-		public AlbumArtLoader (AmpacheModel model, MemoryStream defaultStream)
+		public AlbumArtLoader (Demeter.Container container, MemoryStream defaultStream)
 		{
+            _container = container;
 			_defaultStream = defaultStream;
-			_model = model;
+			_model = container.Resolve<AmpacheModel>();
 			_model.PropertyChanged += Handle_modelPropertyChanged;
 			LoadAlbumImage();
 		}
@@ -67,7 +69,7 @@ namespace JohnMoore.AmpacheNet.Logic
 			{
 				_currentStream.Dispose();
 			}
-            var persit = _model.Container.Resolve<DataAccess.IPersister<AlbumArt>>();//.Factory.GetPersistorFor<AlbumArt>();
+            var persit = _container.Resolve<DataAccess.IPersister<AlbumArt>>();//.Factory.GetPersistorFor<AlbumArt>();
 			if(!persit.IsPersisted(_model.PlayingSong))
 			{
 				_model.AlbumArtStream = _defaultStream;

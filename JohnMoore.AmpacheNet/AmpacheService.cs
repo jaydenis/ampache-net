@@ -55,12 +55,12 @@ namespace JohnMoore.AmpacheNet
 		private AmpacheNotifications _notifications;
 		private PendingIntent _stopIntent;
 		private PendingIntent _pingIntent;
-		private int _intentId = 1;
-		
+        private int _intentId = 1;
+
 		#region implemented abstract members of Android.App.Service
 		public override IBinder OnBind (Intent intent)
 		{
-			return new Binder(_model);
+			return new Binder(_model, _container);
 		}
 		
 		public override void OnLowMemory ()
@@ -78,9 +78,10 @@ namespace JohnMoore.AmpacheNet
 			base.OnCreate ();
 			Console.SetOut(new AndroidLogTextWriter());
             DataAccess.Configurator.ArtLocalDirectory = CacheDir.AbsolutePath;
-            var container = new Demeter.Container();
-            DataAccess.Configurator.Configure(container);
-            _model = new AmpacheModel(container);
+            _container = new Demeter.Container();
+            _model = new AmpacheModel();
+            _container.Register<AmpacheModel>().To(_model);
+            DataAccess.Configurator.Configure(_container);
 			var am = (AlarmManager)ApplicationContext.GetSystemService(Context.AlarmService);
 			var ping = new Intent(PingReceiver.INTENT);
 			_pingIntent = PendingIntent.GetBroadcast(ApplicationContext, 0, ping, PendingIntentFlags.UpdateCurrent);
@@ -93,7 +94,7 @@ namespace JohnMoore.AmpacheNet
 			_player = new AndroidPlayer(_model, ApplicationContext);
 			_notifications = new AmpacheNotifications(this.ApplicationContext, _model);
 			var config = LoadPersistedConfiguration();
-			if(config != null){
+			if(config != null && !string.IsNullOrEmpty(config.ServerUrl)){
 				_model.Factory.AuthenticateToServer(config);
 				_model.Configuration = config;
 			}
@@ -151,9 +152,10 @@ namespace JohnMoore.AmpacheNet
 		public class Binder : Android.OS.Binder
 		{
 			public readonly AmpacheModel Model;
-			
-			public Binder (AmpacheModel model)
+            public readonly Demeter.Container Container;
+			public Binder (AmpacheModel model, Demeter.Container container)
 			{
+                Container = container;
 				Model = model;
 			}
 		}
@@ -161,16 +163,20 @@ namespace JohnMoore.AmpacheNet
 		public class Connection : Java.Lang.Object, IServiceConnection
 		{
 			public event EventHandler OnConnected;
+            [Obsolete]
 			public AmpacheModel Model { get; private set; }
-			
+            private readonly IClient _client;
+
+            public Connection(IClient client) : base()
+            {
+                _client = client;
+            }
+
 			#region IServiceConnection implementation
 			public void OnServiceConnected (ComponentName name, IBinder service)
 			{
 				Model = ((Binder)service).Model;
-				if (OnConnected != null)
-				{
-					OnConnected(this, EventArgs.Empty);
-				}
+                _client.Connected(((Binder)service).Container);
 			}
 
 			public void OnServiceDisconnected (ComponentName name)
@@ -178,7 +184,12 @@ namespace JohnMoore.AmpacheNet
 			#endregion
 
 		}
-		
+
+        public interface IClient
+        {
+            void Connected(Demeter.Container container);
+        }
+
 		#endregion
 		
 		#region Receiver Classes
@@ -213,6 +224,6 @@ namespace JohnMoore.AmpacheNet
 			}
 		}
 		#endregion
-	}
+    }
 }
 

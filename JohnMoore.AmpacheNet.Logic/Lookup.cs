@@ -45,6 +45,7 @@ namespace JohnMoore.AmpacheNet.Logic
 		protected DateTime _cacheLoadTime = DateTime.MinValue;
 		protected static ICollection<TEntity> _cachedEntities;
 		protected AmpacheModel _model;
+        protected Demeter.Container _container;
 		private readonly Dictionary<TEntity, ICollection<AmpacheSong>> _loadedSongs = new Dictionary<TEntity, ICollection<AmpacheSong>>();
 		
 		public ICollection<TEntity> CachedEntites
@@ -65,17 +66,18 @@ namespace JohnMoore.AmpacheNet.Logic
 			_cacheTimeToLive = cacheTimeToLive;
 		}
 		
-		public Lookup (TimeSpan cacheTimeToLive, AmpacheModel model)
+		public Lookup (TimeSpan cacheTimeToLive, Demeter.Container container)
 		{
 			_cacheTimeToLive = cacheTimeToLive;
-			_model = model;
+			_model = container.Resolve<AmpacheModel>();
+            _container = container;
 		}
 		
 		public ICollection<TEntity> LoadAll()
 		{
 			if(CachedEntites == null)
 			{
-				var selector = _model.Container.Resolve<DataAccess.IAmpacheSelector<TEntity>>();
+				var selector = _container.Resolve<DataAccess.IAmpacheSelector<TEntity>>();
 				try 
 				{
 					_cachedEntities = selector.SelectAll ().OrderBy (e => e.Name).ToList ();
@@ -95,7 +97,7 @@ namespace JohnMoore.AmpacheNet.Logic
 			ICollection<TEntity> res = null;
 			if(CachedEntites == null)
 			{
-                var selector = _model.Container.Resolve<DataAccess.IAmpacheSelector<TEntity>>();
+                var selector = _container.Resolve<DataAccess.IAmpacheSelector<TEntity>>();
 				res = selector.SelectBy(searchText).ToList();
 			}
 			else
@@ -109,7 +111,7 @@ namespace JohnMoore.AmpacheNet.Logic
 		{
 			if(!_loadedSongs.ContainsKey(entity))
 			{
-				var selector = _model.Container.Resolve<DataAccess.IAmpacheSelector<AmpacheSong>>();
+				var selector = _container.Resolve<DataAccess.IAmpacheSelector<AmpacheSong>>();
 				var res = selector.SelectBy(entity).ToList();
 				_loadedSongs.Add(entity, res);
 			}

@@ -44,7 +44,7 @@ using JohnMoore.AmpacheNet.Logic;
 namespace JohnMoore.AmpacheNet
 {
 	[Activity(Theme="@android:style/Theme.Dialog", Label = "@string/configure")]
-	public class ConfigurationActivity : Configuration
+	public class ConfigurationActivity : Configuration, AmpacheService.IClient
 	{
 		private AmpacheService.Connection _connection;
 		private static UserConfiguration _config = null;
@@ -60,8 +60,7 @@ namespace JohnMoore.AmpacheNet
 			FindViewById<TextView>(Resource.Id.txtConfigUser).TextChanged += HandleTextChanged;
 			FindViewById<TextView>(Resource.Id.txtPasswordConfig).TextChanged += HandleTextChanged;
 			_successMessage = GetString(Resource.String.connectedToAmpache);
-			_connection = new AmpacheService.Connection();
-			_connection.OnConnected += Handle_connectionOnConnected;
+			_connection = new AmpacheService.Connection(this);
 			BindService(new Intent(this.ApplicationContext, typeof(AmpacheService)), _connection, Bind.AutoCreate);
 		}
 
@@ -76,15 +75,15 @@ namespace JohnMoore.AmpacheNet
 			_config.User = FindViewById<EditText>(Resource.Id.txtConfigUser).Text;
 		}
 
-		void Handle_connectionOnConnected (object sender, EventArgs e)
-		{
-			var tmp = _config ?? _connection.Model.Configuration;
+		public void Connected (Demeter.Container container)
+        {
+            _model = container.Resolve<AmpacheModel>();
+			var tmp = _config ?? _model.Configuration;
 			FindViewById<EditText>(Resource.Id.txtConfigUrl).Text = tmp.ServerUrl;
 			FindViewById<EditText>(Resource.Id.txtConfigUser).Text = tmp.User;
 			FindViewById<EditText>(Resource.Id.txtPasswordConfig).Text = tmp.Password;
 			FindViewById<CompoundButton>(Resource.Id.chkSeeking).Checked = tmp.AllowSeeking;
 			FindViewById<CompoundButton>(Resource.Id.chkArtCache).Checked = tmp.CacheArt;
-			_model = _connection.Model;
 		}
 
 		void HandleOkClick (object sender, EventArgs e)

@@ -39,7 +39,7 @@ using JohnMoore.AmpacheNet.Logic;
 
 namespace JohnMoore.AmpacheNet
 {
-	public abstract class PlayingActivity : Activity
+	public abstract class PlayingActivity : Activity, AmpacheService.IClient
 	{
 		protected AmpacheModel _model;
 		protected readonly Dictionary<string, Action> _uiActions = new Dictionary<string, Action>();
@@ -49,8 +49,7 @@ namespace JohnMoore.AmpacheNet
 		protected override void OnCreate (Bundle savedInstanceState)
 		{
 			base.OnCreate (savedInstanceState);
-			_connection = new AmpacheService.Connection();
-			_connection.OnConnected += OnServiceConnected;
+			_connection = new AmpacheService.Connection(this);
 			StartService(new Intent(this.ApplicationContext, typeof(AmpacheService)));
 		}
 		
@@ -69,9 +68,9 @@ namespace JohnMoore.AmpacheNet
 			}
 		}
 		
-		private void OnServiceConnected (object sender, EventArgs e)
+		public void Connected (Demeter.Container container)
 		{
-			_model = _connection.Model;
+			_model = container.Resolve<AmpacheModel>();
 			if(!_uiActions.ContainsKey(AmpacheModel.ALBUM_ART_STREAM))
 			{
 				_uiActions.Add(AmpacheModel.ALBUM_ART_STREAM, UpdateArt);

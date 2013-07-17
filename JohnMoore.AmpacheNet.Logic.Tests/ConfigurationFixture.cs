@@ -42,7 +42,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test()]
 		public void ConfigurationPerformTestSuccessfulTest ()
 		{
-            var model = new AmpacheModel(new Demeter.Container());
+            var model = new AmpacheModel();
 			var factory = Substitute.For<AmpacheSelectionFactory>();
 			model.Factory = factory;			
 			factory.AuthenticationTest(Arg.Any<string>(),Arg.Any<string>(),Arg.Any<string>()).Returns((Authenticate)null);
@@ -56,7 +56,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test()]
 		public void ConfigurationPerformTestErrorTest ()
 		{
-            var model = new AmpacheModel(new Demeter.Container());
+            var model = new AmpacheModel();
 			var factory = Substitute.For<AmpacheSelectionFactory>();
 			model.Factory = factory;			
 			var message = "error message";
@@ -71,7 +71,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test()]
 		public void ConfigurationTrySaveNullInputTest ()
 		{
-            var model = new AmpacheModel(new Demeter.Container());			
+            var model = new AmpacheModel();			
 			var target = new Configuration(model);
 			Assert.That(model.UserMessage, Is.Null);
 			var actual = target.TrySaveConfiguration(null);
@@ -88,7 +88,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test()]
 		public void ConfigurationTrySaveConfigurationSuccessfulTest ()
 		{
-            var model = new AmpacheModel(new Demeter.Container());
+            var model = new AmpacheModel();
 			var factory = Substitute.For<AmpacheSelectionFactory>();
 			model.Factory = factory;			
 			factory.AuthenticateToServer(Arg.Any<UserConfiguration>()).Returns((Authenticate)null);
@@ -105,7 +105,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test()]
 		public void ConfigurationTrySaveConfigurationErrorTest ()
 		{
-            var model = new AmpacheModel(new Demeter.Container());
+            var model = new AmpacheModel();
 			var factory = Substitute.For<AmpacheSelectionFactory>();
 			model.Factory = factory;			
 			var message = "error message";

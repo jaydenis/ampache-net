@@ -43,22 +43,25 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test()]
 		public void AlbumArtLoaderUsesDefaultWhenInitializedTest ()
 		{
-			var model = new AmpacheModel(new Demeter.Container());
+            var container = new Demeter.Container();
+			var model = new AmpacheModel();
+            container.Register<AmpacheModel>().To(model);
 			var defaultStream = new MemoryStream();
 			
 			Assert.That(model.AlbumArtStream, Is.Not.SameAs(defaultStream));
-			var target = new AlbumArtLoader(model, defaultStream);
+			var target = new AlbumArtLoader(container, defaultStream);
 			Assert.That(model.AlbumArtStream, Is.SameAs(defaultStream));
 		}
 		
 		[Test()]
 		public void AlbumArtLoaderUsesDefaultArtWhenNoArtAvailableTest ()
-		{
+        {
             var container = new Demeter.Container();
-            var model = new AmpacheModel(container);
+            var model = new AmpacheModel();
+            container.Register<AmpacheModel>().To(model);
 			var defaultStream = new MemoryStream();
 			
-			var target = new AlbumArtLoader(model, defaultStream);
+			var target = new AlbumArtLoader(container, defaultStream);
 			var sng = new AmpacheSong();
 			sng.ArtUrl = string.Empty;
 			model.PlayingSong = sng;
@@ -69,9 +72,10 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		
 		[Test()]
 		public void AlbumArtLoaderUsesDefaultArtWhenLoadingArtTest ()
-		{
+        {
             var container = new Demeter.Container();
-            var model = new AmpacheModel(container);
+            var model = new AmpacheModel();
+            container.Register<AmpacheModel>().To(model);
 			var defaultStream = new MemoryStream();
 			
 			var persistor = Substitute.For<IPersister<AlbumArt>>();
@@ -80,7 +84,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			persistor.SelectBy<AmpacheSong>(Arg.Any<AmpacheSong>()).Returns(x => { ++timesCalled; Assert.That(model.AlbumArtStream, Is.SameAs(defaultStream)); return Enumerable.Empty<AlbumArt>();});
             container.Register<IPersister<AlbumArt>>().To(persistor);
 
-			var target = new AlbumArtLoader(model, defaultStream);
+			var target = new AlbumArtLoader(container, defaultStream);
 			var sng = new AmpacheSong();
 			sng.ArtUrl = "test";
 			model.PlayingSong = sng;
@@ -93,7 +97,8 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		public void AlbumArtLoaderUsesDefaultArtWhenErrorLoadingArtTest ()
         {
             var container = new Demeter.Container();
-            var model = new AmpacheModel(container);
+            var model = new AmpacheModel();
+            container.Register<AmpacheModel>().To(model);
 			var defaultStream = new MemoryStream();
 			
 			var persistor = Substitute.For<IPersister<AlbumArt>>();
@@ -102,7 +107,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			persistor.SelectBy<AmpacheSong>(Arg.Any<AmpacheSong>()).Returns(x => { ++timesCalled; return Enumerable.Empty<AlbumArt>();});
             container.Register<IPersister<AlbumArt>>().To(persistor);
 			
-			var target = new AlbumArtLoader(model, defaultStream);
+			var target = new AlbumArtLoader(container, defaultStream);
 			var sng = new AmpacheSong();
 			sng.ArtUrl = "test";
 			model.PlayingSong = sng;
@@ -116,7 +121,8 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		public void AlbumArtLoaderUsesLoadedArtAfterLoadingTest ()
         {
             var container = new Demeter.Container();
-            var model = new AmpacheModel(container);
+            var model = new AmpacheModel();
+            container.Register<AmpacheModel>().To(model);
 			var defaultStream = new MemoryStream();
 			
 			var persistor = Substitute.For<IPersister<AlbumArt>>();
@@ -129,7 +135,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			prefs.CacheArt = false;
 			model.Configuration = prefs;
 			
-			var target = new AlbumArtLoader(model, defaultStream);
+			var target = new AlbumArtLoader(container, defaultStream);
 			var sng = new AmpacheSong();
 			sng.ArtUrl = "test";
 			model.PlayingSong = sng;
@@ -142,7 +148,8 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		public void AlbumArtLoaderRespectsCachingPerferencesTest ()
         {
             var container = new Demeter.Container();
-            var model = new AmpacheModel(container);
+            var model = new AmpacheModel();
+            container.Register<AmpacheModel>().To(model);
 			var defaultStream = new MemoryStream();
 			
 			var persistor = Substitute.For<IPersister<AlbumArt>>();
@@ -157,7 +164,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			prefs.CacheArt = false;
 			model.Configuration = prefs;
 			
-			var target = new AlbumArtLoader(model, defaultStream);
+			var target = new AlbumArtLoader(container, defaultStream);
 			var sng = new AmpacheSong();
 			sng.ArtUrl = "test";
 			model.PlayingSong = sng;
@@ -171,7 +178,8 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		public void AlbumArtLoaderIgnoresCachingPersistedItemTest ()
         {
             var container = new Demeter.Container();
-            var model = new AmpacheModel(container);
+            var model = new AmpacheModel();
+            container.Register<AmpacheModel>().To(model);
 			var defaultStream = new MemoryStream();
 			
 			var persistor = Substitute.For<IPersister<AlbumArt>>();
@@ -187,7 +195,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			prefs.CacheArt = true;
 			model.Configuration = prefs;
 			
-			var target = new AlbumArtLoader(model, defaultStream);
+			var target = new AlbumArtLoader(container, defaultStream);
 			var sng = new AmpacheSong();
 			sng.ArtUrl = "test";
 			model.PlayingSong = sng;
@@ -201,7 +209,8 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		public void AlbumArtLoaderCachesNewArtTest ()
         {
             var container = new Demeter.Container();
-            var model = new AmpacheModel(container);
+            var model = new AmpacheModel();
+            container.Register<AmpacheModel>().To(model);
 			var defaultStream = new MemoryStream();
 			
 			var persistor = Substitute.For<IPersister<AlbumArt>>();
@@ -217,7 +226,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 			prefs.CacheArt = true;
 			model.Configuration = prefs;
 			
-			var target = new AlbumArtLoader(model, defaultStream);
+			var target = new AlbumArtLoader(container, defaultStream);
 			var sng = new AmpacheSong();
 			sng.ArtUrl = "test";
 			model.PlayingSong = sng;
