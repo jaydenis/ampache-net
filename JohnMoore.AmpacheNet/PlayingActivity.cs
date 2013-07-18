@@ -269,7 +269,7 @@ namespace JohnMoore.AmpacheNet
 					break;
 				case Resource.Id.help:
 					var intent = new Intent(Intent.ActionView);
-					intent.SetData(Android.Net.Uri.Parse("https://gitorious.org/ampache-net/pages/Android"));
+                    intent.SetData(Android.Net.Uri.Parse("https://github.com/jcwmoore/ampache-net/wiki/Android"));
 					StartActivity(intent);
 					break;
 				case Resource.Id.clearPlaylist:
