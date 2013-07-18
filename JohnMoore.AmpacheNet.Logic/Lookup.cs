@@ -45,7 +45,7 @@ namespace JohnMoore.AmpacheNet.Logic
 		protected DateTime _cacheLoadTime = DateTime.MinValue;
 		protected static ICollection<TEntity> _cachedEntities;
 		protected AmpacheModel _model;
-        protected Demeter.Container _container;
+        protected Athena.IoC.Container _container;
 		private readonly Dictionary<TEntity, ICollection<AmpacheSong>> _loadedSongs = new Dictionary<TEntity, ICollection<AmpacheSong>>();
 		
 		public ICollection<TEntity> CachedEntites
@@ -66,7 +66,7 @@ namespace JohnMoore.AmpacheNet.Logic
 			_cacheTimeToLive = cacheTimeToLive;
 		}
 		
-		public Lookup (TimeSpan cacheTimeToLive, Demeter.Container container)
+		public Lookup (TimeSpan cacheTimeToLive, Athena.IoC.Container container)
 		{
 			_cacheTimeToLive = cacheTimeToLive;
 			_model = container.Resolve<AmpacheModel>();

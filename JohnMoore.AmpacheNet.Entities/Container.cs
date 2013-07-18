@@ -1,34 +1,8 @@
-﻿//
-// Demeter.cs
-//
-// Author:
-//       John Moore <jcwmoore@gmail.com>
-//
-// Copyright (c) 2013 John Moore
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Demeter
+namespace Athena.IoC
 {
     public sealed partial class Container : IDisposable
     {
@@ -55,11 +29,11 @@ namespace Demeter
         {
             return Resolve<TType>(DEFAULT_INSTANCE_NAME);
         }
-        
+
         /// <summary>
         /// Returns the named implementation of <typeparamref name="TType"/>
         /// </summary>
-        public TType Resolve<TType>(string name) 
+        public TType Resolve<TType>(string name)
         {
             var t = typeof(TType);
             if (!_resolutionMap.ContainsKey(t))
@@ -151,7 +125,8 @@ namespace Demeter
         internal abstract class SingletonLifecycleBase<TInterface, TImplementation> : TransientLifecycle<TInterface> where TImplementation : TInterface
         {
             protected TImplementation _instance;
-            public SingletonLifecycleBase(ResolutionInfo<TInterface> info, TImplementation instance) : base(info)
+            public SingletonLifecycleBase(ResolutionInfo<TInterface> info, TImplementation instance)
+                : base(info)
             {
                 _instance = instance;
             }
@@ -161,23 +136,24 @@ namespace Demeter
                 return _instance;
             }
 
-            public override void Dispose() 
+            public override void Dispose()
             {
-                if (_instance as IDisposable != null) 
+                if (_instance as IDisposable != null)
                 {
                     ((IDisposable)_instance).Dispose();
                 }
             }
         }
 
-        internal class SingletonStructLifecycle<TInterface, TImplementation> : SingletonLifecycleBase<TInterface, TImplementation> where TImplementation : struct, TInterface 
+        internal class SingletonStructLifecycle<TInterface, TImplementation> : SingletonLifecycleBase<TInterface, TImplementation> where TImplementation : struct, TInterface
         {
             public SingletonStructLifecycle(ResolutionInfo<TInterface> info, TImplementation instance) : base(info, instance) { }
         }
 
-        internal class SingletonObjectLifecycle<TInterface, TImplementation> : SingletonLifecycleBase<TInterface, TImplementation> where TImplementation : class, TInterface 
+        internal class SingletonObjectLifecycle<TInterface, TImplementation> : SingletonLifecycleBase<TInterface, TImplementation> where TImplementation : class, TInterface
         {
-            public SingletonObjectLifecycle(ResolutionInfo<TInterface> info, TImplementation instance) : base(info, instance)
+            public SingletonObjectLifecycle(ResolutionInfo<TInterface> info, TImplementation instance)
+                : base(info, instance)
             {
                 if (instance == null)
                 {
@@ -185,7 +161,7 @@ namespace Demeter
                 }
             }
         }
-        
+
         private class RegistrationContext<TInterface> : DemeterRegistationContext<TInterface>
         {
             private readonly Container _container;
@@ -271,7 +247,7 @@ namespace Demeter
             {
                 _info = info;
             }
-            
+
             public override DemeterRegistration<TInterface, TImplementation> ConstructAs(Func<Container, TImplementation> fun)
             {
                 _fun = fun;
@@ -309,7 +285,8 @@ namespace Demeter
     {
         public Type AttemptedType { get; set; }
         internal ResolutionException(string message, Type attemptedType) : this(message, attemptedType, null) { }
-        internal ResolutionException(string message, Type attemptedType, Exception inner) : base(message, inner)
+        internal ResolutionException(string message, Type attemptedType, Exception inner)
+            : base(message, inner)
         {
             AttemptedType = attemptedType;
         }
@@ -322,7 +299,8 @@ namespace Demeter
     {
         public Type AttemptedType { get; set; }
         internal RegistrationException(string message, Type attemptedType) : this(message, attemptedType, null) { }
-        internal RegistrationException(string message, Type attemptedType, Exception inner) : base(message, inner)
+        internal RegistrationException(string message, Type attemptedType, Exception inner)
+            : base(message, inner)
         {
             AttemptedType = attemptedType;
         }
@@ -398,5 +376,5 @@ namespace Demeter
         /// </summary>
         TInterface GetConcrete();
     }
-#endregion
+    #endregion
 }

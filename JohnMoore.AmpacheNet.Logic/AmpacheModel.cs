@@ -31,7 +31,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using JohnMoore.AmpacheNet.Entities;
 using JohnMoore.AmpacheNet.DataAccess;
-using Demeter;
+using Athena;
 
 namespace JohnMoore.AmpacheNet.Logic
 {

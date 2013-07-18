@@ -41,7 +41,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test()]
 		public void LookupCachedEntitiesReturnsNullByDefaultTest ()
 		{
-            var container = new Demeter.Container();
+            var container = new Athena.IoC.Container();
             container.Register<AmpacheModel>().To(new AmpacheModel());
 			var target = new Lookup<MockEntity>(TimeSpan.Zero, container);
 			var actual = target.CachedEntites;
@@ -50,7 +50,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test()]
 		public void LookupCachedEntitiesRespectsTimeToLiveParameterTest ()
         {
-            var container = new Demeter.Container();
+            var container = new Athena.IoC.Container();
             container.Register<AmpacheModel>().To(new AmpacheModel());
 			var target = new LookupHandle(TimeSpan.Zero, container);
 			target.SetEntities(new List<MockEntity>());
@@ -61,7 +61,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test()]
 		public void LookupCachedEntitiesReturnsLiveDataTest ()
         {
-            var container = new Demeter.Container();
+            var container = new Athena.IoC.Container();
             container.Register<AmpacheModel>().To(new AmpacheModel());
             var target = new LookupHandle(TimeSpan.FromDays(2), container);
 			var ent = new List<MockEntity>();
@@ -74,7 +74,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test()]
 		public void LoadEntitiesReturnsCachedDataTest ()
         {
-            var container = new Demeter.Container();
+            var container = new Athena.IoC.Container();
             container.Register<AmpacheModel>().To(new AmpacheModel());
             var target = new LookupHandle(TimeSpan.FromDays(2), container);
 			var ent = new List<MockEntity>();
@@ -87,7 +87,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test()]
 		public void LoadEntitiesLoadsAndCachedDataTest ()
 		{
-            var container = new Demeter.Container();
+            var container = new Athena.IoC.Container();
             var model = new AmpacheModel();
             container.Register<AmpacheModel>().To(model);
 			var selector = Substitute.For<IAmpacheSelector<MockEntity>>();
@@ -106,7 +106,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test()]
 		public void SearchEntitiesUsesCachedDataTest ()
         {
-            var container = new Demeter.Container();
+            var container = new Athena.IoC.Container();
             container.Register<AmpacheModel>().To(new AmpacheModel());
             var target = new LookupHandle(TimeSpan.FromDays(2), container);
 			var ent = new List<MockEntity>();
@@ -119,7 +119,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test()]
 		public void SeachGoesToServerWhenNoDataCachedDataTest ()
         {
-            var container = new Demeter.Container();
+            var container = new Athena.IoC.Container();
             var model = new AmpacheModel();
             container.Register<AmpacheModel>().To(model);
 			var selector = Substitute.For<IAmpacheSelector<MockEntity>>();
@@ -137,7 +137,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		
 		private class LookupHandle : Lookup<MockEntity>
 		{
-			public LookupHandle (TimeSpan t, Demeter.Container c): base (t, c)
+			public LookupHandle (TimeSpan t, Athena.IoC.Container c): base (t, c)
 			{}
 			
 			public void SetEntities(ICollection<MockEntity> ent)

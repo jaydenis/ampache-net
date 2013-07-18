@@ -57,7 +57,7 @@ namespace JohnMoore.AmpacheNet.Logic
 			this.ListView.ItemLongClick += HandleListViewhandleItemLongClick;
 		}
 		
-		public void Connected (Demeter.Container container)
+		public void Connected (Athena.IoC.Container container)
 		{
             _model = container.Resolve<AmpacheModel>();
 			AfterConnection();

@@ -36,11 +36,11 @@ namespace JohnMoore.AmpacheNet.Logic
 	public class AlbumArtLoader : IDisposable
 	{
 		private readonly AmpacheModel _model;
-        private readonly Demeter.Container _container;
+        private readonly Athena.IoC.Container _container;
 		private readonly MemoryStream _defaultStream;
 		private MemoryStream _currentStream;
 		
-		public AlbumArtLoader (Demeter.Container container, MemoryStream defaultStream)
+		public AlbumArtLoader (Athena.IoC.Container container, MemoryStream defaultStream)
 		{
             _container = container;
 			_defaultStream = defaultStream;

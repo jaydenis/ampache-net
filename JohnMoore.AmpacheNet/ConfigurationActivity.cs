@@ -75,7 +75,7 @@ namespace JohnMoore.AmpacheNet
 			_config.User = FindViewById<EditText>(Resource.Id.txtConfigUser).Text;
 		}
 
-		public void Connected (Demeter.Container container)
+		public void Connected (Athena.IoC.Container container)
         {
             _model = container.Resolve<AmpacheModel>();
 			var tmp = _config ?? _model.Configuration;

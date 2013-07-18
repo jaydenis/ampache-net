@@ -27,10 +27,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Logic", "Logic", "{D6F6B7A7
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JohnMoore.AmpacheNet.Logic.Tests", "JohnMoore.AmpacheNet.Logic.Tests\JohnMoore.AmpacheNet.Logic.Tests.csproj", "{3331899C-9839-43B9-95C3-E87BC35978DC}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{F9E5935A-2196-4545-8C33-1C37A3CD41C3}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{6C2D3DFE-D0BC-46AD-B2E7-8BF18F38C088}"
 	ProjectSection(SolutionItems) = preProject
-		Libraries\System.Data.Sqlite.Android.dll = Libraries\System.Data.Sqlite.Android.dll
-		Libraries\System.Data.Sqlite.dll = Libraries\System.Data.Sqlite.dll
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
 Global

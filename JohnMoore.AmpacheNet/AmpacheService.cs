@@ -78,7 +78,7 @@ namespace JohnMoore.AmpacheNet
 			base.OnCreate ();
 			Console.SetOut(new AndroidLogTextWriter());
             DataAccess.Configurator.ArtLocalDirectory = CacheDir.AbsolutePath;
-            _container = new Demeter.Container();
+            _container = new Athena.IoC.Container();
             _model = new AmpacheModel();
             _container.Register<AmpacheModel>().To(_model);
             DataAccess.Configurator.Configure(_container);
@@ -151,8 +151,8 @@ namespace JohnMoore.AmpacheNet
 		
 		public class Binder : Android.OS.Binder
 		{
-            public readonly Demeter.Container Container;
-			public Binder (Demeter.Container container)
+            public readonly Athena.IoC.Container Container;
+			public Binder (Athena.IoC.Container container)
 			{
                 Container = container;
 			}
@@ -182,7 +182,7 @@ namespace JohnMoore.AmpacheNet
 
         public interface IClient
         {
-            void Connected(Demeter.Container container);
+            void Connected(Athena.IoC.Container container);
         }
 
 		#endregion

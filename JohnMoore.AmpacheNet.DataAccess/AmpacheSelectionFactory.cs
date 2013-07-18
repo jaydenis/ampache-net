@@ -28,7 +28,7 @@ using System;
 using System.Threading;
 using JohnMoore.AmpacheNet.Entities;
 using System.IO;
-using System.Data.Sqlite;
+using System.Data.SQLite;
 
 namespace JohnMoore.AmpacheNet.DataAccess
 {
@@ -36,7 +36,7 @@ namespace JohnMoore.AmpacheNet.DataAccess
     public class AmpacheSelectionFactory
     {
         private Authenticate _handshake;
-        private readonly Demeter.Container _container;
+        private readonly Athena.IoC.Container _container;
         public static string ArtLocalDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), ".AmpacheNet");
         public static string DatabaseDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
         private static string DbConnString { get { return string.Format("Data Source={0}", Path.Combine(DatabaseDirectory, "ampachenet.db3")); } }
@@ -46,7 +46,7 @@ namespace JohnMoore.AmpacheNet.DataAccess
         {
         }
 
-		public AmpacheSelectionFactory (Demeter.Container container)
+		public AmpacheSelectionFactory (Athena.IoC.Container container)
 		{
             _container = container;
         }

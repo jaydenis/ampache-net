@@ -1,8 +1,8 @@
 ﻿using System;
 using JohnMoore.AmpacheNet.Entities;
 using System.IO;
-using System.Data.Sqlite;
-using Demeter;
+using System.Data.SQLite;
+using Athena.IoC;
 
 namespace JohnMoore.AmpacheNet.DataAccess
 {
@@ -30,7 +30,7 @@ namespace JohnMoore.AmpacheNet.DataAccess
             container.Register<IAmpacheSelector<AlbumArt>>().To<AlbumArtRepository>().ConstructAs(j => new AlbumArtRepository(ArtLocalDirectory));
             container.Register<IPersister<AlbumArt>>().To<AlbumArtRepository>().ConstructAs(j => new AlbumArtRepository(ArtLocalDirectory));
 
-            container.Register<System.Data.IDbConnection>().To<SqliteConnection>().ConstructAs(j => new SqliteConnection(DbConnString));
+            container.Register<System.Data.IDbConnection>().To<SQLiteConnection>().ConstructAs(j => new SQLiteConnection(DbConnString));
 
             container.Register<IPersister<UserConfiguration>>().To<UserConfigurationPersister>();
         }

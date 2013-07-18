@@ -42,7 +42,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test()]
 		public void BackgroundStartInitializesModelConfigurationTest ()
 		{
-            var container = new Demeter.Container();
+            var container = new Athena.IoC.Container();
 			var persister = Substitute.For<IPersister<UserConfiguration>>();
             container.Register<IPersister<UserConfiguration>>().To(persister);
 			persister.SelectBy(Arg.Any<int>()).Returns(new UserConfiguration { ServerUrl = string.Empty });
@@ -65,7 +65,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test()]
 		public void BackgroundStartPopulatesArtLoaderTest ()
         {
-            var container = new Demeter.Container();
+            var container = new Athena.IoC.Container();
 			string path = "myartpath";
 			var persister = Substitute.For<IPersister<UserConfiguration>>();
             container.Register<IPersister<UserConfiguration>>().To(persister);
@@ -80,7 +80,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test()]
 		public void BackgroundStartPopulatesModelFactoryWhenNoUserConfigExistsTest ()
         {
-            var container = new Demeter.Container();
+            var container = new Athena.IoC.Container();
 			string path = "myartpath";
 			var persister = Substitute.For<IPersister<UserConfiguration>>();
             container.Register<IPersister<UserConfiguration>>().To(persister);
@@ -94,7 +94,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test()]
 		public void BackgroundStartBeginsAutoShutOffTest ()
         {
-            var container = new Demeter.Container();
+            var container = new Athena.IoC.Container();
 			string path = "myartpath";
 			var persister = Substitute.For<IPersister<UserConfiguration>>();
             container.Register<IPersister<UserConfiguration>>().To(persister);
@@ -107,7 +107,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test()]
 		public void BackgroundStartPopulatesModelFactoryWhenUserConfigExistsTest ()
         {
-            var container = new Demeter.Container();
+            var container = new Athena.IoC.Container();
 			string path = "myartpath";
 			var config = new UserConfiguration();
 			config.ServerUrl = "test";
@@ -141,7 +141,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test()]
 		public void BackgroundStartPopulatesModelPlaylistWhenUserConfigExistsTest ()
         {
-            var container = new Demeter.Container();
+            var container = new Athena.IoC.Container();
 			string path = "myartpath";
 			var config = new UserConfiguration();
 			config.ServerUrl = "test";
@@ -162,7 +162,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test()]
 		public void BackgroundListensForModelDispositionTest ()
         {
-            var container = new Demeter.Container();
+            var container = new Athena.IoC.Container();
 			string path = "myartpath";
 			var persister = Substitute.For<IPersister<UserConfiguration>>();
             container.Register<IPersister<UserConfiguration>>().To(persister);
@@ -176,7 +176,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test()]
 		public void BackgroundListensForConfigChangesTest ()
         {
-            var container = new Demeter.Container();
+            var container = new Athena.IoC.Container();
 			string path = "myartpath";
 			var persister = Substitute.For<IPersister<UserConfiguration>>();
             container.Register<IPersister<UserConfiguration>>().To(persister);
@@ -193,7 +193,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test()]
 		public void BackgroundListensForPlaylistChangesTest ()
         {
-            var container = new Demeter.Container();
+            var container = new Athena.IoC.Container();
 			var persister = Substitute.For<IPersister<AmpacheSong>>();
 			var sng = new AmpacheSong();
             container.Register<IPersister<AmpacheSong>>().To(persister);
@@ -214,7 +214,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test()]
 		public void BackgroundListensForPlayingChangesAndCancelsShutOffTest ()
         {
-            var container = new Demeter.Container();
+            var container = new Athena.IoC.Container();
 			string path = "myartpath";
 			var persister = Substitute.For<IPersister<UserConfiguration>>();
             container.Register<IPersister<UserConfiguration>>().To(persister);
@@ -229,7 +229,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test()]
 		public void BackgroundListensForPlayingChangesAndStartsShutOffTest ()
         {
-            var container = new Demeter.Container();
+            var container = new Athena.IoC.Container();
 			string path = "myartpath";
 			var persister = Substitute.For<IPersister<UserConfiguration>>();
             container.Register<IPersister<UserConfiguration>>().To(persister);
@@ -274,14 +274,14 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 				StopShutOffCallCount = 0;
 			}
 
-            public BackgroundHandle(UserConfiguration config, string art, AmpacheModel model, Demeter.Container container)
+            public BackgroundHandle(UserConfiguration config, string art, AmpacheModel model, Athena.IoC.Container container)
                 : this(config, art)
             {
                 _model = model;
                 _container = container;
             }
 
-            public BackgroundHandle(UserConfiguration config, string art, AmpacheSelectionFactory factory, AmpacheModel model, Demeter.Container container)
+            public BackgroundHandle(UserConfiguration config, string art, AmpacheSelectionFactory factory, AmpacheModel model, Athena.IoC.Container container)
                 : this(config, art, model, container)
 			{
 				_factory = factory;

@@ -21,6 +21,8 @@
     <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
     <AndroidStoreUncompressedFileExtensions />
     <MandroidI18n />
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -45,21 +47,22 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Data.Sqlite.Android, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\csharpsqlite.1.0.0.0\lib\MonoAndroid\System.Data.Sqlite.Android.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="Mono.Android" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.Sqlite.Android">
-      <HintPath>..\Libraries\System.Data.Sqlite.Android.dll</HintPath>
-    </Reference>
     <Reference Include="System.Data" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\JohnMoore.AmpacheNet.DataAccess\Configurator.cs">
       <Link>Data Access\Configurator.cs</Link>
     </Compile>
-    <Compile Include="Demeter.cs" />
-    <Compile Include="DemeterFluentExtensions.cs" />
+    <Compile Include="Container.cs" />
+    <Compile Include="ContainerFluentExtensions.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AmpacheNetActivity.cs" />
@@ -272,4 +275,5 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
 </Project>

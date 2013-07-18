@@ -43,7 +43,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test()]
 		public void AlbumArtLoaderUsesDefaultWhenInitializedTest ()
 		{
-            var container = new Demeter.Container();
+            var container = new Athena.IoC.Container();
 			var model = new AmpacheModel();
             container.Register<AmpacheModel>().To(model);
 			var defaultStream = new MemoryStream();
@@ -56,7 +56,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test()]
 		public void AlbumArtLoaderUsesDefaultArtWhenNoArtAvailableTest ()
         {
-            var container = new Demeter.Container();
+            var container = new Athena.IoC.Container();
             var model = new AmpacheModel();
             container.Register<AmpacheModel>().To(model);
 			var defaultStream = new MemoryStream();
@@ -73,7 +73,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test()]
 		public void AlbumArtLoaderUsesDefaultArtWhenLoadingArtTest ()
         {
-            var container = new Demeter.Container();
+            var container = new Athena.IoC.Container();
             var model = new AmpacheModel();
             container.Register<AmpacheModel>().To(model);
 			var defaultStream = new MemoryStream();
@@ -96,7 +96,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test()]
 		public void AlbumArtLoaderUsesDefaultArtWhenErrorLoadingArtTest ()
         {
-            var container = new Demeter.Container();
+            var container = new Athena.IoC.Container();
             var model = new AmpacheModel();
             container.Register<AmpacheModel>().To(model);
 			var defaultStream = new MemoryStream();
@@ -120,7 +120,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test()]
 		public void AlbumArtLoaderUsesLoadedArtAfterLoadingTest ()
         {
-            var container = new Demeter.Container();
+            var container = new Athena.IoC.Container();
             var model = new AmpacheModel();
             container.Register<AmpacheModel>().To(model);
 			var defaultStream = new MemoryStream();
@@ -147,7 +147,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test()]
 		public void AlbumArtLoaderRespectsCachingPerferencesTest ()
         {
-            var container = new Demeter.Container();
+            var container = new Athena.IoC.Container();
             var model = new AmpacheModel();
             container.Register<AmpacheModel>().To(model);
 			var defaultStream = new MemoryStream();
@@ -177,7 +177,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test()]
 		public void AlbumArtLoaderIgnoresCachingPersistedItemTest ()
         {
-            var container = new Demeter.Container();
+            var container = new Athena.IoC.Container();
             var model = new AmpacheModel();
             container.Register<AmpacheModel>().To(model);
 			var defaultStream = new MemoryStream();
@@ -208,7 +208,7 @@ namespace JohnMoore.AmpacheNet.Logic.Tests
 		[Test()]
 		public void AlbumArtLoaderCachesNewArtTest ()
         {
-            var container = new Demeter.Container();
+            var container = new Athena.IoC.Container();
             var model = new AmpacheModel();
             container.Register<AmpacheModel>().To(model);
 			var defaultStream = new MemoryStream();

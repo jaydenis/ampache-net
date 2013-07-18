@@ -68,7 +68,7 @@ namespace JohnMoore.AmpacheNet
 			}
 		}
 		
-		public void Connected (Demeter.Container container)
+		public void Connected (Athena.IoC.Container container)
 		{
 			_model = container.Resolve<AmpacheModel>();
 			if(!_uiActions.ContainsKey(AmpacheModel.ALBUM_ART_STREAM))

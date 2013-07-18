@@ -11,7 +11,7 @@ namespace JohnMoore.AmpacheNet.Logic
 	public abstract partial class Background
 	{
         protected static AmpacheModel _model;
-        protected Demeter.Container _container;
+        protected Athena.IoC.Container _container;
 		protected static AlbumArtLoader _loader;
         protected string _successConnectionMessage;
 		
