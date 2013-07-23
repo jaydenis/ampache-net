@@ -59,6 +59,7 @@ namespace JohnMoore.AmpacheNet.Logic
 		
 		public void Connected (Athena.IoC.Container container)
 		{
+            _container = container;
             _model = container.Resolve<AmpacheModel>();
 			AfterConnection();
 		}	

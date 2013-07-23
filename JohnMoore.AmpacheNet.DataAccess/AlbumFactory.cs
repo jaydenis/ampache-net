@@ -36,7 +36,7 @@ namespace JohnMoore.AmpacheNet.DataAccess
     {
         public ICollection<AmpacheAlbum> Construct(ICollection<XElement> raw)
         {
-            return new HashSet<AmpacheAlbum>(raw.Select(n=>Construct(n)));
+            return new HashSet<AmpacheAlbum>(raw.Select(n=>Construct(n)).Where(n => n.TrackCount > 0));
         }
 
         public AmpacheAlbum Construct(XElement raw)
@@ -48,8 +48,10 @@ namespace JohnMoore.AmpacheNet.DataAccess
             var result = BuildBase(raw);
             if (raw.Descendants("artist").Any()) 
 			{
-				result.ArtistId = int.Parse (raw.Descendants ("artist").First ().Attribute ("id").Value);
-				result.ArtistName = raw.Descendants ("artist").First ().Value;
+                var elem = raw.Descendants("artist").First();
+				result.ArtistId = int.Parse (elem.Attribute("id").Value);
+                
+				result.ArtistName = elem.Value;
             }
 			else
 			{
@@ -72,7 +74,10 @@ namespace JohnMoore.AmpacheNet.DataAccess
 			}
 			if(raw.Descendants("tracks").Any())
 			{
-            	result.TrackCount = int.Parse(raw.Descendants("tracks").First().Value);
+                var tmp = raw.Descendants("tracks").First().Value;
+                int tc = 0;
+                int.TryParse(tmp, out tc);
+                result.TrackCount = tc;
 			}
             return result;
         }

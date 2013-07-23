@@ -120,7 +120,7 @@ namespace JohnMoore.AmpacheNet.DataAccess
 			try
 			{
             	var result = XElement.Load(new StreamReader(response.GetResponseStream()));
-            	return _factory.Construct(result.Descendants(XmlNodeName).ToList());
+                return _factory.Construct(result.Descendants(XmlNodeName).ToList());
 			}
 			catch(Exception e)
 			{

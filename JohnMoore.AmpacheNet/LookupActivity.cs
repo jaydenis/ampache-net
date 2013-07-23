@@ -64,16 +64,19 @@ namespace JohnMoore.AmpacheNet
 		
 		void HandleTextChanged (object sender, Android.Text.TextChangedEventArgs e)
 		{
-			var filter = new string(e.Text.ToArray());
-			if(string.IsNullOrEmpty(filter))
-			{
-				_filteredEntities = CachedEntites.ToList();
-			}
-			else
-			{
-				_filteredEntities = _cachedEntities.Where(t => t.Name.ToLower().Contains(filter.ToLower())).ToList();
-			}
-			RunOnUiThread(() => UpdateUi(_filteredEntities));
+            if (CachedEntites != null)
+            {
+                var filter = new string(e.Text.ToArray());
+                if (string.IsNullOrEmpty(filter))
+                {
+                    _filteredEntities = CachedEntites.ToList();
+                }
+                else
+                {
+                    _filteredEntities = _cachedEntities.Where(t => t.Name.ToLower().Contains(filter.ToLower())).ToList();
+                }
+                RunOnUiThread(() => UpdateUi(_filteredEntities)); 
+            }
 		}
 			
 		protected override void OnDestroy ()
