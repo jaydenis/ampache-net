@@ -93,24 +93,6 @@ namespace JohnMoore.AmpacheNet
 			Start(stream);
 			_player = new AndroidPlayer(_model, ApplicationContext);
 			_notifications = new AmpacheNotifications(this.ApplicationContext, _model);
-            Task.Factory.StartNew(() =>
-                {
-                    var config = LoadPersistedConfiguration();
-                    if (config != null && !string.IsNullOrEmpty(config.ServerUrl))
-                    {
-                        try
-                        {
-                            _model.Factory.AuthenticateToServer(config);
-                            _model.Configuration = config;
-                            _model.UserMessage = "Connected to Ampache!";
-                        }
-                        catch (Exception e)
-                        {
-                            Console.WriteLine("Failed to Authenticate, bailing on the existing configuration");
-                            _model.UserMessage = "Failed to connect to Ampache, verify configuration";
-                        }
-                    }
-                });
 			var telSvc = this.ApplicationContext.GetSystemService(Context.TelephonyService) as Android.Telephony.TelephonyManager;
 			if(telSvc != null) {
 				telSvc.Listen(new AmpachePhoneStateListener(_model), Android.Telephony.PhoneStateListenerFlags.CallState);
