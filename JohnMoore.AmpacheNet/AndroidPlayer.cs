@@ -48,7 +48,8 @@ namespace JohnMoore.AmpacheNet
 		}
 		
 		void Handle_playerCompletion (object sender, EventArgs e)
-		{
+        {
+            Cleanup();
 			Task.Factory.StartNew(() => _model.NextRequested = true);
 		}
 		
@@ -78,33 +79,42 @@ namespace JohnMoore.AmpacheNet
 				return;
 			}
 			StopPlay();
-			_timer.Change(Timeout.Infinite, Timeout.Infinite);
-			_player.Release();
-			_player.Completion -= Handle_playerCompletion;
-			_player.BufferingUpdate -= Handle_playerBufferingUpdate;
-			_player.Dispose();
-			_player = null;
-			_player = new MediaPlayer();
-			_player.SetAudioStreamType(Stream.Music);
-			_player.SetDataSource(_context, Android.Net.Uri.Parse(song.Url));
 			try
-			{
-				_player.Prepare();
-				_player.Start();
+            {
+                _player.Dispose();
+                _player = MediaPlayer.Create(_context, Android.Net.Uri.Parse(song.Url));
+                _player.Error += _player_Error;
+                _player.SetAudioStreamType(Stream.Music);
+                _player.Completion += Handle_playerCompletion;
+                _player.BufferingUpdate += Handle_playerBufferingUpdate;
+                _player.Start();
+                _timer.Change(TimeSpan.FromMilliseconds(500), TimeSpan.FromMilliseconds(500));
 			}
 			catch(Exception e)
 			{
-				_player.Release();
-				_player.Dispose();
+                Cleanup();
 				_player = new MediaPlayer();
 				Console.WriteLine (e.GetType().FullName);
 				Console.WriteLine (e.Message);
 			}
-			_player.Completion += Handle_playerCompletion;
-			_player.BufferingUpdate += Handle_playerBufferingUpdate;
-			_timer.Change(TimeSpan.FromMilliseconds(500), TimeSpan.FromMilliseconds(500));
 			Task.Factory.StartNew(() => GC.Collect(0));
 		}
+
+        void _player_Error(object sender, MediaPlayer.ErrorEventArgs e)
+        {
+            Cleanup();
+            PlaySong(_model.PlayingSong); 
+            Console.WriteLine(string.Format("Received {0} error code {1} from media player, retrying song {2}", e.What.ToString(), e.Extra, _model.PlayingSong.Name));
+        }
+
+        private void Cleanup()
+        {
+            _timer.Change(Timeout.Infinite, Timeout.Infinite);
+            _player.Completion -= Handle_playerCompletion;
+            _player.BufferingUpdate -= Handle_playerBufferingUpdate;
+            _player.Error -= _player_Error;
+            _player.Release();
+        }
 
 		protected override void StopPlay ()
 		{
@@ -112,6 +122,7 @@ namespace JohnMoore.AmpacheNet
 			if(_player.IsPlaying) 
 			{
 				_player.Stop();
+                Cleanup();
 			}
 		}
 
@@ -147,6 +158,7 @@ namespace JohnMoore.AmpacheNet
 			}
 		}
 		#endregion
-	}
+
+    }
 }
 
