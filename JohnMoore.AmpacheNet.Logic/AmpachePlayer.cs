@@ -157,11 +157,11 @@ namespace JohnMoore.AmpacheNet.Logic
 					Console.WriteLine ("Playing next Song: " + _model.Playlist[nextIndex].Name);
 					_model.PercentPlayed = 0;
 					_model.PercentDownloaded = 0;
-                    //Task.Factory.StartNew(() => _model.PlayingSong = _model.Playlist[nextIndex]);
-                    _model.PlayingSong = _model.Playlist[nextIndex];
-                    PlaySong(_model.Playlist[nextIndex]);
-					_isPaused = false;
-					_model.IsPlaying = true;
+                    var sng = _model.Playlist[nextIndex];
+                    _model.PlayingSong = sng;
+                    PlaySong(sng);
+                    _model.IsPlaying = true;
+                    _isPaused = false;
 				}
 				_model.NextRequested = false;
 				Console.WriteLine ("Next done");

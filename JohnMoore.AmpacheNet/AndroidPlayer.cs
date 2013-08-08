@@ -44,7 +44,7 @@ namespace JohnMoore.AmpacheNet
 		public AndroidPlayer (AmpacheModel model, Context context) : base(model)
 		{
 			_context = context;
-			_timer = new Timer(UpdatePlayProgress, null, TimeSpan.FromMilliseconds(500), TimeSpan.FromMilliseconds(500));
+			_timer = new Timer(UpdatePlayProgress, null, TimeSpan.FromMilliseconds(-1), TimeSpan.FromMilliseconds(-1));
 		}
 		
 		void Handle_playerCompletion (object sender, EventArgs e)
@@ -60,10 +60,12 @@ namespace JohnMoore.AmpacheNet
 		
 		void UpdatePlayProgress(object o)
 		{
-			try {
-				if(_player.IsPlaying) {
-					PlayerPositionMilliSecond = _player.CurrentPosition;
-				}
+			try 
+            {
+                if (_player != null)
+                {
+                    PlayerPositionMilliSecond = _player.CurrentPosition;
+                }
 			}
 			catch(Exception e) {
 				Console.WriteLine (e.Message);
@@ -82,13 +84,45 @@ namespace JohnMoore.AmpacheNet
 			try
             {
                 _player.Dispose();
+                //var setup = false;
+                //for (int ct = 0; ct < 5 || setup; ++ct)
+                //{
+                //    var source = new CancellationTokenSource();
+                //    var task = new Task(() =>
+                //        {
+                //            _player = new MediaPlayer();
+                //            //_player.SetAudioStreamType(Stream.Music);
+                //            _player.SetDataSource(song.Url);
+                //            _player.Prepare();
+                //            //_player = MediaPlayer.Create(_context, Android.Net.Uri.Parse(song.Url)), source.Token)
+                //        }, source.Token);
+                //    task.Start();
+                //    try
+                //    {
+                //        setup = task.Wait(TimeSpan.FromSeconds(120));
+                //    }
+                //    catch (Exception e)
+                //    { }
+                //    if (!setup)
+                //    {
+                //        source.Cancel();
+                //    }
+                //}
                 _player = MediaPlayer.Create(_context, Android.Net.Uri.Parse(song.Url));
-                _player.Error += _player_Error;
-                _player.SetAudioStreamType(Stream.Music);
-                _player.Completion += Handle_playerCompletion;
-                _player.BufferingUpdate += Handle_playerBufferingUpdate;
-                _player.Start();
-                _timer.Change(TimeSpan.FromMilliseconds(500), TimeSpan.FromMilliseconds(500));
+                //if (_player != null)
+                //{
+                    _player.Error += _player_Error;
+                    //_player.SetAudioStreamType(Stream.Music);
+                    _player.Completion += Handle_playerCompletion;
+                    _player.BufferingUpdate += Handle_playerBufferingUpdate;
+                    _player.Start();
+                    _timer.Change(TimeSpan.FromMilliseconds(500), TimeSpan.FromMilliseconds(500));
+                //}
+                //else
+                //{
+                //    _model.UserMessage = "Unable to begin playback";
+                //    _player = new MediaPlayer();
+                //}
 			}
 			catch(Exception e)
 			{
@@ -119,11 +153,11 @@ namespace JohnMoore.AmpacheNet
 		protected override void StopPlay ()
 		{
 			_timer.Change(Timeout.Infinite, Timeout.Infinite);
-			if(_player.IsPlaying) 
-			{
-				_player.Stop();
-                Cleanup();
-			}
+            //if (_player.IsPlaying)
+            //{
+            //    _player.Stop();
+            //}
+            Cleanup();
 		}
 
 		protected override void Pause ()
