@@ -26,7 +26,7 @@
 using NUnit.Framework;
 using System;
 using System.Data;
-using System.Data.Sqlite;
+using System.Data.SQLite;
 using System.Xml.Linq;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,7 +45,7 @@ namespace JohnMoore.AmpacheNet.DataAccess.Tests
 		[Test]
 		public void UserConfigurationPersisterIsPersistedTest()
 		{
-			var conn = new SqliteConnection("Data Source=:memory:");
+			var conn = new SQLiteConnection("Data Source=:memory:");
 			using(var target = new UserConfigurationPersister(conn)){
 				Assert.That(target.IsPersisted(new AmpacheSong()));
 			}
@@ -61,7 +61,7 @@ namespace JohnMoore.AmpacheNet.DataAccess.Tests
 			config.Password = @"password's";
 			config.User = "user's";
 			config.ServerUrl = "testserver";
-			var conn = new SqliteConnection("Data Source=:memory:");
+			var conn = new SQLiteConnection("Data Source=:memory:");
 			using(var cmd = conn.CreateCommand())
 			using(var target = new UserConfigurationPersister(conn)){
 				target.Persist(config);
@@ -89,7 +89,7 @@ namespace JohnMoore.AmpacheNet.DataAccess.Tests
 			config.Password = @"password's";
 			config.User = "user's";
 			config.ServerUrl = "testserver";
-			var conn = new SqliteConnection("Data Source=:memory:");
+			var conn = new SQLiteConnection("Data Source=:memory:");
 			using(var cmd = conn.CreateCommand())
 			using(var target = new UserConfigurationPersister(conn)){
 				target.Remove(config);
@@ -117,7 +117,7 @@ namespace JohnMoore.AmpacheNet.DataAccess.Tests
 			config.Password = @"password's";
 			config.User = "user's";
 			config.ServerUrl = "testserver";
-			var conn = new SqliteConnection("Data Source=:memory:");
+			var conn = new SQLiteConnection("Data Source=:memory:");
 			using(var cmd = conn.CreateCommand())
 			using(var target = new UserConfigurationPersister(conn)){
 				target.Persist(config);
@@ -135,7 +135,7 @@ namespace JohnMoore.AmpacheNet.DataAccess.Tests
 		[Test]
 		public void UserConfigurationPersisterSelectByParameterTest()
 		{
-			var conn = new SqliteConnection("Data Source=:memory:");
+			var conn = new SQLiteConnection("Data Source=:memory:");
 			using(var target = new UserConfigurationPersister(conn)){
 				var actual = target.SelectBy(new AmpacheSong()).ToList();
 				Assert.That(actual.Count, Is.EqualTo(1));
@@ -145,7 +145,7 @@ namespace JohnMoore.AmpacheNet.DataAccess.Tests
 		[Test]
 		public void UserConfigurationPersisterSelectByIdTest()
 		{
-			var conn = new SqliteConnection("Data Source=:memory:");
+			var conn = new SQLiteConnection("Data Source=:memory:");
 			using(var target = new UserConfigurationPersister(conn)){
 				var actual = target.SelectBy(123456);
 				Assert.That(actual, Is.Not.Null);
@@ -155,7 +155,7 @@ namespace JohnMoore.AmpacheNet.DataAccess.Tests
 		[Test]
 		public void UserConfigurationPersisterSelectByStringTest()
 		{
-			var conn = new SqliteConnection("Data Source=:memory:");
+			var conn = new SQLiteConnection("Data Source=:memory:");
 			using(var target = new UserConfigurationPersister(conn)){
 				var actual = target.SelectBy("test").ToList();
 				Assert.That(actual.Count, Is.EqualTo(1));

@@ -27,7 +27,7 @@
 using NUnit.Framework;
 using System;
 using System.Data;
-using System.Data.Sqlite;
+using System.Data.SQLite;
 using System.Xml.Linq;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,7 +46,7 @@ namespace JohnMoore.AmpacheNet.DataAccess.Tests
 		[Test()]
 		public void SongPersisterIsPersistedTest()
 		{
-			var conn = new SqliteConnection("Data Source=:memory:");
+			var conn = new SQLiteConnection("Data Source=:memory:");
 			using(var target = new SongPersister(conn))
 			using(var cmd = conn.CreateCommand())
 			{
@@ -61,7 +61,7 @@ namespace JohnMoore.AmpacheNet.DataAccess.Tests
 		[Test()]
 		public void SongPersisterIsNotPersistedTest()
 		{
-			var conn = new SqliteConnection("Data Source=:memory:");
+			var conn = new SQLiteConnection("Data Source=:memory:");
 			using(var target = new SongPersister(conn))
 			using(var cmd = conn.CreateCommand())
 			{
@@ -76,7 +76,7 @@ namespace JohnMoore.AmpacheNet.DataAccess.Tests
 		public void SongPersisterPersistTest()
 		{
 			
-			var conn = new SqliteConnection("Data Source=:memory:");
+			var conn = new SQLiteConnection("Data Source=:memory:");
 			using(var target = new SongPersister(conn))
 			using(var cmd = conn.CreateCommand())
 			{
@@ -119,7 +119,7 @@ namespace JohnMoore.AmpacheNet.DataAccess.Tests
 		public void SongPersisterPersistWithSingleQuoteInTextTest()
 		{
 			
-			var conn = new SqliteConnection("Data Source=:memory:");
+			var conn = new SQLiteConnection("Data Source=:memory:");
 			using(var target = new SongPersister(conn))
 			using(var cmd = conn.CreateCommand())
 			{
@@ -162,7 +162,7 @@ namespace JohnMoore.AmpacheNet.DataAccess.Tests
 		public void SongPersisterRemoveTest()
 		{
 			
-			var conn = new SqliteConnection("Data Source=:memory:");
+			var conn = new SQLiteConnection("Data Source=:memory:");
 			using(var target = new SongPersister(conn))
 			using(var cmd = conn.CreateCommand())
 			{
@@ -194,7 +194,7 @@ namespace JohnMoore.AmpacheNet.DataAccess.Tests
 		public void SongPersisterSelectAllTest()
 		{
 			
-			var conn = new SqliteConnection("Data Source=:memory:");
+			var conn = new SQLiteConnection("Data Source=:memory:");
 			using(var target = new SongPersister(conn))
 			using(var cmd = conn.CreateCommand())
 			{
@@ -239,7 +239,7 @@ namespace JohnMoore.AmpacheNet.DataAccess.Tests
 		[ExpectedException(typeof(NotSupportedException))]
 		public void SongPersisterSelectByParameterTest ()
 		{
-			var conn = new SqliteConnection("Data Source=:memory:");
+			var conn = new SQLiteConnection("Data Source=:memory:");
 			using(var target = new SongPersister(conn))
 			{
 				target.SelectBy(new AmpacheSong());
@@ -251,7 +251,7 @@ namespace JohnMoore.AmpacheNet.DataAccess.Tests
 		[ExpectedException(typeof(NotSupportedException))]
 		public void SongPersisterSelectByIntegerTest ()
 		{
-			var conn = new SqliteConnection("Data Source=:memory:");
+			var conn = new SQLiteConnection("Data Source=:memory:");
 			using(var target = new SongPersister(conn))
 			{
 				target.SelectBy(1);
@@ -263,7 +263,7 @@ namespace JohnMoore.AmpacheNet.DataAccess.Tests
 		[ExpectedException(typeof(NotSupportedException))]
 		public void SongPersisterSelectByStringTest ()
 		{
-			var conn = new SqliteConnection("Data Source=:memory:");
+			var conn = new SQLiteConnection("Data Source=:memory:");
 			using(var target = new SongPersister(conn))
 			{
 				target.SelectBy("test");
