@@ -200,6 +200,7 @@
     <Compile Include="..\JohnMoore.AmpacheNet.DataAccess\UserConfigurationPersister.cs">
       <Link>Data Access\UserConfigurationPersister.cs</Link>
     </Compile>
+    <Compile Include="TaskExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml" />

@@ -86,6 +86,10 @@ namespace JohnMoore.AmpacheNet.DataAccess
                 return true;
             }
 			Console.WriteLine (result.ToString());
+            if (result.Descendants("error").Any())
+            {
+                throw new ApplicationException(result.Descendants("error").First().Value);
+            }
             return false;
         }
 

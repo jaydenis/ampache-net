@@ -87,22 +87,16 @@ namespace JohnMoore.AmpacheNet
                 var setup = false;
                 for (int ct = 0; ct < 5 && !setup; ++ct)
                 {
-                    var source = new CancellationTokenSource();
-                    var task = Task.Factory.StartNew(() => MediaPlayer.Create(_context, Android.Net.Uri.Parse(song.Url)), source.Token);
+                    var task = Task.Factory.StartCancelable((token) => MediaPlayer.Create(_context, Android.Net.Uri.Parse(song.Url)))
+                                           .WithTimeout(TimeSpan.FromSeconds(30));
                     try
                     {
-                        setup = task.Wait(30000);
+                        task.Wait();
+                        _player = task.Result;
+                        setup = true;
                     }
                     catch (Exception e)
                     { }
-                    if (!setup)
-                    {
-                        source.Cancel();
-                    }
-                    else
-                    {
-                        _player = task.Result;
-                    }
                 }
                 
                 if (_player != null)
@@ -148,10 +142,6 @@ namespace JohnMoore.AmpacheNet
 		protected override void StopPlay ()
 		{
 			_timer.Change(Timeout.Infinite, Timeout.Infinite);
-            //if (_player.IsPlaying)
-            //{
-            //    _player.Stop();
-            //}
             Cleanup();
 		}
 
