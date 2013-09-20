@@ -44,7 +44,9 @@ namespace JohnMoore.AmpacheNet
 	[Activity (Label = "Ampache.NET", MainLauncher = true)]
 	[MetaData("android.app.default_searchable", Value = ".SongSearch")]
 	public class AmpacheNetActivity : PlayingActivity
-	{		
+    {
+        protected override int MenuId { get { return Resource.Menu.MainMenu; } }
+
 		protected override void OnCreate (Bundle bundle)
 		{
 			base.OnCreate (bundle);

@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-  <item android:id="@+id/fullscreen"
-        android:title="Full Screen"
-    android:showAsAction="ifRoom"
-    android:icon="@drawable/ic_media_fullscreen" />
+  
   <item android:id="@+id/playlists"
         android:title="Playlists"
     android:showAsAction="ifRoom"

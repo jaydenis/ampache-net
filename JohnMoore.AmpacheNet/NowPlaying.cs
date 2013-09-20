@@ -45,6 +45,7 @@ namespace JohnMoore.AmpacheNet
 	{
 		private bool _listenForPlayingPositionUpdates = true;
 		private double _requestedSeek;
+        protected override int MenuId { get { return Resource.Menu.SubMenu; } }
 		
 		protected override void OnCreate (Bundle bundle)
 		{

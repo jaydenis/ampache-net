@@ -45,6 +45,7 @@ namespace JohnMoore.AmpacheNet
 		protected readonly Dictionary<string, Action> _uiActions = new Dictionary<string, Action>();
 		private AmpacheService.Connection _connection;
 		private Android.Graphics.Bitmap _currentAlbumArt;
+        protected abstract int MenuId { get; }
 		
 		protected override void OnCreate (Bundle savedInstanceState)
 		{
@@ -247,17 +248,20 @@ namespace JohnMoore.AmpacheNet
 		
 		public override bool OnCreateOptionsMenu (IMenu menu)
 		{
-			this.MenuInflater.Inflate(Resource.Menu.MainMenu, menu);
+			this.MenuInflater.Inflate(MenuId, menu);
 			return true;
 		}
 		
 		public override bool OnOptionsItemSelected (IMenuItem item)
 		{
 			switch (item.ItemId)
-			{
-				case Resource.Id.configure:
-					StartActivity(typeof(ConfigurationActivity));
-					break;
+            {
+                case Resource.Id.configure:
+                    StartActivity(typeof(ConfigurationActivity));
+                    break;
+                case Resource.Id.fullscreen:
+                    StartActivity(typeof(NowPlaying));
+                    break;
 				case Resource.Id.albums:
 					StartActivity(typeof(AlbumLookupActivity));
 					break;
