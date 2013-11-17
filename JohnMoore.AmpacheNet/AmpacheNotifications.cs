@@ -55,7 +55,7 @@ namespace JohnMoore.AmpacheNet
 			_model.PropertyChanged += Handle_modelPropertyChanged;
             _builder = new Notification.Builder(context)
                 .SetSmallIcon(Resource.Drawable.ic_stat_notify_musicplayer)
-                .SetContentTitle("Amapche.NET")
+                .SetContentTitle("Ampache.NET")
                 .SetContentIntent(PendingIntent.GetActivity(_context, 0, new Intent(_context, typeof(NowPlaying)), PendingIntentFlags.UpdateCurrent));
 			((NotificationManager)_context.GetSystemService(Context.NotificationService)).CancelAll();
 		}
