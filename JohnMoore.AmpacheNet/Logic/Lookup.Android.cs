@@ -28,7 +28,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using JohnMoore.AmpacheNet.Entities;
-using JohnMoore.AmpacheNet.Logic;
 using Android.App;
 using Android.OS;
 using Android.Views;
@@ -43,7 +42,7 @@ namespace JohnMoore.AmpacheNet.Logic
 		protected AmpacheService.Connection _connection;
 		private AmpacheArrayAdapter<TEntity> _adapter;
 		
-		public Lookup () : this(TimeSpan.FromMinutes(30))
+		public Lookup () : this(TimeSpan.Zero)//.FromMinutes(30))
 		{}
 		
 		protected override void OnCreate (Bundle bundle)
