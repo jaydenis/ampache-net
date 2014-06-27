@@ -37,7 +37,7 @@ namespace JohnMoore.AmpacheNet.DataAccess
         protected override TEntity BuildBase(XElement element)
         {
             var result = base.BuildBase(element);
-            var tags = element.Descendants("tag").Where(e => e.Attribute("id") != null)
+            var tags = element.Descendants("tag").Where(e => e.Attribute("id") != null && e.Attribute("id").Value != string.Empty)
                               .Select(n => new Tag
                                                {
                                                    Id = int.Parse(n.Attribute("id").Value),

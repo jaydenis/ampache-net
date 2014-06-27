@@ -119,7 +119,8 @@ namespace JohnMoore.AmpacheNet.DataAccess
             var response = request.GetResponse();
 			try
 			{
-            	var result = XElement.Load(new StreamReader(response.GetResponseStream()));
+                var txt = new StreamReader(response.GetResponseStream()).ReadToEnd();
+            	var result = XElement.Parse(txt);
                 return _factory.Construct(result.Descendants(XmlNodeName).ToList());
 			}
 			catch(Exception e)
